@@ -406,15 +406,16 @@
       </div><!-- /.container -->
 
       <div class="border-top mt-auto pb-2">
-        <a href="login_register.html">
-          <div class="customer-links container  mt-4 mb-2 pb-1">
-            <svg class="d-inline-block align-middle" width="20" height="20" viewBox="0 0 20 20" fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_user" />
-            </svg>
-            <span class="d-inline-block ms-2 text-uppercase align-middle fw-medium">My Account</span>
-          </div>
-        </a>
+        <a href="">
+          <a href="<%= user ? '/account' : '/auth/login' %>">
+            <div class="customer-links container  mt-4 mb-2 pb-1">
+              <svg class="d-inline-block align-middle" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <use href="#icon_user" />
+              </svg>
+              <span class="d-inline-block ms-2 text-uppercase align-middle fw-medium">My Account</span>
+            </div>
+          </a>
 
 
 
@@ -635,7 +636,7 @@
         </div><!-- /.header-tools__item hover-container -->
 
         <div class="header-tools__item hover-container">
-          <a class="" href="/auth/login" data-aside="customerForms">
+          <a class="" href="<%= user ? '/account' : '/auth/login' %>" data-aside="customerForms">
             <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
               xmlns="http://www.w3.org/2000/svg">
               <use href="#icon_user" />
