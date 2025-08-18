@@ -708,34 +708,37 @@
     let user = false;
 
     // Fetch cart items (user or guest)
-    async function fetchCart() {
+// Fetch cart items (user or guest)
+async function fetchCart() {
+    try {
+        let res = await fetch('/cartItems', { credentials: 'include' });
+        if (!res.ok) throw new Error('Not logged in');
+        // Always clear guest cart if user is logged in
+        localStorage.removeItem('guestCart');
+        let cart = await res.json();
+        if (!cart || !cart.items) cart = { items: [] };
+        user = true;
+        renderCart(cart, true);
+    } catch (e) {
+        // Guest cart from localStorage
+        user = false;
+        let items = [];
         try {
-            let res = await fetch('/cartItems', { credentials: 'include' });
-            if (!res.ok) throw new Error('Not logged in');
-            let cart = await res.json();
-            if (!cart || !cart.items) cart = { items: [] };
-            user = true;
-            renderCart(cart, true);
-        } catch (e) {
-            // Guest cart from localStorage
-            user = false;
-            let items = [];
-            try {
-                items = JSON.parse(localStorage.getItem('guestCart') || '[]');
-                if (!Array.isArray(items)) items = [];
-            } catch (err) {
-                items = [];
-            }
-            // Calculate total for guest
-            let total = 0;
-            items.forEach(item => {
-                let price = (item.price !== undefined && item.price !== null) ? Number(item.price) : 0;
-                total += price * (item.quantity || 1);
-            });
-            let cart = { items, total: total };
-            renderCart(cart, false);
+            items = JSON.parse(localStorage.getItem('guestCart') || '[]');
+            if (!Array.isArray(items)) items = [];
+        } catch (err) {
+            items = [];
         }
+        // Calculate total for guest
+        let total = 0;
+        items.forEach(item => {
+            let price = (item.price !== undefined && item.price !== null) ? Number(item.price) : 0;
+            total += price * (item.quantity || 1);
+        });
+        let cart = { items, total: total };
+        renderCart(cart, false);
     }
+}
 
     // Render cart items and totals
     function renderCart(cart, user) {
@@ -754,8 +757,12 @@
         } else {
             cart.items.forEach((item, idx) => {
                 const price = (item.price !== undefined && item.price !== null) ? Number(item.price) : 0;
-                const productName = item.productName || (item.product && item.product.name) || 'Product';
-                const productImage = item.productImage || (item.product && item.product.images && item.product.images[0]) || '/images/placeholder.png';
+                const productName = item.productName || item.name || (item.product && item.product.name) || 'Product';
+                const productImage =
+                    (item.productImage && typeof item.productImage === 'string' && item.productImage) ? item.productImage
+                    : (item.image && typeof item.image === 'string') ? item.image
+                    : (item.product && Array.isArray(item.product.images) && item.product.images[0]) ? item.product.images[0]
+                    : '/images/placeholder.png';
                 const productId = item.productId || (item.product && item.product._id) || '';
                 // For user: use item._id; for guest: use idx (array index)
                 const itemId = user ? item._id : idx;
