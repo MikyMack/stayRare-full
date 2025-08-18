@@ -25002,3 +25002,25 @@ body.coming-soon-page .header {
     font-size: 0.93rem;
   }
 }
+/** Breadcrumbs padding top, responsive for all devices */
+.breadCrumbs {
+  padding-top: 5.2rem;
+}
+
+@media (max-width: 991px) {
+  .breadCrumbs {
+    padding-top: 1.5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .breadCrumbs {
+    padding-top: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .breadCrumbs {
+    padding-top: 0.7rem;
+  }
+}

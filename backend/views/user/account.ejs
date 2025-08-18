@@ -618,25 +618,7 @@
     <!-- End Header Type 1 -->
 
     <main class="main">
-        <!-- Start of Page Header -->
-        <div class="page-header py-4 bg-light border-bottom mb-3" style="margin-top: 80px;">
-            <div class="container">
-                <h1 class="page-title mb-0">My Account</h1>
-            </div>
-        </div>
-        <!-- End of Page Header -->
-
-        <!-- Start of Breadcrumb -->
-        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-4" style="margin-top: -10px;">
-            <div class="container">
-                <ul class="breadcrumb bg-white px-3 py-2 rounded">
-                    <li class=""><a href="/">Home | </a></li>
-                    <li class="breadcrumb-item">My account</li>
-                </ul>
-            </div>
-        </nav>
-        <!-- End of Breadcrumb -->
-
+        <h2 class="page-title breadCrumbs">My Account</h2>
         <!-- Start of PageContent -->
         <div class="page-content pt-2">
             <div class="container">
@@ -645,7 +627,7 @@
                         <ul class="nav flex-column nav-pills" id="accountTab" role="tablist">
                             <li class="nav-item mb-2">
                                 <a href="#account-dashboard" class="nav-link active" data-bs-toggle="pill"
-                                    role="tab">Dashboard</a>
+                                    role="tab">My Account</a>
                             </li>
                             <li class="nav-item mb-2">
                                 <a href="#account-orders" class="nav-link" data-bs-toggle="pill" role="tab">Orders</a>
@@ -704,34 +686,7 @@
                                             </p>
                                             <% } %>
                                 </div>
-                                <div class="row text-center g-3">
-                                    <div class="col-6 col-md-3">
-                                        <a href="#account-orders" class="btn btn-outline-primary w-100 py-3"
-                                            data-bs-toggle="pill">
-                                            <i class="bi bi-bag fs-2 mb-2 d-block"></i>
-                                            <span>Orders</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-6 col-md-3">
-                                        <a href="#account-addresses" class="btn btn-outline-primary w-100 py-3"
-                                            data-bs-toggle="pill">
-                                            <i class="bi bi-geo-alt fs-2 mb-2 d-block"></i>
-                                            <span>Addresses</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-6 col-md-3">
-                                        <a href="/wishlist" class="btn btn-outline-primary w-100 py-3">
-                                            <i class="bi bi-heart fs-2 mb-2 d-block"></i>
-                                            <span>Wishlist</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-6 col-md-3">
-                                        <a href="/auth/logout" class="btn btn-outline-danger w-100 py-3">
-                                            <i class="bi bi-box-arrow-right fs-2 mb-2 d-block"></i>
-                                            <span>Logout</span>
-                                        </a>
-                                    </div>
-                                </div>
+                              
                             </div>
                             <!-- Orders -->
                             <div class="tab-pane fade" id="account-orders" role="tabpanel">
