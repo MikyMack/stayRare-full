@@ -60,7 +60,7 @@ router.get('/', async (req, res) => {
         const newArrivals = shuffleArray(newArrivalsRaw).slice(0, 10);
         const bestSeller = shuffleArray(bestSellerRaw).slice(0, 10);
         const topRated = shuffleArray(topRatedRaw).slice(0, 10);
-        const dealsOfTheDay = shuffleArray(dealsOfTheDayRaw).slice(0, 2); // You confirmed this works
+        const dealsOfTheDay = shuffleArray(dealsOfTheDayRaw).slice(0, 2); 
 
         const blogs = await Blog.find().sort({ createdAt: -1 }).limit(5).lean().catch(() => []);
 
@@ -68,6 +68,14 @@ router.get('/', async (req, res) => {
             isActive: true,
             validUntil: { $gte: new Date() }
         }).select('code description').lean();
+
+        // Fetch testimonials
+        let testimonials = [];
+        try {
+            testimonials = await Testimonial.find({ isActive: true }).lean();
+        } catch (testimonialErr) {
+            testimonials = [];
+        }
 
         let cart = null;
         if (req.user) {
@@ -97,7 +105,8 @@ router.get('/', async (req, res) => {
             cartSubtotal: cart?.subtotal || 0,
             activeCoupons,
             blogs,
-            wishlistCount
+            wishlistCount,
+            testimonials
         });
 
     } catch (err) {
@@ -118,7 +127,8 @@ router.get('/', async (req, res) => {
             cartSubtotal: 0,
             activeCoupons: [],
             blogs: [],
-            wishlistCount: 0
+            wishlistCount: 0,
+            testimonials: []
         });
     }
 });
