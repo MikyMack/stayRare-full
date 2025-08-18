@@ -269,6 +269,7 @@
 
       <div class="logo">
         <a href="/">
+        <a href="/">
           <img src="images/stayrare/logo.png" alt="Uomo" class="logo__image d-block">
         </a>
       </div><!-- /.logo -->
@@ -406,15 +407,16 @@
       </div><!-- /.container -->
 
       <div class="border-top mt-auto pb-2">
-        <a href="login_register.html">
-          <div class="customer-links container  mt-4 mb-2 pb-1">
-            <svg class="d-inline-block align-middle" width="20" height="20" viewBox="0 0 20 20" fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_user" />
-            </svg>
-            <span class="d-inline-block ms-2 text-uppercase align-middle fw-medium">My Account</span>
-          </div>
-        </a>
+        <a href="">
+          <a href="<%= user ? '/account' : '/auth/login' %>">
+            <div class="customer-links container  mt-4 mb-2 pb-1">
+              <svg class="d-inline-block align-middle" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <use href="#icon_user" />
+              </svg>
+              <span class="d-inline-block ms-2 text-uppercase align-middle fw-medium">My Account</span>
+            </div>
+          </a>
 
 
 
@@ -635,7 +637,7 @@
         </div><!-- /.header-tools__item hover-container -->
 
         <div class="header-tools__item hover-container">
-          <a class="" href="/auth/login" data-aside="customerForms">
+          <a class="" href="<%= user ? '/account' : '/auth/login' %>" data-aside="customerForms">
             <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
               xmlns="http://www.w3.org/2000/svg">
               <use href="#icon_user" />
@@ -1336,14 +1338,18 @@
           <div class="swiper-wrapper">
             <% if (Array.isArray(bestSeller) && bestSeller.length) { %>
               <% bestSeller.forEach(function(product) { 
-                // Calculate discount percentage if basePrice exists and is greater than offerPrice
                 var discount = 0;
-                if (product.basePrice && product.offerPrice && product.basePrice > product.offerPrice) {
-                  discount = Math.round(((product.basePrice - product.offerPrice) / product.basePrice) * 100);
+                var hasDiscount = false;
+                var basePrice = product.basePrice || product.price || 0;
+                var offerPrice = product.offerPrice || product.salePrice || basePrice;
+                if (basePrice && offerPrice && basePrice > offerPrice) {
+                  discount = Math.round(((basePrice - offerPrice) / basePrice) * 100);
+                  hasDiscount = true;
                 }
+                var categoryName = (product.category && product.category.name) ? product.category.name : (product.categoryName || '');
               %>
                 <div class="swiper-slide product-card">
-                  <div class="pc__img-wrapper">
+                  <div class="pc__img-wrapper position-relative">
                     <a href="/product/<%= product.slug || product._id %>">
                       <img loading="lazy" src="<%= product.images && product.images[0] ? product.images[0] : '/images/placeholder.png' %>" width="330" height="400"
                         alt="<%= product.name %>" class="pc__img">
@@ -1351,34 +1357,28 @@
                         <img loading="lazy" src="<%= product.images[1] %>" width="330" height="400"
                           alt="<%= product.name %>" class="pc__img pc__img-second">
                       <% } %>
-                    </a>
-                    <% if (discount > 0) { %>
-                      <div class="product-label "><%= discount %>% off</div>
-                    <% } %>
-                    <button
-                      class="pc__btn-wl position-absolute bg-body rounded-circle border-0 text-primary js-add-wishlist"
-                      data-product-id="<%= product._id %>"
-                      title="Add To Wishlist">
-                      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <use href="#icon_heart" />
-                      </svg>
-                    </button>
+                      <% if (hasDiscount) { %>
+                        <span class="discount-label" style="position:absolute;top:12px;left:12px;z-index:5;background:#e74c3c;color:#fff;padding:2px 8px;border-radius:4px;font-size:0.95em;">
+                          <%= discount %>% off
+                        </span>
+                      <% } %>
+                    </a>               
                   </div>
                   <div class="pc__info position-relative">
-                    <p class="pc__category third-color">
-                      <%= product.category && product.category.name ? product.category.name : (product.categoryName || '') %>
+                    <p class="pc__category third-color mb-1" style="font-size:0.98em;">
+                      <%= categoryName %>
                     </p>
-                    <h6 class="pc__title">
-                      <a href="/product/<%= product.slug || product._id %>"><%= product.name %></a>
+                    <h6 class="pc__title mb-1" style="font-size:1.08em;">
+                      <a href="/product/<%= product.slug || product._id %>" style="color:inherit;text-decoration:none;"><%= product.name %></a>
                     </h6>
-                    <div class="product-card__price d-flex align-items-center">
-                      <% if (product.basePrice && product.basePrice > product.offerPrice) { %>
-                        <span class="money price-old">₹<%= product.basePrice %></span>
+                    <div class="product-card__price d-flex align-items-center mb-1">
+                      <% if (hasDiscount) { %>
+                        <span class="money price-old" style="color:#888;text-decoration:line-through;margin-right:8px;">₹<%= basePrice %></span>
                       <% } %>
-                      <span class="money price">₹<%= product.offerPrice %></span>
+                      <span class="money price" style="font-weight:600;color:#3B1E58;">₹<%= offerPrice %></span>
                     </div>
-                    <% if (discount > 0) { %>
-                      <div class="text-danger small mt-1">You save <%= discount %>%</div>
+                    <% if (hasDiscount) { %>
+                      <div class="text-danger small mt-1" style="font-size:0.95em;">You save <%= discount %>%</div>
                     <% } %>
                   </div>
                 </div>
@@ -1390,8 +1390,8 @@
                 </div>
               </div>
             <% } %>
-          </div><!-- /.swiper-wrapper -->
-        </div><!-- /.swiper-container js-swiper-slider -->
+          </div>
+        </div>
 
         <div class="products-carousel__prev position-absolute top-50 d-flex align-items-center justify-content-center">
           <svg width="25" height="25" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
@@ -1449,90 +1449,45 @@
             }
           }'>
           <div class="swiper-wrapper">
-            <!-- Testimonial 1 -->
-            <div class="swiper-slide testi">
-              <div class="d-flex flex-column align-items-center text-center p-2" style="min-height:180px;">
-                <img src="images/stayrare/dummy-profile-pic-male1.jpg" alt="Rahul K." class="rounded-circle mb-2"
-                  style="width:48px;height:48px;object-fit:cover;border:2.5px solid #fed304;box-shadow:0 0 0 4px #fff,0 2px 8px rgba(0,0,0,0.07);">
-                <div class="star-rating mb-1" style="color:#fed304;font-size:1.2rem;letter-spacing:1px;">
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                  <span class="star">★</span>
+            <% if (Array.isArray(testimonials) && testimonials.length > 0) { %>
+              <% testimonials.forEach(function(testimonial) { %>
+                <div class="swiper-slide testi">
+                  <div class="d-flex flex-column align-items-center text-center p-2" style="min-height:180px;">
+                    <img 
+                      src="<%= testimonial.imageUrl ? testimonial.imageUrl : '/images/stayrare/dummy-profile-pic-male1.jpg' %>" 
+                      alt="<%= testimonial.name %>" 
+                      class="rounded-circle mb-2"
+                      style="width:48px;height:48px;object-fit:cover;border:2.5px solid #fed304;box-shadow:0 0 0 4px #fff,0 2px 8px rgba(0,0,0,0.07);">
+                    <div class="star-rating mb-1" style="color:#fed304;font-size:1.2rem;letter-spacing:1px;">
+                      <% 
+                        var rating = Math.round(testimonial.rating || 5);
+                        for (var i = 0; i < rating; i++) { %>
+                          <span class="star">★</span>
+                      <% } %>
+                      <% for (var i = rating; i < 5; i++) { %>
+                          <span class="star" style="color:#e0e0e0;">★</span>
+                      <% } %>
+                    </div>
+                    <p class="testimonial-text mb-1" style="font-size:1.02rem;line-height:1.4;color:#222;">
+                      <span style="font-size:1.5rem;vertical-align:middle;color:#fed304;">“</span>
+                      <%= testimonial.content %>
+                    </p>
+                    <div class="author-name fw-bold mt-1" style="font-size:1rem;letter-spacing:0.5px;color:#fed304;">
+                      — <%= testimonial.name %>
+                      <% if (testimonial.designation) { %>
+                        <span class="d-block" style="font-size:0.95em;color:#bfae5a;font-weight:400;"><%= testimonial.designation %></span>
+                      <% } %>
+                    </div>
+                  </div>
                 </div>
-                <p class="testimonial-text mb-1" style="font-size:1.02rem;line-height:1.4;color:#222;">
-                  <span style="font-size:1.5rem;vertical-align:middle;color:#fed304;">“</span>
-                  The oversized t-shirts from <span style="color:#fed304;font-weight:600;">Stay Rare</span> are
-                  incredibly comfortable and stylish. I get compliments every time I wear them!
-                </p>
-                <div class="author-name fw-bold mt-1" style="font-size:1rem;letter-spacing:0.5px;color:#fed304;">— Rahul
-                  K.</div>
-              </div>
-            </div>
-            <!-- Testimonial 2 -->
-            <div class="swiper-slide testi">
-              <div class="d-flex flex-column align-items-center text-center p-2" style="min-height:180px;">
-                <img src="images/stayrare/dummy-profile-pic-male1.jpg" alt="Priya M." class="rounded-circle mb-2"
-                  style="width:48px;height:48px;object-fit:cover;border:2.5px solid #fed304;box-shadow:0 0 0 4px #fff,0 2px 8px rgba(0,0,0,0.07);">
-                <div class="star-rating mb-1" style="color:#fed304;font-size:1.2rem;letter-spacing:1px;">
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                  <span class="star">★</span>
+              <% }); %>
+            <% } else { %>
+              <div class="swiper-slide">
+                <div class="d-flex flex-column align-items-center text-center p-5 w-100">
+                  <span class="text-muted">No testimonials available at the moment.</span>
                 </div>
-                <p class="testimonial-text mb-1" style="font-size:1.02rem;line-height:1.4;color:#222;">
-                  <span style="font-size:1.5rem;vertical-align:middle;color:#fed304;">“</span>
-                  I’ve tried many T-shirt brands, but <span style="color:#fed304;font-weight:600;">Stay Rare</span>
-                  really nailed it. Fits amazing, looks stylish, and the fabric stays fresh even after many washes.
-                </p>
-                <div class="author-name fw-bold mt-1" style="font-size:1rem;letter-spacing:0.5px;color:#fed304;">— Priya
-                  M.</div>
               </div>
-            </div>
-            <!-- Testimonial 3 -->
-            <div class="swiper-slide testi">
-              <div class="d-flex flex-column align-items-center text-center p-2" style="min-height:180px;">
-                <img src="images/stayrare/dummy-profile-pic-male1.jpg" alt="Arjun S." class="rounded-circle mb-2"
-                  style="width:48px;height:48px;object-fit:cover;border:2.5px solid #fed304;box-shadow:0 0 0 4px #fff,0 2px 8px rgba(0,0,0,0.07);">
-                <div class="star-rating mb-1" style="color:#fed304;font-size:1.2rem;letter-spacing:1px;">
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                </div>
-                <p class="testimonial-text mb-1" style="font-size:1.02rem;line-height:1.4;color:#222;">
-                  <span style="font-size:1.5rem;vertical-align:middle;color:#fed304;">“</span>
-                  <span style="color:#fed304;font-weight:600;">Stay Rare</span> tees are my go-to now. Super comfy,
-                  great for daily wear, and the prints are so clean and vibrant. Totally impressed with the quality.
-                </p>
-                <div class="author-name fw-bold mt-1" style="font-size:1rem;letter-spacing:0.5px;color:#fed304;">— Arjun
-                  S.</div>
-              </div>
-            </div>
-            <!-- Testimonial 4 -->
-            <div class="swiper-slide testi">
-              <div class="d-flex flex-column align-items-center text-center p-2" style="min-height:180px;">
-                <img src="images/stayrare/dummy-profile-pic-male1.jpg" alt="Neha P." class="rounded-circle mb-2"
-                  style="width:48px;height:48px;object-fit:cover;border:2.5px solid #fed304;box-shadow:0 0 0 4px #fff,0 2px 8px rgba(0,0,0,0.07);">
-                <div class="star-rating mb-1" style="color:#fed304;font-size:1.2rem;letter-spacing:1px;">
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                  <span class="star">★</span>
-                </div>
-                <p class="testimonial-text mb-1" style="font-size:1.02rem;line-height:1.4;color:#222;">
-                  <span style="font-size:1.5rem;vertical-align:middle;color:#fed304;">“</span>
-                  The oversized fit is just perfect—not too baggy, not too tight. The fabric feels soft and breathable.
-                  Definitely buying more from <span style="color:#fed304;font-weight:600;">Stay Rare</span>!
-                </p>
-                <div class="author-name fw-bold mt-1" style="font-size:1rem;letter-spacing:0.5px;color:#fed304;">— Neha
-                  P.</div>
-              </div>
-            </div>
+            <% } %>
           </div><!-- /.swiper-wrapper -->
         </div><!-- /.swiper-container -->
         <div class="testimonial-pagination mt-3 d-flex align-items-center justify-content-center"></div>
@@ -1574,48 +1529,32 @@
             }
           }'>
           <div class="swiper-wrapper blog-grid row-cols-xl-3">
-            <div class="swiper-slide blog-grid__item mb-4">
-              <div class="blog-grid__item-image">
-                <img loading="lazy" class="h-auto" src="images/home/demo2/post1.jpg" width="450" height="300" alt="">
-              </div>
-              <div class="blog-grid__item-detail">
-                <div class="blog-grid__item-meta">
-                  <span class="blog-grid__item-meta__author">By Stay Rare</span>
-                  <span class="blog-grid__item-meta__date">Aprial 05, 2023</span>
+            <% if (Array.isArray(blogs) && blogs.length > 0) { %>
+              <% blogs.forEach(function(blog) { %>
+                <div class="swiper-slide blog-grid__item mb-4">
+                  <div class="blog-grid__item-image">
+                    <img loading="lazy" class="h-auto" src="<%= blog.imageUrl %>" width="450" height="300" alt="<%= blog.title %>">
+                  </div>
+                  <div class="blog-grid__item-detail">
+                    <div class="blog-grid__item-meta">
+                      <span class="blog-grid__item-meta__author">By <%= blog.author %></span>
+                      <span class="blog-grid__item-meta__date">
+                        <%= blog.createdAt ? new Date(blog.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '' %>
+                      </span>
+                    </div>
+                    <div class="blog-grid__item-title mb-0">
+                      <a href="/blogs/<%= blog._id %>"><%= blog.title %></a>
+                    </div>
+                  </div>
                 </div>
-                <div class="blog-grid__item-title mb-0">
-                  <a href="blogDetails.html">Woman with good shoes is never be ugly place</a>
-                </div>
-              </div>
-            </div>
-            <div class="swiper-slide blog-grid__item mb-4">
-              <div class="blog-grid__item-image">
-                <img loading="lazy" class="h-auto" src="images/home/demo2/post2.jpg" width="450" height="300" alt="">
-              </div>
-              <div class="blog-grid__item-detail">
-                <div class="blog-grid__item-meta">
-                  <span class="blog-grid__item-meta__author">By Stay Rare</span>
-                  <span class="blog-grid__item-meta__date">Aprial 05, 2023</span>
-                </div>
-                <div class="blog-grid__item-title mb-0">
-                  <a href="blogDetails.html">What Freud Can Teach Us About Furniture</a>
+              <% }); %>
+            <% } else { %>
+              <div class="swiper-slide blog-grid__item mb-4">
+                <div class="d-flex flex-column align-items-center text-center p-5 w-100">
+                  <span class="text-muted">No blog posts available at the moment.</span>
                 </div>
               </div>
-            </div>
-            <div class="swiper-slide blog-grid__item mb-4">
-              <div class="blog-grid__item-image">
-                <img loading="lazy" class="h-auto" src="images/home/demo2/post3.jpg" width="450" height="300" alt="">
-              </div>
-              <div class="blog-grid__item-detail">
-                <div class="blog-grid__item-meta">
-                  <span class="blog-grid__item-meta__author">By Stay Rare</span>
-                  <span class="blog-grid__item-meta__date">Aprial 05, 2023</span>
-                </div>
-                <div class="blog-grid__item-title mb-0">
-                  <a href="blogDetails.html">Habitant morbi tristique senectus</a>
-                </div>
-              </div>
-            </div>
+            <% } %>
           </div><!-- /.swiper-wrapper -->
         </div><!-- /.swiper-container js-swiper-slider -->
 
@@ -1930,7 +1869,7 @@
 
   <div class="page-overlay"></div>
    <script>
-window.isLoggedIn = <%= user ? 'true' : 'false' %>;
+            window.isLoggedIn = <%= user ? 'true' : 'false' %>;
   </script>
   <!-- External JavaScripts -->
   <script src="js/plugins/jquery.min.js"></script>
