@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/images/logo-2.png">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      padding: 40px;
+      color: #333;
+      background: #f5f6fa;
+    }
+
+    .invoice-box {
+      max-width: 800px;
+      margin: auto;
+      padding: 30px;
+      background: #fff;
+      border: 1px solid #eee;
+      box-shadow: 0 0 15px rgba(0,0,0,0.06);
+    }
+
+    .top-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #001F3F;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .company-logo {
+      height: 60px;
+    }
+
+    .company-details {
+      text-align: right;
+    }
+
+    .company-details h2 {
+      margin: 0;
+      color: #001F3F;
+    }
+
+    .order-details, .customer-details {
+      margin-bottom: 20px;
+    }
+
+    .order-details p, .customer-details p {
+      margin: 3px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table thead {
+      background: #001F3F;
+      color: white;
+    }
+
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    table tbody tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    .totals {
+      text-align: right;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .totals p {
+      margin: 4px 0;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-box">
+
+    <div class="top-section">
+      <img src="https://res.cloudinary.com/djnlfqkd7/image/upload/v1749749849/logo_l9fenr.png" alt="Hofmaan Logo" class="company-logo" />
+      <div class="company-details">
+        <h2>HOFMAAN</h2>
+        <p>www.hofmaan.com</p>
+        <p>support@hofmaan.com</p>
+        <p>GST No: 32ABCDE1234F1Z5</p>
+      </div>
+    </div>
+
+    <div class="order-details">
+      <p><strong>Invoice #:</strong> <%= order._id %></p>
+      <p><strong>Date:</strong> <%= new Date(order.createdAt).toLocaleDateString() %></p>
+    </div>
+
+    <div class="customer-details">
+      <p><strong>Customer:</strong> <%= order.shippingAddress?.name || order.user?.name || 'Guest' %></p>
+      <p><strong>Phone:</strong> <%= order.shippingAddress?.phone || 'N/A' %></p>
+
+      <p><strong>Billing Address:</strong><br>
+        <%= order.billingAddress?.addressLine1 %>, <%= order.billingAddress?.addressLine2 %><br>
+        <%= order.billingAddress?.city %>, <%= order.billingAddress?.district %>, <%= order.billingAddress?.state %> - <%= order.billingAddress?.pincode %>
+      </p>
+
+      <p><strong>Shipping Address:</strong><br>
+        <%= order.shippingAddress?.addressLine1 %>, <%= order.shippingAddress?.addressLine2 %><br>
+        <%= order.shippingAddress?.city %>, <%= order.shippingAddress?.district %>, <%= order.shippingAddress?.state %> - <%= order.shippingAddress?.pincode %>
+      </p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Unit Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% order.items.forEach(item => { %>
+          <tr>
+            <td><%= item.name %></td>
+            <td><%= item.quantity %></td>
+            <td>₹<%= item.price.toFixed(2) %></td>
+            <td>₹<%= (item.price * item.quantity).toFixed(2) %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <div class="totals">
+      <p><strong>Subtotal:</strong> ₹<%= order.subtotal?.toFixed(2) || order.totalAmount.toFixed(2) %></p>
+      <% if (order.couponUsed && order.couponUsed.discountAmount > 0) { %>
+        <p><strong>Discount:</strong> -₹<%= order.couponUsed.discountAmount.toFixed(2) %></p>
+      <% } %>
+      <p><strong>Total Amount:</strong> ₹<%= order.totalAmount.toFixed(2) %></p>
+    </div>
+
+    <div class="footer">
+      This is a computer-generated invoice. No signature required.<br>
+      Thank you for shopping with <strong>Hofmaan</strong>!
+    </div>
+
+  </div>
+</body>
+</html>

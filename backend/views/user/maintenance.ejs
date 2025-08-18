@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>We'll Be Back Soon!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: #f7f7f7;
+            color: #222;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .maintenance-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 40px 32px 32px 32px;
+            max-width: 400px;
+            text-align: center;
+        }
+        .maintenance-logo {
+            margin-bottom: 18px;
+        }
+        .maintenance-logo img {
+            width: 160px;
+            max-width: 80%;
+            height: auto;
+            display: block;
+            margin: 0 auto 0 auto;
+        }
+        .maintenance-container h1 {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            color: #e67e22;
+        }
+        .maintenance-container p {
+            font-size: 1.1rem;
+            margin-bottom: 28px;
+        }
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+        .countdown-item {
+            background: #f1f1f1;
+            border-radius: 8px;
+            padding: 12px 10px;
+            min-width: 54px;
+        }
+        .countdown-item span {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e67e22;
+        }
+        .countdown-item label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .maintenance-footer {
+            margin-top: 18px;
+            font-size: 0.95rem;
+            color: #aaa;
+        }
+        .lottie-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        @media (max-width: 500px) {
+            .maintenance-container {
+                padding: 24px 8px 18px 8px;
+            }
+            .lottie-wrapper {
+                margin-bottom: 10px;
+            }
+            .maintenance-logo img {
+                width: 120px;
+            }
+        }
+    </style>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+</head>
+<body>
+    <div class="maintenance-container">
+        <div class="maintenance-logo">
+            <img src="/images/logo.png" alt="Hofmaan Logo">
+        </div>
+        <div class="lottie-wrapper">
+            <dotlottie-wc src="https://lottie.host/3a52ccd0-da51-48f6-890a-1705eee6c7ac/p40i7NXhSD.lottie" style="width: 400px;height: 400px" speed="1" autoplay loop></dotlottie-wc>
+        </div>
+        <h1>We'll Be Back Soon!</h1>
+        <p>
+            Our website is currently undergoing scheduled maintenance.<br>
+            We appreciate your patience and will be back online shortly.<br>
+            Please check back soon!
+        </p>
+        <div class="countdown" id="countdown">
+            <div class="countdown-item">
+                <span id="days">00</span>
+                <label>Days</label>
+            </div>
+            <div class="countdown-item">
+                <span id="hours">00</span>
+                <label>Hours</label>
+            </div>
+            <div class="countdown-item">
+                <span id="minutes">00</span>
+                <label>Minutes</label>
+            </div>
+            <div class="countdown-item">
+                <span id="seconds">00</span>
+                <label>Seconds</label>
+            </div>
+        </div>
+        <div class="maintenance-footer">
+            &copy; <%= new Date().getFullYear() %> Hofmaan. Thank you for your understanding!
+        </div>
+    </div>
+    <script>
+        // Set your maintenance end date/time here (YYYY-MM-DDTHH:MM:SS)
+        // Example: 2024-06-10T12:00:00
+        var maintenanceEnd = new Date();
+        maintenanceEnd.setHours(maintenanceEnd.getHours() + 6); // 6 hours from now
+
+        function updateCountdown() {
+            var now = new Date();
+            var diff = maintenanceEnd - now;
+
+            if (diff <= 0) {
+                document.getElementById('countdown').innerHTML = "<b>We're back online!</b>";
+                return;
+            }
+
+            var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            var minutes = Math.floor((diff / (1000 * 60)) % 60);
+            var seconds = Math.floor((diff / 1000) % 60);
+
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>

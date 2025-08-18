@@ -1,0 +1,2207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+
+<head>
+    <!-- Basic Page Needs -->
+    <meta charset="utf-8">
+    <title>Hofmaan - Admin Products</title>
+
+    <meta name="author" content="trivlogic">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- Theme Style -->
+    <link rel="stylesheet" type="text/css" href="/admin-css/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/animation.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap-select.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <!-- Font -->
+    <link rel="stylesheet" href="/admin-font/fonts.css">
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="/admin-icon/style.css">
+
+    <!-- Favicon and Touch Icons  -->
+    <link rel="shortcut icon" href="/images/logo-2.png">
+    <link rel="apple-touch-icon-precomposed" href="/images/logo-2.png">
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: auto;
+            background: rgba(0, 0, 0, 0.5);
+            transition: background 0.2s;
+        }
+
+        .modal-content {
+            background: #fff;
+            margin: 40px auto;
+            padding: 32px 28px 24px 28px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+            max-width: 900px;
+            width: 90%;
+            position: relative;
+            animation: modalFadeIn 0.25s;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                transform: translateY(-40px) scale(0.98);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            color: #888;
+            position: absolute;
+            right: 18px;
+            top: 14px;
+            font-size: 2rem;
+            font-weight: 700;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close:hover {
+            color: #222;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #cfd8dc;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: #fafbfc;
+            transition: border 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #4CAF50;
+            outline: none;
+            background: #fff;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .form-row .form-group {
+            flex: 1 1 0;
+            min-width: 180px;
+        }
+
+        /* Stepper Styles */
+        .product-stepper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .step-btn {
+            background: #f5f5f5;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 18px;
+            font-weight: 500;
+            color: #555;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .step-btn.active,
+        .step-btn:focus {
+            background: #4CAF50;
+            color: #fff;
+        }
+
+        /* Variant Styles */
+        .variant-section {
+            margin-bottom: 22px;
+            padding: 14px 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .variant-section h6 {
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .color-option,
+        .size-item {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .btn.btn-sm.btn-danger,
+        .btn-remove-variant,
+        .btn-remove-size {
+            background: #e53935;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 12px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+
+        .btn.btn-sm.btn-danger:hover,
+        .btn-remove-variant:hover,
+        .btn-remove-size:hover {
+            background: #b71c1c;
+        }
+
+        /* Image Preview Styles */
+        .image-preview,
+        .existing-images,
+        .variant-images-preview,
+        .existing-variant-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .image-preview img,
+        .existing-image img,
+        .variant-images-preview img {
+            max-width: 90px;
+            max-height: 90px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            object-fit: cover;
+            background: #f5f5f5;
+        }
+
+        .existing-image,
+        .existing-variant-images .existing-image {
+            position: relative;
+        }
+
+        .existing-image button {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            background: #e53935;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            transition: background 0.18s;
+        }
+
+        .existing-image button:hover {
+            background: #b71c1c;
+        }
+
+        /* Table Styles for Variants */
+        .variants-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        .variants-table th,
+        .variants-table td {
+            border: 1px solid #e0e0e0;
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 0.98rem;
+        }
+
+        .variants-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        /* Form Actions */
+        .form-actions,
+        .step-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-submit,
+        .btn.btn-primary {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+
+        .btn-submit:hover,
+        .btn.btn-primary:hover {
+            background: #388e3c;
+        }
+
+        .btn-cancel,
+        .btn.btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+
+        .btn-cancel:hover,
+        .btn.btn-secondary:hover {
+            background: #bdbdbd;
+        }
+
+        /* Checkbox Styles */
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-right: 18px;
+            font-weight: 500;
+            color: #444;
+        }
+
+        /* Miscellaneous */
+        .required {
+            color: #e53935;
+            font-size: 1.1em;
+            margin-left: 2px;
+        }
+
+        .review-section {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 18px 16px;
+            margin-bottom: 18px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .review-block {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .offer-price {
+            color: #388e3c;
+            font-weight: 600;
+        }
+
+        .status-label {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .status-label.active {
+            background: #e8f5e9;
+            color: #388e3c;
+            border: 1px solid #388e3c;
+        }
+
+        .status-label.inactive {
+            background: #ffebee;
+            color: #b71c1c;
+            border: 1px solid #b71c1c;
+        }
+
+        .no-image {
+            color: #bdbdbd;
+            font-style: italic;
+            font-size: 0.98em;
+        }
+    </style>
+     <style>
+        .product-list-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            justify-content: flex-start;
+            margin-bottom: 24px;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 28px 24px 20px 24px;
+            width: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            position: relative;
+            transition: box-shadow 0.2s;
+            border: 1px solid #f0f0f0;
+        }
+        .product-card:hover {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+            border-color: #e0e0e0;
+        }
+        .product-card .product-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            background: #fafbfc;
+            display: block;
+        }
+        .product-card .no-image {
+            width: 100px;
+            height: 100px;
+            background: #f3f3f3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            color: #bbb;
+            font-size: 15px;
+            border: 1px dashed #e0e0e0;
+        }
+        .product-card .product-title {
+            font-weight: 700;
+            font-size: 1.15em;
+            margin-bottom: 2px;
+            color: #222;
+            letter-spacing: 0.01em;
+        }
+        .product-card .product-meta {
+            font-size: 0.97em;
+            color: #666;
+            margin-bottom: 2px;
+        }
+        .product-card .status-label {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.93em;
+            font-weight: 600;
+            margin-left: 4px;
+            background: #f6f6f6;
+        }
+        .product-card .status-label.active {
+            color: #27ae60;
+            background: #eafaf1;
+            border: 1px solid #b6e7c9;
+        }
+        .product-card .status-label.inactive {
+            color: #e74c3c;
+            background: #fbeaea;
+            border: 1px solid #f5b7b1;
+        }
+        .product-card .product-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .product-card .product-actions .btn {
+            min-width: 36px;
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: background 0.15s, color 0.15s;
+        }
+        .product-card .product-actions .btn-primary {
+            background: #007bff;
+            color: #fff;
+            border: none;
+        }
+        .product-card .product-actions .btn-primary:hover {
+            background: #0056b3;
+        }
+        .product-card .product-actions .btn-warning {
+            background: #fff8e1;
+            color: #e67e22;
+            border: 1px solid #ffe0b2;
+        }
+        .product-card .product-actions .btn-warning:hover {
+            background: #ffe0b2;
+            color: #b35400;
+        }
+        .product-card .product-actions .btn-danger {
+            background: #fff0f0;
+            color: #e74c3c;
+            border: 1px solid #f5b7b1;
+        }
+        .product-card .product-actions .btn-danger:hover {
+            background: #fbeaea;
+            color: #b71c1c;
+        }
+        .product-card .product-pricing {
+            font-size: 1.08em;
+            margin-bottom: 4px;
+        }
+        .product-card .product-pricing .base-price {
+            font-weight: 600;
+            color: #222;
+        }
+        .product-card .product-pricing .sale-price {
+            margin-left: 10px;
+            color: #e67e22;
+            font-weight: 600;
+        }
+        .product-card .product-variants ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+        .product-card .product-variants li {
+            margin-bottom: 2px;
+        }
+        .product-card .product-variants img {
+            width: 22px;
+            height: 22px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-left: 4px;
+            vertical-align: middle;
+            border: 1px solid #eee;
+        }
+        .product-card .product-tags {
+            font-size: 0.97em;
+            color: #666;
+            margin-top: 2px;
+        }
+        .product-card .product-tags span {
+            margin-right: 10px;
+        }
+        .product-card .product-description {
+            font-size: 0.97em;
+            color: #555;
+            margin-top: 6px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 7px 10px;
+        }
+        .product-card .product-reviews {
+            font-size: 0.97em;
+            color: #666;
+            margin-top: 6px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 7px 10px;
+        }
+        .product-card .product-reviews ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+        .product-card .product-reviews li {
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+
+<body class="body">
+
+    <!-- #wrapper -->
+    <div id="wrapper">
+        <!-- #page -->
+        <div id="page" class="">
+            <!-- layout-wrap -->
+            <div class="layout-wrap loader-off">
+                <!-- preload -->
+                <div id="preload" class="preload-container">
+                    <div class="preloading">
+                        <span></span>
+                    </div>
+                </div>
+                <!-- /preload -->
+                <!-- section-menu-left -->
+                <div class="section-menu-left">
+                    <div class="box-logo">
+                        <a href="/admin/dashboard" id="site-logo-inner">
+                            <img style="width:60px;" id="logo_header" alt="logo" src="/images/logo.png"
+                                data-light="/images/logo.png" data-dark="/images/logo.png">
+                        </a>
+                        <div class="button-show-hide">
+                            <i class="icon-chevron-left"></i>
+                        </div>
+                    </div>
+                    <div class="section-menu-left-wrap">
+                        <div class="center">
+                            <div class="center-item">
+                             <ul class="">
+                                    <li class="menu-item ">
+                                        <a href="/admin/dashboard" class="">
+                                            <div class="icon">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M12.2652 3.57566C12.1187 3.42921 11.8813 3.42921 11.7348 3.57566L5.25 10.0605V19.8748C5.25 20.0819 5.41789 20.2498 5.625 20.2498H9V16.1248C9 15.0893 9.83947 14.2498 10.875 14.2498H13.125C14.1605 14.2498 15 15.0893 15 16.1248V20.2498H18.375C18.5821 20.2498 18.75 20.0819 18.75 19.8748V10.0605L12.2652 3.57566ZM20.25 11.5605L21.2197 12.5302C21.5126 12.8231 21.9874 12.8231 22.2803 12.5302C22.5732 12.2373 22.5732 11.7624 22.2803 11.4695L13.3258 2.51499C12.5936 1.78276 11.4064 1.78276 10.6742 2.515L1.71967 11.4695C1.42678 11.7624 1.42678 12.2373 1.71967 12.5302C2.01256 12.8231 2.48744 12.8231 2.78033 12.5302L3.75 11.5605V19.8748C3.75 20.9104 4.58947 21.7498 5.625 21.7498H18.375C19.4105 21.7498 20.25 20.9104 20.25 19.8748V11.5605ZM13.5 20.2498H10.5V16.1248C10.5 15.9177 10.6679 15.7498 10.875 15.7498H13.125C13.3321 15.7498 13.5 15.9177 13.5 16.1248V20.2498Z"
+                                                        fill="#111111" />
+                                                </svg>
+                                            </div>
+                                            <div class="text">Admin Dashboard</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item active">
+                                        <a href="/admin/products" class="menu-item-button">
+                                            <div class="icon"><i class="icon-file-plus"></i></div>
+                                            <div class="text">Product Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/category" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Category Management</div>
+                                        </a>
+                                      
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="/admin/coupons" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Coupons Management</div>
+                                        </a>
+                                      
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/orders" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Orders Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/users" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">User Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin-banners" class="menu-item-button">
+                                            <div class="icon">
+                                                <svg width="24" height="22" viewBox="0 0 22 18" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M0.5 1.875C0.5 0.839466 1.33947 0 2.375 0H19.625C20.6605 0 21.5 0.839466 21.5 1.875V3.375C21.5 4.29657 20.8351 5.06285 19.9589 5.22035L19.3733 15.1762C19.28 16.7619 17.9669 18 16.3785 18H5.62154C4.03311 18 2.71999 16.7619 2.62671 15.1762L2.04108 5.22035C1.16485 5.06285 0.5 4.29657 0.5 3.375V1.875ZM2.75659 3.75C2.75266 3.74997 2.74873 3.74997 2.74479 3.75H2.375C2.16789 3.75 2 3.58211 2 3.375V1.875C2 1.66789 2.16789 1.5 2.375 1.5H19.625C19.8321 1.5 20 1.66789 20 1.875V3.375C20 3.58211 19.8321 3.75 19.625 3.75H19.2552C19.2513 3.74997 19.2473 3.74997 19.2434 3.75H2.75659ZM3.54541 5.25L4.12412 15.0881C4.17076 15.8809 4.82732 16.5 5.62154 16.5H16.3785C17.1727 16.5 17.8292 15.8809 17.8759 15.0881L18.4546 5.25H3.54541ZM8.24976 8.25C8.24976 7.83579 8.58554 7.5 8.99976 7.5H12.9998C13.414 7.5 13.7498 7.83579 13.7498 8.25C13.7498 8.66421 13.414 9 12.9998 9H8.99976C8.58554 9 8.24976 8.66421 8.24976 8.25Z"
+                                                        fill="#111111" />
+                                                </svg>
+                                            </div>
+                                            <div class="text">Banner Management</div>
+                                        </a>
+                                   
+                                    </li>
+                                  
+                                    <li class="menu-item">
+                                        <a href="/admin-blogs" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-users"></i></div>
+                                            <div class="text">Blogs Management</div>
+                                        </a>
+                                      
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin-testimonials" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-star-o"></i></div>
+                                            <div class="text">Testimonials Management</div>
+                                        </a>
+                                       
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="/auth/admin-logout" class="">
+                                            <div class="icon">
+                                                <svg width="24" height="22" viewBox="0 0 20 20" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M8.125 18.6875C8.125 18.903 8.0394 19.1097 7.88702 19.262C7.73465 19.4144 7.52799 19.5 7.3125 19.5H1.625C1.19402 19.5 0.780698 19.3288 0.475951 19.024C0.171205 18.7193 0 18.306 0 17.875V1.625C0 1.19402 0.171205 0.780698 0.475951 0.475951C0.780698 0.171205 1.19402 0 1.625 0H7.3125C7.52799 0 7.73465 0.0856026 7.88702 0.237976C8.0394 0.390349 8.125 0.597012 8.125 0.8125C8.125 1.02799 8.0394 1.23465 7.88702 1.38702C7.73465 1.5394 7.52799 1.625 7.3125 1.625H1.625V17.875H7.3125C7.52799 17.875 7.73465 17.9606 7.88702 18.113C8.0394 18.2653 8.125 18.472 8.125 18.6875ZM19.2623 9.17516L15.1998 5.11266C15.0474 4.9602 14.8406 4.87455 14.625 4.87455C14.4094 4.87455 14.2026 4.9602 14.0502 5.11266C13.8977 5.26511 13.812 5.47189 13.812 5.6875C13.812 5.90311 13.8977 6.10989 14.0502 6.26234L16.7263 8.9375H7.3125C7.09701 8.9375 6.89035 9.0231 6.73798 9.17548C6.5856 9.32785 6.5 9.53451 6.5 9.75C6.5 9.96549 6.5856 10.1722 6.73798 10.3245C6.89035 10.4769 7.09701 10.5625 7.3125 10.5625H16.7263L14.0502 13.2377C13.8977 13.3901 13.812 13.5969 13.812 13.8125C13.812 14.0281 13.8977 14.2349 14.0502 14.3873C14.2026 14.5398 14.4094 14.6255 14.625 14.6255C14.8406 14.6255 15.0474 14.5398 15.1998 14.3873L19.2623 10.3248C19.3379 10.2494 19.3978 10.1598 19.4387 10.0611C19.4796 9.9625 19.5006 9.85678 19.5006 9.75C19.5006 9.64322 19.4796 9.5375 19.4387 9.43886C19.3978 9.34023 19.3379 9.25062 19.2623 9.17516Z"
+                                                        fill="#111111" />
+                                                </svg>
+                                            </div>
+                                            <div class="text">Log out</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /section-menu-left -->
+                <!-- section-content-right -->
+                <div class="section-content-right">
+                    <!-- header-dashboard -->
+                    <div class="header-dashboard">
+                        <div class="wrap">
+                            <div class="header-left">
+                                <a href="/admin/dashboard">
+                                    <img style="width: 50px;" id="logo_header_mobile" alt="" src="/images/logo.png"
+                                        data-light="/images/logo.png" data-dark="/images/logo.png">
+                                </a>
+                                <div class="button-show-hide">
+                                    <i class="icon-chevron-left"></i>
+                                </div>
+                            </div>
+                            <div class="header-grid">
+                                <div class="header-item button-dark-light">
+                                    <i class="icon-moon"></i>
+                                </div>
+                                <div class="header-item button-zoom-maximize">
+                                    <div class="">
+                                        <i class="icon-maximize"></i>
+                                    </div>
+                                </div>
+                                <div class="popup-wrap user type-header">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="header-user wg-user">
+                                                <span class="image">
+                                                    <img src="/admin-images/avatar/user-1.png" alt="">
+                                                </span>
+                                                <span class="flex flex-column">
+                                                    <span class="body-text text-main-dark">Hofmaan</span>
+                                                    <span class="text-tiny">Admin</span>
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end has-content"
+                                            aria-labelledby="dropdownMenuButton3">
+                                            <li>
+                                                <a href="#" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-headphones"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Support</div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/logout" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-log-out"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Log out</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /header-dashboard -->
+                    <!-- main-content -->
+                    <div class="main-content">
+                        <div class="main-content-inner">
+                            <div class="main-content-wrap">
+                                <div class="flex items-center flex-wrap justify-between gap20 mb-30">
+                                    <h3>All Products</h3>
+                                    <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                                        <li>
+                                            <a href="/admin/dashboard">
+                                                <div class="text-tiny">Dashboard</div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <i class="icon-chevron-right"></i>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <div class="text-tiny">Product</div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <i class="icon-chevron-right"></i>
+                                        </li>
+                                        <li>
+                                            <div class="text-tiny">All Products</div>
+                                        </li>
+                                    </ul>
+                                    <button type="button" class="btn btn-primary" id="addProductBtn"
+                                        onclick="openProductModal()">
+                                        <i class="icon-plus"></i> Add Product
+                                    </button>
+                                </div>
+                                <div class="product-filters"
+                                style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; margin-bottom: 28px; background: #f8f9fa; border-radius: 8px; padding: 18px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
+                                <form id="productFilterForm" method="GET" action="/admin/products"
+                                    style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap; width: 100%; max-width: 700px;">
+                                    <!-- Category Filter -->
+                                    <div style="display: flex; flex-direction: column;">
+                                        <label for="categoryFilter" style="font-size: 0.97em; color: #555; margin-bottom: 3px;">Category</label>
+                                        <select name="category" id="categoryFilter" class="form-control"
+                                            style="min-width: 180px; border-radius: 6px; border: 1px solid #ddd; padding: 6px 10px;">
+                                            <option value="">All Categories</option>
+                                            <% if (categories && categories.length > 0) { %>
+                                                <% categories.forEach(function(cat) { %>
+                                                    <option value="<%= cat._id %>" <%= (typeof selectedCategory !== 'undefined' && selectedCategory == cat._id) ? 'selected' : '' %>><%= cat.name %></option>
+                                                <% }); %>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                    <!-- Search Bar -->
+                                    <div style="display: flex; flex-direction: column; flex: 1; min-width: 220px;">
+                                        <label for="productSearch" style="font-size: 0.97em; color: #555; margin-bottom: 3px;">Search</label>
+                                        <input type="text" name="search" id="productSearch" class="form-control"
+                                            placeholder="Search products..." value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+                                            style="border-radius: 6px; border: 1px solid #ddd; padding: 6px 12px; width: 100%;">
+                                    </div>
+                                    <div style="display: flex; align-items: flex-end; gap: 8px; margin-top: 20px;">
+                                        <button type="submit" class="btn btn-primary"
+                                            style="padding: 7px 22px; border-radius: 6px; font-weight: 500; font-size: 1em;">
+                                            <i class="icon-search"></i> Search
+                                        </button>
+                                        <% if ((typeof selectedCategory !== 'undefined' && selectedCategory) || (typeof searchQuery !== 'undefined' && searchQuery)) { %>
+                                            <a href="/admin/products" class="btn btn-light"
+                                                style="padding: 7px 18px; border-radius: 6px; font-weight: 500; font-size: 1em; border: 1px solid #ddd;">
+                                                Reset
+                                            </a>
+                                        <% } %>
+                                    </div>
+                                </form>
+                            </div>
+                               
+                                <div class="product-list-cards-container">
+                                    <% if (products && products.length > 0) { %>
+                                        <% products.forEach(function(product) { %>
+                                            <div class="product-card">
+                                                <div style="display: flex; gap: 18px;">
+                                                    <div style="flex-shrink: 0;">
+                                                        <% if (product.images && product.images.length > 0) { %>
+                                                            <img src="<%= product.images[0] %>" alt="Product Image" class="product-image">
+                                                        <% } else { %>
+                                                            <div class="no-image">
+                                                                <i class="icon-image" style="font-size: 1.5em; margin-right: 6px;"></i>
+                                                                No Image
+                                                            </div>
+                                                        <% } %>
+                                                    </div>
+                                                    <div style="flex: 1;">
+                                                        <div class="product-title">
+                                                            <%= product.name %>
+                                                        </div>
+                                                        <div class="product-meta">
+                                                            <span style="color:#888;">Category:</span>
+                                                            <span>
+                                                                <%= product.category && product.category.name ?
+                                                                    product.category.name : (product.category || '-' )
+                                                                %>
+                                                            </span>
+                                                        </div>
+                                                        <div class="product-meta">
+                                                            <span style="color:#888;">Subcategory:</span>
+                                                            <span>
+                                                                <% 
+                                                                    let subcategoryName = '-';
+                                                                    if (product.category &&
+                                                                        product.category.subCategories &&
+                                                                        product.subcategory) {
+                                                                        const foundSub = product.category.subCategories.find(function(sub) {
+                                                                            return (sub._id && sub._id.toString && sub._id.toString() === product.subcategory.toString())
+                                                                                || (sub._id == product.subcategory);
+                                                                        });
+                                                                        if (foundSub && foundSub.name) {
+                                                                            subcategoryName = foundSub.name;
+                                                                        }
+                                                                    }
+                                                                %>
+                                                                <%= subcategoryName %>
+                                                            </span>
+                                                        </div>
+                                                        <div class="product-meta">
+                                                            <span style="color:#888;">Status:</span>
+                                                            <span class="status-label <%= product.isActive ? 'active' : 'inactive' %>">
+                                                                <%= product.isActive ? 'Active' : 'Inactive' %>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div style="margin-top: 8px;">
+                                                    <div class="product-pricing">
+                                                        <span>Price: </span>
+                                                        <span class="base-price">₹ <%= product.basePrice %></span>
+                                                        <span class="sale-price">
+                                                            Sales Price: ₹ <%= product.salePrice %>
+                                                        </span>
+                                                    </div>
+                                                    <% if (product.stock !== undefined) { %>
+                                                        <div class="product-meta">
+                                                            <span style="color:#888;">Stock:</span>
+                                                            <span>
+                                                                <%= product.stock %>
+                                                            </span>
+                                                        </div>
+                                                    <% } %>
+                                                    <% if (product.hasColorVariants && product.colorVariants && product.colorVariants.length > 0) { %>
+                                                        <div class="product-variants">
+                                                            <span style="color:#888;">Color Variants:</span>
+                                                            <ul>
+                                                                <% product.colorVariants.forEach(function(variant) { %>
+                                                                    <li>
+                                                                        <span style="font-weight: 500;">
+                                                                            <%= variant.color %>
+                                                                        </span>
+                                                                        <% if (variant.image) { %>
+                                                                            <img src="<%= variant.image %>"
+                                                                                alt="<%= variant.color %>">
+                                                                        <% } %>
+                                                                        <span style="color: #888; margin-left: 6px;">Stock:
+                                                                            <%= variant.stock %>
+                                                                        </span>
+                                                                    </li>
+                                                                <% }); %>
+                                                            </ul>
+                                                        </div>
+                                                    <% } %>
+                                                    <% if (product.hasSizeVariants && product.sizeVariants && product.sizeVariants.length > 0) { %>
+                                                        <div class="product-variants">
+                                                            <span style="color:#888;">Size Variants:</span>
+                                                            <ul>
+                                                                <% product.sizeVariants.forEach(function(variant) { %>
+                                                                    <li>
+                                                                        <span style="font-weight: 500;">
+                                                                            <%= variant.size %>
+                                                                        </span>
+                                                                        <span style="color: #888; margin-left: 6px;">Stock:
+                                                                            <%= variant.stock %>
+                                                                        </span>
+                                                                    </li>
+                                                                <% }); %>
+                                                            </ul>
+                                                        </div>
+                                                    <% } %>
+                                                    <% if (product.description) { %>
+                                                        <div class="product-description">
+                                                            <span style="color:#888;">Description:</span>
+                                                            <span>
+                                                                <%= product.description %>
+                                                            </span>
+                                                        </div>
+                                                    <% } %>
+                                                    <% if (product.moreDetails) { %>
+                                                        <div class="product-description">
+                                                            <span style="color:#888;">More Details:</span>
+                                                            <span>
+                                                                <%= product.moreDetails %>
+                                                            </span>
+                                                        </div>
+                                                    <% } %>
+                                                    <% if (product.productDetails) { %>
+                                                        <div class="product-meta">
+                                                            <span style="color:#888;">Product Details:</span>
+                                                            <ul style="margin: 0; padding-left: 18px;">
+                                                                <% if (product.productDetails.articleNo) { %>
+                                                                    <li><b>Article No:</b> <%= product.productDetails.articleNo %></li>
+                                                                <% } %>
+                                                                <% if (product.productDetails.brand) { %>
+                                                                    <li><b>Brand:</b> <%= product.productDetails.brand %></li>
+                                                                <% } %>
+                                                                <% if (product.productDetails.productType) { %>
+                                                                    <li><b>Product Type:</b> <%= product.productDetails.productType %></li>
+                                                                <% } %>
+                                                                <% if (product.productDetails.soleMaterial) { %>
+                                                                    <li><b>Sole Material:</b> <%= product.productDetails.soleMaterial %></li>
+                                                                <% } %>
+                                                                <% if (product.productDetails.productCollection) { %>
+                                                                    <li><b>productCollection:</b> <%= product.productDetails.productCollection %></li>
+                                                                <% } %>
+                                                            </ul>
+                                                        </div>
+                                                    <% } %>
+                                                    <div class="product-tags">
+                                                        <span><b>Best Deals:</b> <%= product.bestDeals ? 'Yes' : 'No' %></span>
+                                                        <span><b>Deals of the Day:</b> <%= product.dealsOfTheDay ? 'Yes' : 'No' %></span>
+                                                        <span><b>New Arrivals:</b> <%= product.newArrivals ? 'Yes' : 'No' %></span>
+                                                    </div>
+                                                    <div class="product-tags">
+                                                        <span><b>Best Seller:</b> <%= product.bestSeller ? 'Yes' : 'No' %></span>
+                                                        <span><b>Top Rated:</b> <%= product.topRated ? 'Yes' : 'No' %></span>
+                                                    </div>
+                                                    <% if (product.reviews && product.reviews.length > 0) { %>
+                                                        <div class="product-reviews">
+                                                            <span style="color:#888;">Reviews (<%= product.reviews.length %>):</span>
+                                                            <ul>
+                                                                <% product.reviews.slice(0, 2).forEach(function(review) { %>
+                                                                    <li>
+                                                                        <span style="font-weight: 500;">
+                                                                            <%= review.name %>
+                                                                        </span>
+                                                                        <span style="color: #e67e22; margin-left: 6px;">Rating:
+                                                                            <%= review.rating %>/5
+                                                                        </span>
+                                                                        <span style="margin-left: 8px;">
+                                                                            <%= review.review %>
+                                                                        </span>
+                                                                    </li>
+                                                                <% }); %>
+                                                                <% if (product.reviews.length > 2) { %>
+                                                                    <li style="color: #888;">
+                                                                        ...and <%= product.reviews.length - 2 %> more
+                                                                    </li>
+                                                                <% } %>
+                                                            </ul>
+                                                        </div>
+                                                    <% } %>
+                                                </div>
+                                                <div class="product-actions">
+                                                    <button class="btn btn-sm btn-primary" title="Edit"
+                                                        onclick="openProductModal('<%= product._id %>')">
+                                                        <i class="icon-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-warning" title="Toggle Status"
+                                                        onclick="toggleProductStatus('<%= product._id %>', <%= product.isActive ? 'false' : 'true' %>)">
+                                                        <i class="icon-switch"></i>
+                                                        <span style="margin-left: 4px; font-size: 0.97em;">
+                                                            <%= product.isActive ? 'Active' : 'Inactive' %>
+                                                        </span>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-danger" title="Delete"
+                                                        onclick="deleteProduct('<%= product._id %>')">
+                                                        <i class="icon-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <div
+                                            style="width: 100%; text-align: center; color: #888; font-size: 1.15em; padding: 60px 0; background: #f8f9fa; border-radius: 12px;">
+                                            <i class="icon-box" style="font-size: 2em; color: #ccc; margin-bottom: 8px; display: block;"></i>
+                                            No products found.
+                                        </div>
+                                    <% } %>
+                                </div>
+
+                                <% if (totalPages && totalPages > 1) { %>
+                                    <nav aria-label="Product pagination" style="margin-top: 32px; margin-bottom: 10px; display: flex; justify-content: center;">
+                                        <ul class="pagination" style="display: flex; gap: 6px; list-style: none; padding: 0;">
+                                            <% 
+                                                function buildPageUrl(page) {
+                                                    let params = [];
+                                                    if (typeof searchQuery !== 'undefined' && searchQuery) {
+                                                        params.push('search=' + encodeURIComponent(searchQuery));
+                                                    }
+                                                    if (typeof selectedCategory !== 'undefined' && selectedCategory) {
+                                                        params.push('category=' + encodeURIComponent(selectedCategory));
+                                                    }
+                                                    if (typeof limit !== 'undefined' && limit) {
+                                                        params.push('limit=' + encodeURIComponent(limit));
+                                                    }
+                                                    params.push('page=' + page);
+                                                    return '/admin/products' + (params.length ? '?' + params.join('&') : '');
+                                                }
+                                                let startPage = Math.max(1, currentPage - 2);
+                                                let endPage = Math.min(totalPages, currentPage + 2);
+                                                if (endPage - startPage < 4) {
+                                                    if (startPage === 1) {
+                                                        endPage = Math.min(totalPages, startPage + 4);
+                                                    } else if (endPage === totalPages) {
+                                                        startPage = Math.max(1, endPage - 4);
+                                                    }
+                                                }
+                                            %>
+                                            <li>
+                                                <a class="page-link <%= currentPage === 1 ? 'disabled' : '' %>" 
+                                                    href="<%= currentPage === 1 ? '#' : buildPageUrl(currentPage - 1) %>"
+                                                    style="padding: 6px 14px; border-radius: 5px; border: 1px solid #ddd; background: #f8f9fa; color: #333; text-decoration: none; <%= currentPage === 1 ? 'pointer-events: none; opacity: 0.5;' : '' %>">
+                                                    &laquo; Prev
+                                                </a>
+                                            </li>
+                                            <% for (let i = startPage; i <= endPage; i++) { %>
+                                                <li>
+                                                    <a class="page-link <%= currentPage === i ? 'active' : '' %>"
+                                                        href="<%= buildPageUrl(i) %>"
+                                                        style="padding: 6px 14px; border-radius: 5px; border: 1px solid #ddd; background: <%= currentPage === i ? '#007bff' : '#f8f9fa' %>; color: <%= currentPage === i ? '#fff' : '#333' %>; text-decoration: none; font-weight: <%= currentPage === i ? 'bold' : 'normal' %>;">
+                                                        <%= i %>
+                                                    </a>
+                                                </li>
+                                            <% } %>
+                                            <li>
+                                                <a class="page-link <%= currentPage === totalPages ? 'disabled' : '' %>" 
+                                                    href="<%= currentPage === totalPages ? '#' : buildPageUrl(currentPage + 1) %>"
+                                                    style="padding: 6px 14px; border-radius: 5px; border: 1px solid #ddd; background: #f8f9fa; color: #333; text-decoration: none; <%= currentPage === totalPages ? 'pointer-events: none; opacity: 0.5;' : '' %>">
+                                                    Next &raquo;
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                <% } %>
+
+                                <!-- Product Modal for Create/Edit -->
+                                <div id="productModal" class="modal" style="display:none;">
+                                    <div class="modal-content" style="max-width: 900px;">
+                                        <span class="close" onclick="closeProductModal()">&times;</span>
+                                        <h4 id="modalTitle">Add Product</h4>
+                                        <form id="productForm" enctype="multipart/form-data" autocomplete="off">
+                                            <input type="hidden" id="productId" name="_id" value="">
+
+                                            <!-- Stepper Navigation -->
+                                            <div class="product-stepper">
+                                                <button type="button" class="step-btn active" data-step="1">1. Basic Info</button>
+                                                <button type="button" class="step-btn" data-step="2">2. Images</button>
+                                                <button type="button" class="step-btn" data-step="3">3. Variants</button>
+                                                <button type="button" class="step-btn" data-step="4">4. Product Details</button>
+                                                <button type="button" class="step-btn" data-step="5">5. Reviews</button>
+                                                <button type="button" class="step-btn" data-step="6">6. Review & Save</button>
+                                            </div>
+
+                                            <!-- Step 1: Basic Info -->
+                                            <div class="form-section product-step" data-step="1">
+                                                <h5>Basic Information</h5>
+                                                <div class="form-row">
+                                                    <div class="form-group" style="flex: 2;">
+                                                        <label for="name">Product Name <span class="required">*</span></label>
+                                                        <input type="text" id="name" name="name" required placeholder="Enter product name">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="basePrice">Base Price <span class="required">*</span></label>
+                                                        <input type="number" id="basePrice" name="basePrice" min="0" step="0.01" required placeholder="0.00">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="salePrice">Sale Price</label>
+                                                        <input type="number" id="salePrice" name="salePrice" min="0" step="0.01" placeholder="0.00">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="baseStock">Base Stock</label>
+                                                        <input type="number" id="stock" name="stock" min="0" step="0.01" placeholder="0.00">
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group" style="flex: 2;">
+                                                        <label for="description">Description <span class="required">*</span></label>
+                                                        <textarea id="description" name="description" rows="3" required placeholder="Describe the product"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group">
+                                                        <label for="category">Category <span class="required">*</span></label>
+                                                        <select id="category" name="category" required>
+                                                            <option value="">Select Category</option>
+                                                            <% categories.forEach(category=> { %>
+                                                                <option value="<%= category._id %>" data-subs='<%- JSON.stringify(category.subCategories || []) %>'>
+                                                                    <%= category.name %>
+                                                                </option>
+                                                            <% }); %>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="subcategory">Subcategory</label>
+                                                        <select id="subcategory" name="subcategory" disabled>
+                                                            <option value="">Select Subcategory</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="status">Status <span class="required">*</span></label>
+                                                        <select id="status" name="status" required>
+                                                            <option value="active">Active</option>
+                                                            <option value="inactive">Inactive</option>
+                                                            <option value="draft">Draft</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            <input type="checkbox" id="bestDeals" name="bestDeals">
+                                                            Best Deals
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>
+                                                            <input type="checkbox" id="dealsOfTheDay" name="dealsOfTheDay">
+                                                            Deals of the day
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>
+                                                            <input type="checkbox" id="newArrivals" name="newArrivals">
+                                                            New Arrivals
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>
+                                                            <input type="checkbox" id="bestSeller" name="bestSeller">
+                                                            Best Seller
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>
+                                                            <input type="checkbox" id="topRated" name="topRated">
+                                                            Top Rated
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="moreDetails">Additional Details</label>
+                                                    <textarea id="moreDetails" name="moreDetails" rows="2" placeholder="Any extra info"></textarea>
+                                                </div>
+                                                <div class="form-actions step-actions">
+                                                    <button type="button" class="btn btn-primary" onclick="goToStep(2)">Next</button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Step 2: Images -->
+                                            <div class="form-section product-step" data-step="2" style="display:none;">
+                                                <h5>Product Images</h5>
+                                                <div class="form-group">
+                                                    <label>Main Images <span class="required">*</span></label>
+                                                    <div id="mainImagesUploadArea" style="margin-bottom: 10px;">
+                                                        <input type="file" id="mainImageInput" accept="image/*" style="display:none;" multiple>
+                                                        <button type="button" class="btn btn-sm btn-primary" onclick="document.getElementById('mainImageInput').click();">
+                                                            <i class="icon-plus"></i> Add Images
+                                                        </button>
+                                                        <small class="text-muted" style="display:block;">Add images one by one or select multiple. You can reorder by moving up/down. The first image will be the main image.</small>
+                                                    </div>
+                                                    <div id="mainImagesPreview" class="image-preview" style="min-height: 100px; display: flex; gap: 8px; flex-wrap: wrap;"></div>
+                                                    <div id="existingMainImages" class="existing-images" style="min-height: 100px; display: flex; gap: 8px;"></div>
+                                                </div>
+                                                <div class="form-actions step-actions">
+                                                    <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+                                                    <button type="button" class="btn btn-primary" onclick="goToStep(3)">Next</button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Step 3: Variants -->
+                                            <div class="form-section product-step" data-step="3" style="display:none;">
+                                                <h5>Product Variants</h5>
+                                                <div class="form-group">
+                                                    <label>
+                                                        <input type="checkbox" id="hasColorVariants" name="hasColorVariants">
+                                                        This product has color variants
+                                                    </label>
+                                                </div>
+                                                <div id="colorVariantsContainer" style="display: none;">
+                                                    <div class="variant-section">
+                                                        <h6>Color Variants</h6>
+                                                        <div id="colorVariantOptions"></div>
+                                                        <button type="button" class="btn btn-sm btn-secondary" id="addColorVariantBtn">
+                                                            <i class="icon-plus"></i> Add Color Variant
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>
+                                                        <input type="checkbox" id="hasSizeVariants" name="hasSizeVariants">
+                                                        This product has size variants
+                                                    </label>
+                                                </div>
+                                                <div id="sizeVariantsContainer" style="display: none;">
+                                                    <div class="variant-section">
+                                                        <h6>Size Variants</h6>
+                                                        <div id="sizeVariantOptions"></div>
+                                                        <button type="button" class="btn btn-sm btn-secondary" id="addSizeVariantBtn">
+                                                            <i class="icon-plus"></i> Add Size Variant
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="form-actions step-actions">
+                                                    <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Back</button>
+                                                    <button type="button" class="btn btn-primary" onclick="goToStep(4)">Next</button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Step 4: Product Details -->
+                                            <div class="form-section product-step" data-step="4" style="display:none;">
+                                                <h5>Product Details</h5>
+                                                <div class="form-row">
+                                                    <div class="form-group">
+                                                        <label for="articleNo">Article No</label>
+                                                        <input type="text" id="articleNo" name="productDetails[articleNo]" placeholder="Article Number">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="brand">Brand</label>
+                                                        <input type="text" id="brand" name="productDetails[brand]" placeholder="Brand">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="productType">Product Type</label>
+                                                        <input type="text" id="productType" name="productDetails[productType]" placeholder="Product Type">
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group">
+                                                        <label for="soleMaterial">Sole Material</label>
+                                                        <input type="text" id="soleMaterial" name="productDetails[soleMaterial]" placeholder="Sole Material">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="productCollection">productCollection</label>
+                                                        <input type="text" id="productCollection" name="productDetails[productCollection]" placeholder="productCollection">
+                                                    </div>
+                                                </div>
+                                                <div class="form-actions step-actions">
+                                                    <button type="button" class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+                                                    <button type="button" class="btn btn-primary" onclick="goToStep(5)">Next</button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Step 5: Reviews -->
+                                            <div class="form-section product-step" data-step="5" style="display:none;">
+                                                <h5>Product Reviews</h5>
+                                                <div id="reviewsContainer">
+                                                    <div id="reviewInputs"></div>
+                                                    <button type="button" class="btn btn-sm btn-secondary" id="addReviewBtn">
+                                                        <i class="icon-plus"></i> Add Review
+                                                    </button>
+                                                </div>
+                                                <div class="form-actions step-actions">
+                                                    <button type="button" class="btn btn-secondary" onclick="goToStep(4)">Back</button>
+                                                    <button type="button" class="btn btn-primary" onclick="goToStep(6)">Next</button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Step 6: Review & Save -->
+                                            <div class="form-section product-step" data-step="6" style="display:none;">
+                                                <h5>Review & Save</h5>
+                                                <div id="reviewSection" class="review-section">
+                                                    <!-- Review summary will be populated here -->
+                                                </div>
+                                                <div class="form-actions step-actions">
+                                                    <button type="button" class="btn btn-secondary" onclick="goToStep(5)">Back</button>
+                                                    <button type="submit" class="btn btn-primary" id="saveProductBtn">
+                                                        <span id="saveProductBtnText"><i class="icon-save"></i> Save Product</span>
+                                                        <span id="saveProductBtnLoading" style="display:none;"><i class="icon-save"></i> Saving...</span>
+                                                    </button>
+                                                    <button type="button" class="btn btn-secondary" onclick="closeProductModal()">
+                                                        <i class="icon-close"></i> Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <style>
+                                    .preview-image, .existing-image {
+                                        border: 1px solid #ddd;
+                                        border-radius: 4px;
+                                        padding: 2px;
+                                        background: #fff;
+                                        position: relative;
+                                        width: 100px;
+                                        height: 100px;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        cursor: pointer;
+                                    }
+                                    .preview-image img, .existing-image img {
+                                        max-width: 100px;
+                                        max-height: 100px;
+                                        object-fit: contain;
+                                    }
+                                    .remove-image-btn {
+                                        position: absolute;
+                                        top: 0;
+                                        right: 0;
+                                        bottom: 0;
+                                        background: #f44336;
+                                        color: #fff;
+                                        border: none;
+                                        border-radius: 50%;
+                                        width: 20px;
+                                        height: 20px;
+                                        font-size: 16px;
+                                        line-height: 18px;
+                                        cursor: pointer;
+                                        z-index: 2;
+                                    }
+                                    .move-up-btn, .move-down-btn {
+                                        position: absolute;
+                                        left: 0;
+                                        width: 20px;
+                                        height: 20px;
+                                        background: #007bff;
+                                        color: #fff;
+                                        border: none;
+                                        border-radius: 50%;
+                                        font-size: 14px;
+                                        line-height: 18px;
+                                        cursor: pointer;
+                                        z-index: 2;
+                                        opacity: 0.8;
+                                    }
+                                    .move-up-btn { top: 0; }
+                                    .move-down-btn { bottom: 0; }
+                                </style>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        initProductForm();
+                                    });
+
+                                    let mainImagesFiles = []; 
+
+                                    function goToStep(step) {
+                                        document.querySelectorAll('.product-step').forEach(s => s.style.display = 'none');
+                                        document.querySelector('.product-step[data-step="' + step + '"]').style.display = '';
+                                        document.querySelectorAll('.step-btn').forEach(btn => btn.classList.remove('active'));
+                                        document.querySelector('.step-btn[data-step="' + step + '"]').classList.add('active');
+                                        if (parseInt(step) === 6) {
+                                            populateReviewSection();
+                                        }
+                                    }
+
+                                    function initProductForm() {
+                                        document.querySelectorAll('.step-btn').forEach(btn => {
+                                            btn.addEventListener('click', function () {
+                                                goToStep(this.dataset.step);
+                                            });
+                                        });
+                                        goToStep(1);
+
+                                        document.getElementById('category').addEventListener('change', loadSubCategories);
+
+                                        document.getElementById('mainImageInput').addEventListener('change', function (e) {
+                                            const files = Array.from(e.target.files);
+                                            files.forEach(file => {
+                                                const url = URL.createObjectURL(file);
+                                                mainImagesFiles.push({ file, url });
+                                            });
+                                            renderMainImagesPreview();
+                                            e.target.value = '';
+                                        });
+
+                                        document.getElementById('hasColorVariants').addEventListener('change', function () {
+                                            document.getElementById('colorVariantsContainer').style.display =
+                                                this.checked ? 'block' : 'none';
+                                        });
+
+                                        document.getElementById('hasSizeVariants').addEventListener('change', function () {
+                                            document.getElementById('sizeVariantsContainer').style.display =
+                                                this.checked ? 'block' : 'none';
+                                        });
+
+                                        document.getElementById('addColorVariantBtn').addEventListener('click', addColorVariantOption);
+
+                                        document.getElementById('addSizeVariantBtn').addEventListener('click', addSizeVariantOption);
+
+                                        document.getElementById('addReviewBtn').addEventListener('click', addReviewInput);
+
+                                        document.getElementById('productForm').addEventListener('submit', handleProductSubmit);
+
+                                        renderMainImagesPreview();
+                                        makeExistingImagesSortable();
+                                    }
+
+                                    function loadSubCategories() {
+                                        const categorySelect = document.getElementById('category');
+                                        const subcategorySelect = document.getElementById('subcategory');
+                                        const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+                                        let subCategories = [];
+                                        if (selectedOption && selectedOption.dataset && selectedOption.dataset.subs) {
+                                            try {
+                                                subCategories = JSON.parse(selectedOption.dataset.subs);
+                                            } catch (e) {
+                                                subCategories = [];
+                                            }
+                                        }
+                                        subcategorySelect.innerHTML = '<option value="">Select Subcategory</option>';
+                                        subCategories.forEach(sub => {
+                                            const option = document.createElement('option');
+                                            option.value = sub._id;
+                                            option.textContent = sub.name;
+                                            subcategorySelect.appendChild(option);
+                                        });
+                                        subcategorySelect.disabled = subCategories.length === 0;
+                                    }
+
+                                    function renderMainImagesPreview() {
+                                        const preview = document.getElementById('mainImagesPreview');
+                                        preview.innerHTML = '';
+                                        if (mainImagesFiles.length === 0) return;
+
+                                        mainImagesFiles.forEach((item, idx) => {
+                                            const imgContainer = document.createElement('div');
+                                            imgContainer.className = 'preview-image';
+                                            imgContainer.style.position = 'relative';
+
+                                            const img = document.createElement('img');
+                                            img.src = item.url;
+                                            imgContainer.appendChild(img);
+
+                                            const removeBtn = document.createElement('button');
+                                            removeBtn.type = 'button';
+                                            removeBtn.className = 'remove-image-btn';
+                                            removeBtn.innerHTML = '&times;';
+                                            removeBtn.onclick = function (ev) {
+                                                ev.stopPropagation();
+                                                URL.revokeObjectURL(item.url);
+                                                mainImagesFiles.splice(idx, 1);
+                                                renderMainImagesPreview();
+                                            };
+                                            imgContainer.appendChild(removeBtn);
+
+                                            if (idx > 0) {
+                                                const upBtn = document.createElement('button');
+                                                upBtn.type = 'button';
+                                                upBtn.className = 'move-up-btn';
+                                                upBtn.title = 'Move Up';
+                                                upBtn.innerHTML = '&#8593;';
+                                                upBtn.onclick = function (ev) {
+                                                    ev.stopPropagation();
+                                                    [mainImagesFiles[idx - 1], mainImagesFiles[idx]] = [mainImagesFiles[idx], mainImagesFiles[idx - 1]];
+                                                    renderMainImagesPreview();
+                                                };
+                                                imgContainer.appendChild(upBtn);
+                                            }
+
+                                            if (idx < mainImagesFiles.length - 1) {
+                                                const downBtn = document.createElement('button');
+                                                downBtn.type = 'button';
+                                                downBtn.className = 'move-down-btn';
+                                                downBtn.title = 'Move Down';
+                                                downBtn.innerHTML = '&#8595;';
+                                                downBtn.onclick = function (ev) {
+                                                    ev.stopPropagation();
+                                                    [mainImagesFiles[idx], mainImagesFiles[idx + 1]] = [mainImagesFiles[idx + 1], mainImagesFiles[idx]];
+                                                    renderMainImagesPreview();
+                                                };
+                                                imgContainer.appendChild(downBtn);
+                                            }
+
+                                            preview.appendChild(imgContainer);
+                                        });
+                                    }
+
+                                    function makeExistingImagesSortable() {
+                                        const container = document.getElementById('existingMainImages');
+                                        if (!container) return;
+
+                                        let dragSrcIdx = null;
+
+                                        container.querySelectorAll('.existing-image').forEach(el => {
+                                            el.removeEventListener('dragstart', el._dragstartHandler);
+                                            el.removeEventListener('dragover', el._dragoverHandler);
+                                            el.removeEventListener('dragleave', el._dragleaveHandler);
+                                            el.removeEventListener('drop', el._dropHandler);
+                                            el.removeEventListener('dragend', el._dragendHandler);
+                                        });
+
+                                        const images = Array.from(container.querySelectorAll('.existing-image'));
+                                        images.forEach((el, idx) => {
+
+                                            el._dragstartHandler = function (e) {
+                                                dragSrcIdx = idx;
+                                                this.classList.add('dragging');
+                                                e.dataTransfer.effectAllowed = 'move';
+                                                e.dataTransfer.setData('text/plain', idx);
+                                            };
+                                            el.addEventListener('dragstart', el._dragstartHandler);
+
+                                            el._dragoverHandler = function (e) {
+                                                e.preventDefault();
+                                                e.dataTransfer.dropEffect = 'move';
+                                                this.classList.add('drag-over');
+                                            };
+                                            el.addEventListener('dragover', el._dragoverHandler);
+
+                                            el._dragleaveHandler = function (e) {
+                                                this.classList.remove('drag-over');
+                                            };
+                                            el.addEventListener('dragleave', el._dragleaveHandler);
+
+                                            el._dropHandler = function (e) {
+                                                e.preventDefault();
+                                                this.classList.remove('drag-over');
+                                                const toIdx = idx;
+                                                if (dragSrcIdx !== null && dragSrcIdx !== toIdx) {
+                                                    const nodes = Array.from(container.children);
+                                                    const moved = nodes[dragSrcIdx];
+                                                    if (toIdx > dragSrcIdx) {
+                                                        container.insertBefore(moved, nodes[toIdx].nextSibling);
+                                                    } else {
+                                                        container.insertBefore(moved, nodes[toIdx]);
+                                                    }
+                                                    makeExistingImagesSortable();
+                                                }
+                                            };
+                                            el.addEventListener('drop', el._dropHandler);
+
+                                            el._dragendHandler = function (e) {
+                                                this.classList.remove('dragging');
+                                                container.querySelectorAll('.existing-image').forEach(img => img.classList.remove('drag-over'));
+                                            };
+                                            el.addEventListener('dragend', el._dragendHandler);
+                                        });
+                                    }
+
+                                    function addColorVariantOption() {
+                                        const container = document.getElementById('colorVariantOptions');
+                                        const colorId = Date.now();
+                                        const colorDiv = document.createElement('div');
+                                        colorDiv.className = 'color-variant-option';
+                                        colorDiv.dataset.colorId = colorId;
+                                        colorDiv.innerHTML = `
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label>Color Name <span class="required">*</span></label>
+                                                    <input type="text" name="colorVariants[${colorId}][color]" required placeholder="e.g. Red">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Color Image</label>
+                                                    <input type="file" name="colorVariants[${colorId}][image]" accept="image/*">
+                                                    <div class="color-image-preview"></div>
+                                                    <div class="existing-color-image"></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Stock</label>
+                                                    <input type="number" name="colorVariants[${colorId}][stock]" min="0" value="0" required>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="removeColorVariantOption(this)">
+                                                    <i class="icon-trash"></i>
+                                                </button>
+                                            </div>
+                                        `;
+                                        container.appendChild(colorDiv);
+                                        const fileInput = colorDiv.querySelector('input[type="file"]');
+                                        fileInput.addEventListener('change', function (e) {
+                                            previewImages(e.target.files, colorDiv.querySelector('.color-image-preview'));
+                                        });
+                                    }
+                                    function removeColorVariantOption(btn) {
+    if (confirm('Remove this color variant?')) {
+        const variantDiv = btn.closest('.color-variant-option');
+        // Add a hidden input to mark this variant for deletion
+        const deleteInput = document.createElement('input');
+        deleteInput.type = 'hidden';
+        deleteInput.name = `deletedColorVariants[]`;
+        deleteInput.value = variantDiv.dataset.colorId;
+        document.getElementById('productForm').appendChild(deleteInput);
+        // Remove the variant
+        variantDiv.remove();
+    }
+}
+
+                                    function addSizeVariantOption() {
+                                        const container = document.getElementById('sizeVariantOptions');
+                                        const sizeId = Date.now();
+                                        const sizeDiv = document.createElement('div');
+                                        sizeDiv.className = 'size-variant-option';
+                                        sizeDiv.dataset.sizeId = sizeId;
+                                        sizeDiv.innerHTML = `
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label>Size <span class="required">*</span></label>
+                                                    <input type="text" name="sizeVariants[${sizeId}][size]" required placeholder="e.g. M">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Stock</label>
+                                                    <input type="number" name="sizeVariants[${sizeId}][stock]" min="0" value="0" required>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="removeSizeVariantOption(this)">
+                                                    <i class="icon-trash"></i>
+                                                </button>
+                                            </div>
+                                        `;
+                                        container.appendChild(sizeDiv);
+                                    }
+                                    function removeSizeVariantOption(btn) {
+    if (confirm('Remove this size variant?')) {
+        const variantDiv = btn.closest('.size-variant-option');
+        // Add a hidden input to mark this variant for deletion
+        const deleteInput = document.createElement('input');
+        deleteInput.type = 'hidden';
+        deleteInput.name = `deletedSizeVariants[]`;
+        deleteInput.value = variantDiv.dataset.sizeId;
+        document.getElementById('productForm').appendChild(deleteInput);
+        // Remove the variant
+        variantDiv.remove();
+    }
+}
+                                    function addReviewInput(review = {}) {
+                                        const container = document.getElementById('reviewInputs');
+                                        const reviewId = Date.now() + Math.floor(Math.random() * 1000);
+                                        const reviewDiv = document.createElement('div');
+                                        reviewDiv.className = 'review-input-block';
+                                        reviewDiv.dataset.reviewId = reviewId;
+                                        reviewDiv.innerHTML = `
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label>Reviewer Name <span class="required">*</span></label>
+                                                    <input type="text" name="reviews[${reviewId}][name]" value="${review.name || ''}" required placeholder="Reviewer name">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Rating <span class="required">*</span></label>
+                                                    <select name="reviews[${reviewId}][rating]" required>
+                                                        <option value="">Select</option>
+                                                        <option value="1" ${review.rating == 1 ? 'selected' : ''}>1</option>
+                                                        <option value="2" ${review.rating == 2 ? 'selected' : ''}>2</option>
+                                                        <option value="3" ${review.rating == 3 ? 'selected' : ''}>3</option>
+                                                        <option value="4" ${review.rating == 4 ? 'selected' : ''}>4</option>
+                                                        <option value="5" ${review.rating == 5 ? 'selected' : ''}>5</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group" style="flex:2;">
+                                                    <label>Review <span class="required">*</span></label>
+                                                    <input type="text" name="reviews[${reviewId}][review]" value="${review.review || ''}" required placeholder="Review text">
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="removeReviewInput(this)">
+                                                    <i class="icon-trash"></i>
+                                                </button>
+                                            </div>
+                                        `;
+                                        container.appendChild(reviewDiv);
+                                    }
+                                    function removeReviewInput(btn) {
+                                        if (confirm('Remove this review?')) {
+                                            btn.closest('.review-input-block').remove();
+                                        }
+                                    }
+
+                                    function populateReviewSection() {
+                                        const review = document.getElementById('reviewSection');
+                                        const name = document.getElementById('name').value;
+                                        const basePrice = document.getElementById('basePrice').value;
+                                        const salePrice = document.getElementById('salePrice').value;
+                                        const stock = document.getElementById('stock').value;
+                                        const description = document.getElementById('description').value;
+                                        const category = document.getElementById('category');
+                                        const categoryText = category.options[category.selectedIndex]?.textContent || '';
+                                        const subcategory = document.getElementById('subcategory');
+                                        const subcategoryText = subcategory.options[subcategory.selectedIndex]?.textContent || '';
+                                        const status = document.getElementById('status').value;
+                                        const moreDetails = document.getElementById('moreDetails').value;
+                                        const mainImagesCount = mainImagesFiles.length + document.querySelectorAll('#existingMainImages .existing-image').length;
+
+                                        const bestDeals = document.getElementById('bestDeals').checked;
+                                        const dealsOfTheDay = document.getElementById('dealsOfTheDay').checked;
+                                        const newArrivals = document.getElementById('newArrivals').checked;
+                                        const bestSeller = document.getElementById('bestSeller').checked;
+                                        const topRated = document.getElementById('topRated').checked;
+
+                                        // Product Details
+                                        const articleNo = document.getElementById('articleNo').value;
+                                        const brand = document.getElementById('brand').value;
+                                        const productType = document.getElementById('productType').value;
+                                        const soleMaterial = document.getElementById('soleMaterial').value;
+                                        const productCollection = document.getElementById('productCollection').value;
+
+                                        const hasColorVariants = document.getElementById('hasColorVariants').checked;
+                                        const hasSizeVariants = document.getElementById('hasSizeVariants').checked;
+                                        let colorList = [];
+                                        let sizeList = [];
+                                        if (hasColorVariants) {
+                                            colorList = Array.from(document.querySelectorAll('.color-variant-option')).map(div => {
+                                                return div.querySelector('input[name*="[color]"]').value;
+                                            });
+                                        }
+                                        if (hasSizeVariants) {
+                                            sizeList = Array.from(document.querySelectorAll('.size-variant-option')).map(div => {
+                                                return div.querySelector('input[name*="[size]"]').value;
+                                            });
+                                        }
+
+                                        let reviewBlocks = '';
+                                        const reviewInputs = document.querySelectorAll('.review-input-block');
+                                        if (reviewInputs.length > 0) {
+                                            reviewBlocks += `<div class="review-block"><strong>Reviews:</strong><ul>`;
+                                            reviewInputs.forEach(div => {
+                                                const reviewer = div.querySelector('input[name*="[name]"]').value;
+                                                const rating = div.querySelector('select[name*="[rating]"]').value;
+                                                const reviewText = div.querySelector('input[name*="[review]"]').value;
+                                                reviewBlocks += `<li><strong>${reviewer}</strong> (Rating: ${rating}) - ${reviewText}</li>`;
+                                            });
+                                            reviewBlocks += `</ul></div>`;
+                                        } else {
+                                            reviewBlocks += `<div class="review-block"><strong>Reviews:</strong> None</div>`;
+                                        }
+
+                                        let html = `
+                                            <div class="review-block">
+                                                <strong>Name:</strong> ${name}<br>
+                                                <strong>Base Price:</strong> ₹${basePrice}<br>
+                                                <strong>Sale Price:</strong> ₹${salePrice || '-'}<br>
+                                                <strong>Base Stock:</strong>  ${stock || '-'}<br>
+                                                <strong>Description:</strong> ${description}<br>
+                                                <strong>Category:</strong> ${categoryText}<br>
+                                                <strong>Subcategory:</strong> ${subcategoryText || '-'}<br>
+                                                <strong>Status:</strong> ${status}<br>
+                                                <strong>More Details:</strong> ${moreDetails || '-'}<br>
+                                                <strong>Best Deals:</strong> ${bestDeals ? 'Yes' : 'No'}<br>
+                                                <strong>Deals of the Day:</strong> ${dealsOfTheDay ? 'Yes' : 'No'}<br>
+                                                <strong>New Arrivals:</strong> ${newArrivals ? 'Yes' : 'No'}<br>
+                                                <strong>Best Seller:</strong> ${bestSeller ? 'Yes' : 'No'}<br>
+                                                <strong>Top Rated:</strong> ${topRated ? 'Yes' : 'No'}<br>
+                                            </div>
+                                            <div class="review-block">
+                                                <strong>Images:</strong> ${mainImagesCount} selected
+                                            </div>
+                                            <div class="review-block">
+                                                <strong>Product Details:</strong><br>
+                                                <strong>Article No:</strong> ${articleNo || '-'}<br>
+                                                <strong>Brand:</strong> ${brand || '-'}<br>
+                                                <strong>Product Type:</strong> ${productType || '-'}<br>
+                                                <strong>Sole Material:</strong> ${soleMaterial || '-'}<br>
+                                                <strong>productCollection:</strong> ${productCollection || '-'}<br>
+                                            </div>
+                                        `;
+                                        if (hasColorVariants) {
+                                            html += `<div class="review-block"><strong>Color Variants:</strong> ${colorList.join(', ') || '-'}</div>`;
+                                        }
+                                        if (hasSizeVariants) {
+                                            html += `<div class="review-block"><strong>Size Variants:</strong> ${sizeList.join(', ') || '-'}</div>`;
+                                        }
+                                        html += reviewBlocks;
+                                        review.innerHTML = html;
+                                    }
+
+                                    async function handleProductSubmit(e) {
+                                        e.preventDefault();
+                                        const form = e.target;
+                                        const formData = new FormData(form);
+                                        const productId = document.getElementById('productId').value;
+                                        formData.set('hasColorVariants', document.getElementById('hasColorVariants').checked);
+                                        formData.set('hasSizeVariants', document.getElementById('hasSizeVariants').checked);
+                                        formData.set('bestDeals', document.getElementById('bestDeals').checked);
+                                        formData.set('dealsOfTheDay', document.getElementById('dealsOfTheDay').checked);
+                                        formData.set('newArrivals', document.getElementById('newArrivals').checked);
+                                        formData.set('bestSeller', document.getElementById('bestSeller').checked);
+                                        formData.set('topRated', document.getElementById('topRated').checked);
+
+                                        const saveBtn = document.getElementById('saveProductBtn');
+                                        const saveBtnText = document.getElementById('saveProductBtnText');
+                                        const saveBtnLoading = document.getElementById('saveProductBtnLoading');
+                                        if (saveBtn) {
+                                            saveBtn.disabled = true;
+                                            if (saveBtnText) saveBtnText.style.display = 'none';
+                                            if (saveBtnLoading) saveBtnLoading.style.display = '';
+                                        }
+
+                                        Array.from(formData.keys()).forEach(key => {
+                                            if (key === 'existingMainImages[]') formData.delete(key);
+                                        });
+                                        document.querySelectorAll('#existingMainImages .existing-image input[name="existingMainImages[]"]').forEach(input => {
+                                            formData.append('existingMainImages[]', input.value);
+                                        });
+
+                                        formData.delete('mainImages');
+                                        if (mainImagesFiles.length > 0) {
+                                            mainImagesFiles.forEach(item => {
+                                                formData.append('mainImages', item.file);
+                                            });
+                                        }
+
+                                        document.querySelectorAll('input[name*="[existingImage]"]').forEach(input => {
+                                            const name = input.name.replace('[existingImage]', '[image]');
+                                            formData.append(name, input.value);
+                                        });
+
+                                        const reviewInputs = document.querySelectorAll('.review-input-block');
+                                        reviewInputs.forEach((div, idx) => {
+                                            const reviewer = div.querySelector('input[name*="[name]"]').value;
+                                            const rating = div.querySelector('select[name*="[rating]"]').value;
+                                            const reviewText = div.querySelector('input[name*="[review]"]').value;
+                                            formData.append(`reviews[${idx}][name]`, reviewer);
+                                            formData.append(`reviews[${idx}][rating]`, rating);
+                                            formData.append(`reviews[${idx}][review]`, reviewText);
+                                        });
+
+                                        try {
+                                            const response = await fetch(
+                                                productId ? `/products/${productId}` : '/products',
+                                                {
+                                                    method: productId ? 'PUT' : 'POST',
+                                                    body: formData
+                                                }
+                                            );
+                                            const result = await response.json();
+                                            if (result.success) {
+                                                alert('Product saved successfully!');
+                                                closeProductModal();
+                                                window.location.reload();
+                                            } else {
+                                                alert('Error: ' + (result.message || 'Failed to save product'));
+                                            }
+                                        } catch (error) {
+                                            console.error('Error saving product:', error);
+                                            alert('An error occurred while saving the product');
+                                        } finally {
+                                            if (saveBtn) {
+                                                saveBtn.disabled = false;
+                                                if (saveBtnText) saveBtnText.style.display = '';
+                                                if (saveBtnLoading) saveBtnLoading.style.display = 'none';
+                                            }
+                                        }
+                                    }
+
+                                    function openProductModal(productId = null) {
+                                        const modal = document.getElementById('productModal');
+                                        const form = document.getElementById('productForm');
+                                        document.getElementById('modalTitle').textContent =
+                                            productId ? 'Edit Product' : 'Add Product';
+                                        if (!productId) {
+                                            form.reset();
+                                            document.getElementById('productId').value = '';
+                                            document.getElementById('mainImagesPreview').innerHTML = '';
+                                            document.getElementById('existingMainImages').innerHTML = '';
+                                            mainImagesFiles.forEach(item => { try { URL.revokeObjectURL(item.url); } catch(e){} });
+                                            mainImagesFiles = [];
+                                            document.getElementById('colorVariantOptions').innerHTML = '';
+                                            document.getElementById('sizeVariantOptions').innerHTML = '';
+                                            document.getElementById('hasColorVariants').checked = false;
+                                            document.getElementById('hasSizeVariants').checked = false;
+                                            document.getElementById('colorVariantsContainer').style.display = 'none';
+                                            document.getElementById('sizeVariantsContainer').style.display = 'none';
+                                            document.getElementById('subcategory').innerHTML = '<option value="">Select Subcategory</option>';
+                                            document.getElementById('bestDeals').checked = false;
+                                            document.getElementById('dealsOfTheDay').checked = false;
+                                            document.getElementById('newArrivals').checked = false;
+                                            document.getElementById('bestSeller').checked = false;
+                                            document.getElementById('topRated').checked = false;
+                                            document.getElementById('reviewInputs').innerHTML = '';
+                                            // Reset product details fields
+                                            document.getElementById('articleNo').value = '';
+                                            document.getElementById('brand').value = '';
+                                            document.getElementById('productType').value = '';
+                                            document.getElementById('soleMaterial').value = '';
+                                            document.getElementById('productCollection').value = '';
+                                            const saveBtn = document.getElementById('saveProductBtn');
+                                            const saveBtnText = document.getElementById('saveProductBtnText');
+                                            const saveBtnLoading = document.getElementById('saveProductBtnLoading');
+                                            if (saveBtn) {
+                                                saveBtn.disabled = false;
+                                                if (saveBtnText) saveBtnText.style.display = '';
+                                                if (saveBtnLoading) saveBtnLoading.style.display = 'none';
+                                            }
+                                            renderMainImagesPreview();
+                                            makeExistingImagesSortable();
+                                            goToStep(1);
+                                        } else {
+                                            document.getElementById('productId').value = productId;
+                                            fetchProductData(productId);
+                                            const saveBtn = document.getElementById('saveProductBtn');
+                                            const saveBtnText = document.getElementById('saveProductBtnText');
+                                            const saveBtnLoading = document.getElementById('saveProductBtnLoading');
+                                            if (saveBtn) {
+                                                saveBtn.disabled = false;
+                                                if (saveBtnText) saveBtnText.style.display = '';
+                                                if (saveBtnLoading) saveBtnLoading.style.display = 'none';
+                                            }
+                                        }
+                                        modal.style.display = 'block';
+                                    }
+                                    function closeProductModal() {
+                                        document.getElementById('productModal').style.display = 'none';
+                                    }
+
+                                    async function fetchProductData(productId) {
+                                        try {
+                                            const response = await fetch(`/products/${productId}`);
+                                            const { product } = await response.json();
+                                            if (!product) throw new Error('Product not found');
+                                            // Basic info
+                                            document.getElementById('name').value = product.name || '';
+                                            document.getElementById('description').value = product.description || '';
+                                            document.getElementById('basePrice').value = product.basePrice || '';
+                                            document.getElementById('salePrice').value = product.salePrice || '';
+                                            document.getElementById('stock').value = product.stock || '';
+                                            document.getElementById('moreDetails').value = product.moreDetails || '';
+                                            // Product Details
+                                            document.getElementById('articleNo').value = (product.productDetails && product.productDetails.articleNo) || '';
+                                            document.getElementById('brand').value = (product.productDetails && product.productDetails.brand) || '';
+                                            document.getElementById('productType').value = (product.productDetails && product.productDetails.productType) || '';
+                                            document.getElementById('soleMaterial').value = (product.productDetails && product.productDetails.soleMaterial) || '';
+                                            document.getElementById('productCollection').value = (product.productDetails && product.productDetails.productCollection) || '';
+                                            if (product.status) {
+                                                document.getElementById('status').value = product.status;
+                                            } else if (typeof product.isActive === 'boolean') {
+                                                document.getElementById('status').value = product.isActive ? 'active' : 'inactive';
+                                            } else {
+                                                document.getElementById('status').value = 'active';
+                                            }
+
+                                            document.getElementById('bestDeals').checked = !!product.bestDeals;
+                                            document.getElementById('dealsOfTheDay').checked = !!product.dealsOfTheDay;
+                                            document.getElementById('newArrivals').checked = !!product.newArrivals;
+                                            document.getElementById('bestSeller').checked = !!product.bestSeller;
+                                            document.getElementById('topRated').checked = !!product.topRated;
+
+                                            if (product.category) {
+                                                document.getElementById('category').value = product.category._id || product.category;
+                                                loadSubCategories();
+                                                if (product.subcategory) {
+                                                    setTimeout(() => {
+                                                        if (typeof product.subcategory === 'object' && product.subcategory._id) {
+                                                            document.getElementById('subcategory').value = product.subcategory._id;
+                                                        } else {
+                                                            document.getElementById('subcategory').value = product.subcategory;
+                                                        }
+                                                    }, 100);
+                                                }
+                                            }
+                                            const existingImagesContainer = document.getElementById('existingMainImages');
+                                            existingImagesContainer.innerHTML = '';
+                                            let imagesArr = [];
+                                            if (Array.isArray(product.mainImages) && product.mainImages.length > 0) {
+                                                imagesArr = product.mainImages;
+                                            } else if (Array.isArray(product.images) && product.images.length > 0) {
+                                                imagesArr = product.images;
+                                            }
+                                            if (imagesArr.length > 0) {
+                                                imagesArr.forEach(image => {
+                                                    const imgDiv = document.createElement('div');
+                                                    imgDiv.className = 'existing-image';
+                                                    imgDiv.draggable = true;
+                                                    imgDiv.title = "Drag to reorder";
+                                                    imgDiv.innerHTML = `
+                                                        <img src="${image}" alt="Product Image">
+                                                        <input type="hidden" name="existingMainImages[]" value="${image}">
+                                                        <button type="button" class="remove-image-btn" onclick="removeImage(this)">×</button>
+                                                    `;
+                                                    existingImagesContainer.appendChild(imgDiv);
+                                                });
+                                            }
+
+                                            makeExistingImagesSortable();
+
+                                            document.getElementById('hasColorVariants').checked = !!product.hasColorVariants;
+                                            document.getElementById('colorVariantsContainer').style.display =
+                                                product.hasColorVariants ? 'block' : 'none';
+                                            const colorContainer = document.getElementById('colorVariantOptions');
+                                            colorContainer.innerHTML = '';
+                                            if (product.colorVariants && product.colorVariants.length > 0) {
+                                                product.colorVariants.forEach((color, index) => {
+                                                    const colorId = color._id || index;
+                                                    const colorDiv = document.createElement('div');
+                                                    colorDiv.className = 'color-variant-option';
+                                                    colorDiv.dataset.colorId = colorId;
+                                                    colorDiv.innerHTML = `
+                                                        <div class="form-row">
+                                                            <div class="form-group">
+                                                                <label>Color Name <span class="required">*</span></label>
+                                                                <input type="text" name="colorVariants[${colorId}][color]" value="${color.color}" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Color Image</label>
+                                                                <input type="file" name="colorVariants[${colorId}][image]" accept="image/*">
+                                                                <div class="color-image-preview"></div>
+                                                                <div class="existing-color-image"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Stock</label>
+                                                                <input type="number" name="colorVariants[${colorId}][stock]" min="0" value="${color.stock}" required>
+                                                            </div>
+                                                            <button type="button" class="btn btn-sm btn-danger" onclick="removeColorVariantOption(this)">
+                                                                <i class="icon-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    `;
+                                                    const existingColorImage = colorDiv.querySelector('.existing-color-image');
+                                                    if (color.image) {
+                                                        const imgDiv = document.createElement('div');
+                                                        imgDiv.className = 'existing-image';
+                                                        imgDiv.innerHTML = `
+                                                            <img src="${color.image}" alt="Color Image">
+                                                            <input type="hidden" name="colorVariants[${colorId}][existingImage]" value="${color.image}">
+                                                            <button type="button" onclick="removeImage(this)">×</button>
+                                                        `;
+                                                        existingColorImage.appendChild(imgDiv);
+                                                    }
+                                                    colorContainer.appendChild(colorDiv);
+                                                });
+                                            }
+                                            // Size variants
+                                            document.getElementById('hasSizeVariants').checked = !!product.hasSizeVariants;
+                                            document.getElementById('sizeVariantsContainer').style.display =
+                                                product.hasSizeVariants ? 'block' : 'none';
+                                            const sizeContainer = document.getElementById('sizeVariantOptions');
+                                            sizeContainer.innerHTML = '';
+                                            if (product.sizeVariants && product.sizeVariants.length > 0) {
+                                                product.sizeVariants.forEach((size, index) => {
+                                                    const sizeId = size._id || index;
+                                                    const sizeDiv = document.createElement('div');
+                                                    sizeDiv.className = 'size-variant-option';
+                                                    sizeDiv.dataset.sizeId = sizeId;
+                                                    sizeDiv.innerHTML = `
+                                                        <div class="form-row">
+                                                            <div class="form-group">
+                                                                <label>Size <span class="required">*</span></label>
+                                                                <input type="text" name="sizeVariants[${sizeId}][size]" value="${size.size}" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Stock</label>
+                                                                <input type="number" name="sizeVariants[${sizeId}][stock]" min="0" value="${size.stock}" required>
+                                                            </div>
+                                                            <button type="button" class="btn btn-sm btn-danger" onclick="removeSizeVariantOption(this)">
+                                                                <i class="icon-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    `;
+                                                    sizeContainer.appendChild(sizeDiv);
+                                                });
+                                            }
+                                            // Product Details
+                                            document.getElementById('articleNo').value = (product.productDetails && product.productDetails.articleNo) || '';
+                                            document.getElementById('brand').value = (product.productDetails && product.productDetails.brand) || '';
+                                            document.getElementById('productType').value = (product.productDetails && product.productDetails.productType) || '';
+                                            document.getElementById('soleMaterial').value = (product.productDetails && product.productDetails.soleMaterial) || '';
+                                            document.getElementById('productCollection').value = (product.productDetails && product.productDetails.productCollection) || '';
+                                           
+                                            const reviewInputsContainer = document.getElementById('reviewInputs');
+                                            reviewInputsContainer.innerHTML = '';
+                                            if (product.reviews && product.reviews.length > 0) {
+                                                product.reviews.forEach((rev) => {
+                                                    addReviewInput({
+                                                        name: rev.name,
+                                                        rating: rev.rating,
+                                                        review: rev.review
+                                                    });
+                                                });
+                                            }
+
+                                            mainImagesFiles.forEach(item => { try { URL.revokeObjectURL(item.url); } catch(e){} });
+                                            mainImagesFiles = [];
+                                            renderMainImagesPreview();
+                                            makeExistingImagesSortable();
+                                            goToStep(1);
+                                        } catch (err) {
+                                            console.error('Error loading product:', err);
+                                            alert('Failed to load product data');
+                                        }
+                                    }
+
+                                    function removeImage(btn) {
+                                        btn.closest('.existing-image').remove();
+                                    }
+
+                                    async function toggleProductStatus(productId, currentStatus) {
+                                        if (!confirm(`Are you sure you want to ${currentStatus ? 'deactivate' : 'activate'} this product?`)) {
+                                            return;
+                                        }
+                                        try {
+                                            const response = await fetch(`/products/${productId}/status`, {
+                                                method: 'PATCH',
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                },
+                                                body: JSON.stringify({
+                                                    status: currentStatus ? 'inactive' : 'active'
+                                                })
+                                            });
+                                            const result = await response.json();
+                                            if (result.success) {
+                                                window.location.reload();
+                                            } else {
+                                                alert('Error: ' + (result.message || 'Failed to update status'));
+                                            }
+                                        } catch (err) {
+                                            console.error('Error toggling status:', err);
+                                            alert('An error occurred while updating the status');
+                                        }
+                                    }
+
+                                    async function deleteProduct(productId) {
+                                        if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+                                            return;
+                                        }
+                                        try {
+                                            const response = await fetch(`/products/${productId}`, {
+                                                method: 'DELETE'
+                                            });
+                                            const result = await response.json();
+                                            if (result.success) {
+                                                const row = document.getElementById(`product-row-${productId}`);
+                                                if (row) row.remove();
+                                                window.location.reload();
+                                            } else {
+                                                alert('Error: ' + (result.message || 'Failed to delete product'));
+                                            }
+                                        } catch (err) {
+                                            console.error('Error deleting product:', err);
+                                            alert('An error occurred while deleting the product');
+                                        }
+                                    }
+
+                                    function previewImages(files, container) {
+                                        container.innerHTML = '';
+                                        if (!files || !files.length) return;
+                                        Array.from(files).forEach(file => {
+                                            const reader = new FileReader();
+                                            reader.onload = function (e) {
+                                                const img = document.createElement('img');
+                                                img.src = e.target.result;
+                                                img.style.maxWidth = '40px';
+                                                img.style.maxHeight = '40px';
+                                                container.appendChild(img);
+                                            };
+                                            reader.readAsDataURL(file);
+                                        });
+                                    }
+                                </script>
+                            </div>
+     
+                        </div>
+
+                        <div class="bottom-page">
+                            <div class="body-text">Copyright © 2025 <a href="">Hofmaan</a>.
+                                Developed by Trivlogic Private Limited All rights reserved</div>
+                        </div>
+                        <!-- /section-content-right -->
+                    </div>
+                    <!-- /layout-wrap -->
+                </div>
+                <!-- /#page -->
+            </div>
+            <!-- /#wrapper -->
+
+            <script>
+                function updateLimit(select) {
+                    const limit = select.value;
+                    const url = new URL(window.location);
+                    url.searchParams.set('limit', limit);
+                    window.location.href = url.toString();
+                }
+            </script>
+            <!-- Javascript -->
+            <script src="/admin-js/jquery.min.js"></script>
+            <script src="/admin-js/bootstrap.min.js"></script>
+            <script src="/admin-js/bootstrap-select.min.js"></script>
+            <script src="/admin-js/zoom.js"></script>
+            <script src="/admin-js/switcher.js"></script>
+            <script defer src="/admin-js/theme-settings.js"></script>
+            <script defer src="/admin-js/main.js"></script>
+
+</body>
+
+</html>

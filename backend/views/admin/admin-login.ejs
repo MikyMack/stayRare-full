@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <title>Hofmaan - Admin Login</title>
+
+    <meta name="author" content="themesflat.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Theme Style -->
+    <link rel="stylesheet" type="text/css" href="/admin-css/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/animation.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap-select.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/styles.css">
+
+
+
+    <!-- Font -->
+    <link rel="stylesheet" href="/admin-font/fonts.css">
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="/admin-icon/style.css">
+
+    <!-- Favicon and Touch Icons  -->
+    <link rel="shortcut icon" href="/images/logo-2.png">
+    <link rel="apple-touch-icon-precomposed" href="/images/logo-2.png">
+
+</head>
+
+<body class="body">
+
+    <!-- #wrapper -->
+    <div id="wrapper">
+        <!-- #page -->
+        <div id="page" class="">
+            <div class="login-page">
+                <div class="left">
+                    <div class="login-box">
+                        <div>
+                            <h3>Login to Admin Dashboard</h3>
+                            <div class="body-text text-white"> Enter your email & password to login</div>
+                        </div>
+                        <form class="form-login flex flex-column gap22 w-full" action="/auth/admin-login" method="post">
+                            <fieldset class="email">
+                                <div class="body-title mb-10 text-white">Email address <span class="tf-color-1">*</span></div>
+                                <input class="flex-grow" type="email" placeholder="Enter your admin email id" name="email" tabindex="0" value="" aria-required="true" required="">
+                            </fieldset>
+                            <fieldset class="password">
+                                <div class="body-title mb-10 text-white">Password <span class="tf-color-1">*</span></div>
+                                <input class="password-input" type="password" placeholder="Enter your password" name="password" tabindex="0" value="" aria-required="true" required="">
+                                <span class="show-pass">
+                                    <i class="icon-eye view"></i>
+                                    <i class="icon-eye-off hide"></i>
+                                </span>
+                            </fieldset>
+                         
+                            <button type="submit" class="tf-button w-full">Login</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="right">
+                    <img src="/images/stayrare/fav.png" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- /#page -->
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Javascript -->
+    <script src="/admin-js/jquery.min.js"></script>
+    <script src="/admin-js/bootstrap.min.js"></script>
+    <script src="/admin-js/bootstrap-select.min.js"></script>
+    <script defer src="/admin-js/main.js"></script>
+
+</body>
+
+</html>

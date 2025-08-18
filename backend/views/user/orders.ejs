@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-KTMNTPV3');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+    <title>Hofmaan | Orders</title>
+
+    <meta name="keywords" content="Hofmaan" />
+    <meta name="description" content="Hofmaan">
+    <meta name="author" content="Trivlogic">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/logo-2.png">
+
+    <!-- WebFont.js -->
+    <script>
+        WebFontConfig = {
+            google: { families: ['Poppins:400,500,600,700'] }
+        };
+        (function (d) {
+            var wf = d.createElement('script'), s = d.scripts[0];
+            wf.src = '/js/webfont.js';
+            wf.async = true;
+            s.parentNode.insertBefore(wf, s);
+        })(document);
+    </script>
+
+    <link rel="preload" href="/vendor/fontawesome-free/webfonts/fa-regular-400.woff2" as="font" type="font/woff2"
+        crossorigin="anonymous">
+    <link rel="preload" href="/vendor/fontawesome-free/webfonts/fa-solid-900.woff2" as="font" type="font/woff2"
+        crossorigin="anonymous">
+    <link rel="preload" href="/vendor/fontawesome-free/webfonts/fa-brands-400.woff2" as="font" type="font/woff2"
+            crossorigin="anonymous">
+    <link rel="preload" href="/fonts/wolmart87d5.woff?png09e" as="font" type="font/woff" crossorigin="anonymous">
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" type="text/css" href="/vendor/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="/vendor/magnific-popup/magnific-popup.min.css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" type="text/css" href="/vendor/magnific-popup/magnific-popup.min.css">
+    <link rel="stylesheet" href="/vendor/swiper/swiper-bundle.min.css">
+
+    <!-- Default CSS -->
+    <link rel="stylesheet" type="text/css" href="/css/style.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --gray: #6b7280;
+            --light-gray: #f3f4f6;
+        }
+        
+     
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #111827;
+        }
+        
+        .order-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .order-header {
+            padding: 16px 20px;
+            background: #111827;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .order-meta {
+            font-size: 14px;
+        }
+        
+        .order-meta small {
+            color: white;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .order-meta p {
+            color: rgb(187, 187, 187);
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .order-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending { background-color: #fef3c7; color: #92400e; }
+        .status-confirmed { background-color: #dbeafe; color: #1e40af; }
+        .status-processing { background-color: #e0f2fe; color: #0369a1; }
+        .status-shipped { background-color: #ede9fe; color: #5b21b6; }
+        .status-delivered { background-color: #dcfce7; color: #166534; }
+        .status-cancelled { background-color: #fee2e2; color: #991b1b; }
+        .status-returned { background-color: #f5f5f4; color: #57534e; }
+        
+        .order-body {
+            padding: 20px;
+        }
+        
+        .order-item {
+            display: flex;
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e7eb;
+            gap: 20px;
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .item-details {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .item-meta {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 6px;
+        }
+        
+        .item-price {
+            font-weight: 600;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .btn-outline {
+            background: white;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+        
+        .btn-outline:hover {
+            background: #f3f4f6;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #b45309;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 40px auto;
+            max-width: 800px;
+            width: 90%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: modalFadeIn 0.3s;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-section {
+            margin-bottom: 20px;
+        }
+        
+        .modal-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #111827;
+        }
+        
+        .tracking-progress {
+            margin-top: 20px;
+        }
+        
+        .progress-bar-container {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .tracking-steps {
+            position: relative;
+            padding-left: 30px;
+            list-style: none;
+        }
+        
+        .tracking-steps:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e5e7eb;
+        }
+        
+        .tracking-step {
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        .tracking-step:last-child {
+            padding-bottom: 0;
+        }
+        
+        .tracking-step:before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            border: 4px solid white;
+        }
+        
+        .tracking-step.active:before {
+            background: var(--primary);
+        }
+        
+        .tracking-step.completed:before {
+            background: var(--success);
+        }
+        
+        .tracking-step .step-title {
+            font-weight: 500;
+        }
+        
+        .tracking-step .step-date {
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .tracking-step .step-remark {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 8px;
+        }
+        
+        .page-item {
+            list-style: none;
+        }
+        
+        .page-link {
+            display: block;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .page-link:hover {
+            background: #f3f4f6;
+        }
+        
+        .page-item.active .page-link {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .page-item.disabled .page-link {
+            color: #9ca3af;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <!-- Start of Header -->
+        <header class="header">
+            <div class="header-top">
+                <div class="container">
+                    <div class="header-left">
+                        <p class="welcome-msg">Welcome to Hofmaan Store! Offers Available</p>
+                    </div>
+                    <div class="header-right">
+                        <span class="divider d-lg-show"></span>
+                        <a href="/store" class="d-lg-show">Store</a>
+                        <a href="/about" class="d-lg-show">About Us</a>
+                        <a href="/contact" class="d-lg-show">Contact Us</a>
+                        <% if (user) { %>
+                            <a href="/account" class="d-lg-show"><i class="w-icon-account"></i>Profile</a>
+                            <span class="delimiter d-lg-show">/</span>
+                            <a href="/orders" class="ml-0 d-lg-show">My Orders</a>
+                            <% } else { %>
+                                <a href="/auth/login" class="d-lg-show"><i class="w-icon-account"></i>Sign In</a>
+                                <span class="delimiter d-lg-show">/</span>
+                                <a href="/auth/login" class="ml-0 d-lg-show">Register</a>
+                                <% } %>
+                    </div>
+                </div>
+            </div>
+            <!-- End of Header Top -->
+            <div class="header-middle sticky-content fix-top sticky-header border-no">
+                <div class="container">
+                    <div class="header-left mr-md-4">
+                        <a href="#" class="mobile-menu-toggle  w-icon-hamburger"></a>
+                        <a href="/" class="logo">
+                            <img src="/images/logo.png" alt="logo" width="200">
+                        </a>
+                    </div>
+                    <div class="header-right ml-4">
+                        <div class="header-call d-xs-show d-lg-flex align-items-center">
+                            <a href="tel:+919400947122" class="w-icon-call"></a>
+                            <div class="call-info d-lg-show">
+                                <h4 class="chat font-size-md text-normal ls-normal text-white mb-0">
+                                    <a href="tel:+919400947122" class="text-capitalize text-primary font-weight-normal">Customer care</a>
+                                </h4>
+                                <a href="tel:+919400947122" class="phone-number font-weight-bolder ls-50">+91 9400947122</a>
+                            </div>
+                        </div>
+                        <a class="wishlist label-down link d-xs-show" href="/wishlist">
+                            <i class="w-icon-heart"></i>
+                            <span class="wishlist-label d-lg-show">Wishlist</span>
+                        </a>
+                        <div class="dropdown cart-dropdown cart-offcanvas mr-0 mr-lg-2">
+                            <div class="cart-overlay"></div>
+                            <a href="/cart" class=" label-down link">
+                                <i class="w-icon-cart">
+                                    <span class="cart-count text-white">+</span>
+                                </i>
+                                <span class="cart-label">Cart</span>
+                            </a>
+
+                            <!-- End of Dropdown Box -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End of Header Middle -->
+        </header>
+        <!-- End of Header -->
+        <!-- Start of Main -->
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title" style="color: white;">My Orders</h1>
+            </div>
+
+            <div class="order-tabs" style="margin-bottom: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+                <% 
+                    const tab = typeof selectedTab !== 'undefined' ? selectedTab : (typeof queryTab !== 'undefined' ? queryTab : 'current');
+                    function tabClass(name) { 
+                        return tab === name 
+                            ? 'btn btn-primary order-tab-btn-active' 
+                            : 'btn btn-outline-primary order-tab-btn'; 
+                    }
+                %>
+                <a href="/orders?tab=current" class="<%= tabClass('current') %>">Current Orders</a>
+                <a href="/orders?tab=delivered" class="<%= tabClass('delivered') %>">Delivered Orders</a>
+                <a href="/orders?tab=cancelled" class="<%= tabClass('cancelled') %>">Cancelled Orders</a>
+            </div>
+
+            <% if (orders.length === 0) { %>
+                <div class="empty-state">
+                    <div style="display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; max-width: 320px;">           
+                        <dotlottie-player src="https://lottie.host/7935dd8b-1312-462b-bf34-e2780ce03ff0/fZc43ONcnq.lottie" background="transparent" speed="1" style="width: 300px; height: 300px" loop autoplay></dotlottie-player>
+                    </div>
+                    <% if (tab === 'current') { %>
+                        <h2 style="text-align: center; margin-bottom: 10px;">You have no current orders</h2>
+                        <p style="text-align: center; color: #6b7280; margin-bottom: 20px;">When you place an order, it will appear here.</p>
+                    <% } else if (tab === 'delivered') { %>
+                        <h2 style="text-align: center; margin-bottom: 10px;">No delivered orders yet</h2>
+                        <p style="text-align: center; color: #6b7280; margin-bottom: 20px;">Delivered orders will show up here.</p>
+                    <% } else if (tab === 'cancelled') { %>
+                        <h2 style="text-align: center; margin-bottom: 10px;">No cancelled orders</h2>
+                        <p style="text-align: center; color: #6b7280; margin-bottom: 20px;">Cancelled orders will show up here.</p>
+                    <% } %>
+                    <div style="text-align: center;padding-bottom: 40px;">
+                        <a href="/store" class="btn" style="background-color: #111827;color: white;">Continue Shopping</a>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="orders-list">
+                    <% orders.forEach(order => { %>
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div class="order-meta">
+                                <small>ORDER PLACED</small>
+                                <p><%= order.orderDate %></p>
+                            </div>
+                            <div class="order-meta">
+                                <small>TOTAL</small>
+                                <p>₹<%= order.totalAmount.toLocaleString('en-IN') %></p>
+                            </div>
+                            <div class="order-meta">
+                                <small>ORDER #<%= order.orderId || order._id.toString().slice(-6).toUpperCase() %></small>
+                                <p>
+                                    <span class="order-status status-<%= order.orderStatus.toLowerCase() %>">
+                                        <%= order.orderStatus %>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="order-body">
+                            <% order.items.forEach(item => { %>
+                            <div class="order-item">
+                                <img src="<%= item.product?.images?.[0] || '/images/placeholder-product.jpg' %>" 
+                                     alt="<%= item.name %>" class="item-image">
+                                <div class="item-details">
+                                    <h3 class="item-name"><%= item.name %></h3>
+                                    <div class="item-meta">
+                                        <% if (item.selectedColor) { %>Color: <%= item.selectedColor %><% } %>
+                                        <% if (item.selectedSize) { %> | Size: <%= item.selectedSize %><% } %>
+                                        | Qty: <%= item.quantity %>
+                                    </div>
+                                    <div class="item-price">₹<%= item.price.toLocaleString('en-IN') %></div>
+                                </div>
+                                <button class="btn view-details" style="padding: 2px 5px; cursor: pointer;" data-order-id="<%= order._id %>">
+                                    View Details
+                                </button>
+                            </div>
+                            <% }); %>
+                            
+                            <div class="order-actions">
+                                <% if (tab === 'current' && order.canCancel) { %>
+                                    <button class="btn btn-danger cancel-order" data-order-id="<%= order._id %>">
+                                      Cancel Order
+                                    </button>
+                                  <% } %>
+                                  <% if (tab === 'delivered' && order.canReturn) { %>
+                                    <button class="btn btn-warning return-order" data-order-id="<%= order._id %>">
+                                      Return/Replace Item
+                                    </button>
+                                    
+                                    <!-- Replacement Modal -->
+                                    <div class="modal fade" id="replacementModal" tabindex="-1" aria-hidden="true">
+                                      <div class="modal-dialog">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title">Request Replacement</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                          </div>
+                                          <div class="modal-body">
+                                            <form id="replacementForm">
+                                              <input type="hidden" name="orderId" value="<%= order._id %>">
+                                              <div class="mb-3">
+                                                <label class="form-label">Select Item</label>
+                                                <select name="itemId" class="form-select" required>
+                                                  <% order.items.forEach(item => { %>
+                                                    <option value="<%= item._id %>"><%= item.name %></option>
+                                                  <% }); %>
+                                                </select>
+                                              </div>
+                                              <div class="mb-3">
+                                                <label class="form-label">Reason for Replacement</label>
+                                                <select name="reason" class="form-select" required>
+                                                  <option value="">Select a reason</option>
+                                                  <option value="Damaged">Damaged Product</option>
+                                                  <option value="WrongItem">Wrong Item Received</option>
+                                                  <option value="Defective">Defective Product</option>
+                                                  <option value="Other">Other</option>
+                                                </select>
+                                              </div>
+                                              <div class="mb-3" id="otherReasonContainer" style="display:none;">
+                                                <label class="form-label">Please specify</label>
+                                                <textarea name="otherReason" class="form-control"></textarea>
+                                              </div>
+                                            </form>
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary" id="submitReplacement">Submit Request</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  <% } %>
+                                  
+                                  <script>
+                                  document.addEventListener('DOMContentLoaded', function() {
+                                    // Replacement request
+                                    document.querySelectorAll('.return-order').forEach(button => {
+                                      button.addEventListener('click', function() {
+                                        const modal = new bootstrap.Modal(document.getElementById('replacementModal'));
+                                        modal.show();
+                                      });
+                                    });
+                                  
+                                    // Show/hide other reason field
+                                    document.querySelector('select[name="reason"]').addEventListener('change', function() {
+                                      document.getElementById('otherReasonContainer').style.display = 
+                                        this.value === 'Other' ? 'block' : 'none';
+                                    });
+                                  
+                                    // Submit replacement request
+                                    document.getElementById('submitReplacement').addEventListener('click', async function() {
+                                      const form = document.getElementById('replacementForm');
+                                      const formData = new FormData(form);
+                                      const data = Object.fromEntries(formData.entries());
+                                      
+                                      if (data.reason === 'Other' && !data.otherReason) {
+                                        alert('Please specify the reason for replacement');
+                                        return;
+                                      }
+                                  
+                                      this.disabled = true;
+                                      this.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+                                  
+                                      try {
+                                        const response = await fetch('/orders/replace', {
+                                          method: 'POST',
+                                          headers: {
+                                            'Content-Type': 'application/json'
+                                          },
+                                          body: JSON.stringify(data)
+                                        });
+                                  
+                                        const result = await response.json();
+                                        
+                                        if (result.success) {
+                                          alert('Replacement request submitted successfully!');
+                                          window.location.reload();
+                                        } else {
+                                          throw new Error(result.message || 'Failed to submit replacement request');
+                                        }
+                                      } catch (error) {
+                                        alert(error.message);
+                                        this.disabled = false;
+                                        this.innerHTML = 'Submit Request';
+                                      }
+                                    });
+                                  });
+                                  </script>
+                                <a href="/store" class="btn" style="background-color: #111827;color: white;">
+                                    Buy Again
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                      // Order cancellation
+                      document.querySelectorAll('.cancel-order').forEach(button => {
+                        button.addEventListener('click', async function() {
+                          if (!confirm('Are you sure you want to cancel this order?')) return;
+                          
+                          const orderId = this.dataset.orderId;
+                          const spinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                          this.innerHTML = spinner;
+                          this.disabled = true;
+                          
+                          try {
+                            const response = await fetch(`/orders/${orderId}/cancel`, {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json'
+                              }
+                            });
+                            
+                            const result = await response.json();
+                            
+                            if (result.success) {
+                              alert('Order cancelled successfully. Refund will be processed shortly.');
+                              window.location.reload();
+                            } else {
+                              throw new Error(result.message || 'Failed to cancel order');
+                            }
+                          } catch (error) {
+                            alert(error.message);
+                            this.innerHTML = 'Cancel Order';
+                            this.disabled = false;
+                          }
+                        });
+                      });
+                    });
+                    </script>
+                <!-- Pagination -->
+                <% if (totalPages > 1) { %>
+                <ul class="pagination">
+                    <% if (hasPrevPage) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="/orders?page=<%= currentPage - 1 %>&tab=<%= tab %>">Previous</a>
+                        </li>
+                    <% } else { %>
+                        <li class="page-item disabled">
+                            <span class="page-link">Previous</span>
+                        </li>
+                    <% } %>
+                    
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                            <a class="page-link" href="/orders?page=<%= i %>&tab=<%= tab %>"><%= i %></a>
+                        </li>
+                    <% } %>
+                    
+                    <% if (hasNextPage) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="/orders?page=<%= currentPage + 1 %>&tab=<%= tab %>">Next</a>
+                        </li>
+                    <% } else { %>
+                        <li class="page-item disabled">
+                            <span class="page-link">Next</span>
+                        </li>
+                    <% } %>
+                </ul>
+                <% } %>
+            <% } %>
+        </div>
+    
+        <!-- Order Details Modal -->
+        <div id="orderDetailsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Order Details #<span id="modalOrderId"></span></h2>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="modal-section">
+                                <h3>Shipping Address</h3>
+                                <div id="shippingAddress"></div>
+                            </div>
+                            
+                            <div class="modal-section">
+                                <h3>Payment Method</h3>
+                                <p id="paymentMethod"></p>
+                            </div>
+                            
+                            <div class="modal-section">
+                                <h3>Order Summary</h3>
+                                <div id="orderSummary"></div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="modal-section">
+                                <h3>Tracking Information</h3>
+                                <div id="trackingInfo">
+                                    <div class="tracking-progress">
+                                        <div class="progress-bar-container">
+                                            <div id="trackingProgress" class="progress-bar"></div>
+                                        </div>
+                                        <ul id="trackingSteps" class="tracking-steps"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="modal-section">
+                                <h3>Coupon Applied</h3>
+                                <p id="couponInfo">No coupon applied</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <script>
+            // Modal functionality
+            const modal = document.getElementById('orderDetailsModal');
+            const modalClose = modal.querySelector('.modal-close');
+            
+            // Close modal when clicking X or outside
+            modalClose.addEventListener('click', () => modal.style.display = 'none');
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.style.display = 'none';
+            });
+            
+            // View order details
+            document.querySelectorAll('.view-details').forEach(button => {
+                button.addEventListener('click', async function() {
+                    const orderId = this.getAttribute('data-order-id');
+                    
+                    try {
+                        const response = await fetch(`/orders/${orderId}`);
+                        if (!response.ok) throw new Error('Failed to fetch order details');
+                        
+                        const order = await response.json();
+                        displayOrderDetails(order);
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Failed to load order details');
+                    }
+                });
+            });
+            
+            // Display order details in modal
+            function displayOrderDetails(order) {
+                document.getElementById('modalOrderId').textContent = order.orderId || order._id.slice(-6).toUpperCase();
+                
+                // Shipping Address
+                const shippingAddress = `
+                    <p><strong>${order.shippingAddress.name}</strong></p>
+                    <p>${order.shippingAddress.addressLine1}</p>
+                    ${order.shippingAddress.addressLine2 ? `<p>${order.shippingAddress.addressLine2}</p>` : ''}
+                    <p>${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.pincode}</p>
+                    <p>Phone: ${order.shippingAddress.phone}</p>
+                `;
+                document.getElementById('shippingAddress').innerHTML = shippingAddress;
+                
+                // Payment Method
+                document.getElementById('paymentMethod').textContent = 
+                    `${order.paymentInfo.status} (${order.paymentInfo.razorpayPaymentId ? 'Razorpay' : 'Unknown'})`;
+                
+                // Order Summary
+                let orderSummaryHTML = '';
+                order.items.forEach(item => {
+                    orderSummaryHTML += `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span>${item.name} (x${item.quantity})</span>
+                            <span>₹${(item.price * item.quantity).toLocaleString('en-IN')}</span>
+                        </div>
+                    `;
+                });
+                
+                if (order.couponUsed) {
+                    orderSummaryHTML += `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--success);">
+                            <span>Coupon Discount (${order.couponUsed.code})</span>
+                            <span>-₹${order.couponUsed.discountAmount.toLocaleString('en-IN')}</span>
+                        </div>
+                    `;
+                }
+                
+                orderSummaryHTML += `
+                    <hr style="margin: 12px 0;">
+                    <div style="display: flex; justify-content: space-between; font-weight: 600;">
+                        <span>Total Amount</span>
+                        <span>₹${order.totalAmount.toLocaleString('en-IN')}</span>
+                    </div>
+                `;
+                
+                document.getElementById('orderSummary').innerHTML = orderSummaryHTML;
+                
+                // Tracking Info
+                const trackingSteps = document.getElementById('trackingSteps');
+                trackingSteps.innerHTML = '';
+                
+                const statusOrder = ['Pending', 'Processing', 'Shipped', 'Out for Delivery', 'Delivered'];
+                let currentStep = statusOrder.indexOf(order.orderStatus);
+                if (currentStep === -1) currentStep = 0;
+                
+                // Use deliveryInfo.trackingHistory if available, otherwise create basic steps
+                const trackingHistory = order.deliveryInfo?.trackingHistory || 
+                    statusOrder.slice(0, currentStep + 1).map(status => ({
+                        status,
+                        date: new Date(),
+                        remark: ''
+                    }));
+                
+                trackingHistory.forEach((step, index) => {
+                    const stepEl = document.createElement('li');
+                    stepEl.className = 'tracking-step';
+                    
+                    if (index < currentStep) stepEl.classList.add('completed');
+                    else if (index === currentStep) stepEl.classList.add('active');
+                    
+                    stepEl.innerHTML = `
+                        <div class="step-title">${step.status}</div>
+                        <div class="step-date">${new Date(step.date).toLocaleString('en-IN')}</div>
+                        ${step.remark ? `<div class="step-remark">${step.remark}</div>` : ''}
+                    `;
+                    
+                    trackingSteps.appendChild(stepEl);
+                });
+                
+                // Update progress bar
+                const progress = (currentStep / (statusOrder.length - 1)) * 100;
+                document.getElementById('trackingProgress').style.width = `${progress}%`;
+                
+                // Coupon info
+                if (order.couponUsed) {
+                    document.getElementById('couponInfo').textContent = 
+                        `${order.couponUsed.code} (₹${order.couponUsed.discountAmount.toLocaleString('en-IN')} off)`;
+                }
+                
+                // Show modal
+                modal.style.display = 'block';
+            }
+            
+            // Cancel order functionality
+            document.querySelectorAll('.cancel-order').forEach(button => {
+                button.addEventListener('click', async function() {
+                    const orderId = this.getAttribute('data-order-id');
+                    if (confirm('Are you sure you want to cancel this order?')) {
+                        try {
+                            const response = await fetch(`/orders/${orderId}/cancel`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                            
+                            if (!response.ok) throw new Error('Failed to cancel order');
+                            
+                            const result = await response.json();
+                            if (result.success) {
+                                alert('Order cancelled successfully');
+                                location.reload();
+                            } else {
+                                alert(result.message || 'Failed to cancel order');
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('An error occurred while cancelling the order');
+                        }
+                    }
+                });
+            });
+        </script>
+        <!-- End of Main -->
+
+        <!-- Start of Footer -->
+        <footer class="footer appear-animate" data-animation-options="{
+            'name': 'fadeIn'
+        }">
+            <div class="footer-newsletter bg-primary">
+                <div class="container">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-xl-5 col-lg-6">
+                            <div class="icon-box icon-box-side text-white">
+                                <div class="icon-box-icon d-inline-flex">
+                                    <i class="w-icon-envelop3"></i>
+                                </div>
+                                <div class="icon-box-content">
+                                    <h4 class="icon-box-title text-white text-uppercase font-weight-bold">Subscribe To
+                                        Our Newsletter</h4>
+                                    <p class="text-white">Get all the latest information on Events, Sales and Offers.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-7 col-lg-6 col-md-9 mt-4 mt-lg-0 ">
+                            <form action="#" method="get"
+                                class="input-wrapper input-wrapper-inline input-wrapper-rounded">
+                                <input type="email" class="form-control mr-2 bg-white" name="email" id="email"
+                                    placeholder="Your E-mail Address" />
+                                <button class="btn btn-dark btn-rounded" type="submit">Subscribe<i
+                                        class="w-icon-long-arrow-right"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="footer-top">
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-6">
+                            <div class="widget widget-about mt-0 mb-4">
+                                <a href="/" class="logo-footer">
+                                    <img src="/images/logo.png" alt="logo-footer" width="200" height="45" />
+                                </a>
+                                <div class="widget-body">
+                                    <p class="widget-about-title">Got Question? Call us 24/7</p>
+                                    <a href="tel:+919400947122" class="widget-about-call">+91 9400947122</a>
+                                     <p>Follow Us In :</p>
+                              <div class="social-icons social-icons-colored">
+                                        <a    target="_blank"  href="https://www.facebook.com/profile.php?id=61577041363849#"
+                                            class="social-icon social-facebook w-icon-facebook"></a>
+                                        <a    target="_blank"  href="https://www.instagram.com/hofmaan.official/?fbclid=IwY2xjawLJwfRleHRuA2FlbQIxMQBicmlkETFtbmQ0UnlRc3gyNDAwaU44AR5ZqTiWzEixcnjCAnjWdJJKxyOo1SDmgvhwN8_53T5gbWCz_nWAy3l3UTZALw_aem_icwl_UgQrgnfthtQ81Mmyw"
+                                            class="social-icon social-instagram w-icon-instagram"></a>
+                                        <a    target="_blank"  href="https://www.youtube.com/@hofmaanofficial"
+                                            class="social-icon social-youtube w-icon-youtube"></a>
+                                                <a    target="_blank"  href="https://in.pinterest.com/hofmaan_official/"
+                                            class="social-icon social-pinterest w-icon-pinterest"></a>
+                            <a href="https://www.linkedin.com/company/107658144/admin/page-posts/published/" 
+   class="social-icon" 
+   target="_blank" 
+   rel="noopener noreferrer">
+   <i style="color: blue;" class="fab fa-linkedin-in"></i> 
+</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="widget">
+                                <h3 class="widget-title">Company</h3>
+                                <ul class="widget-body">
+                                        <li><a href="/">Home</a></li>
+                                        <li><a href="/store">Store</a></li>
+                                    <li><a href="/about">About Us</a></li>
+                                    <li><a href="/blogs">Blogs</a></li>
+                                    <li><a href="/contact">Contact Us</a></li>                              
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="widget">
+                                <h4 class="widget-title">My Account</h4>
+                                <ul class="widget-body">
+                                    <li><a href="/orders">Track My Order</a></li>
+                                    <li><a href="/cart">View Cart</a></li>
+                                    <% if (user) { %>
+                                        <li><a href="/account">Account</a></li>
+                                        <% } else { %>
+                                            <li><a href="/auth/login">Sign In</a></li>
+                                            <% } %>
+                                    <li><a href="/wishlist">My Wishlist</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="widget">
+                                <h4 class="widget-title">Customer Service</h4>
+                                <ul class="widget-body">
+                                    <li><a href="/terms_and_conditions">Terms and Conditions</a></li>
+                                    <li><a href="/Cancellation_Refund">Cancellation Refund</a></li>
+                                    <li><a href="/shipping_policy">Shipping Policy</a></li>
+                                    <li><a href="/privacy_policy">Privacy Policy</a></li>
+                           
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <div class="footer-left">
+                        <p class="copyright">
+                            Copyright © 2025 Hofmaan. All Rights Reserved. &nbsp;|&nbsp;
+                            developed by <a href="https://trivlogic.com/" target="_blank" rel="noopener" style="color:#888;text-decoration:none;">Trivlogic Pvt Ltd</a>
+                        </p>
+                    </div>
+                    <div class="footer-right">
+                        <span class="payment-label mr-lg-8">We're using safe payment for</span>
+                        <figure class="payment">
+                            <img src="/images/payment.png" alt="payment" width="159" height="25" />
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Start of Sticky Footer -->
+   <div class="btm-main">
+    <a href="#" id="mobileSearchRedirect" class="search-bar-link">
+        <div class="search-bar" id="searchBar">
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search search-input-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search products..." id="mobileSearchInput">
+                </div>
+                <button class="search-btn" id="mobileSearchButton">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </a>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const input = document.getElementById('mobileSearchInput');
+            const btn = document.getElementById('mobileSearchButton');
+            const link = document.getElementById('mobileSearchRedirect');
+            function doSearch(e) {
+                e.preventDefault();
+                const q = input.value.trim();
+                if (q.length > 0) {
+                    window.location.href = '/store?q=' + encodeURIComponent(q);
+                }
+            }
+            btn.addEventListener('click', doSearch);
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    doSearch(e);
+                }
+            });
+            link.addEventListener('click', function(e) {
+                // Prevent default link if not searching
+                if (input.value.trim().length === 0) e.preventDefault();
+            });
+        });
+    </script>
+
+        <nav class="mobile-bottom-nav">
+
+            <div class="mob-btm-nav">
+                <a href="/cart" class="sticky-link1">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Cart</p>
+                </a>
+            </div>
+
+            <div class="mob-btm-nav">
+                <a href="/orders" class="sticky-link1">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p>Orders</p>
+                </a>
+            </div>
+
+            <div class="mob-btm-nav">
+                <a href="#0" id="searchBtn" class="sticky-link1">
+                    <i class="fas fa-search"></i>
+                    <p>Search</p>
+                </a>
+            </div>
+
+            <div class="mob-btm-nav">
+                <a href="/wishlist" class="sticky-link1">
+                    <i class="fas fa-heart"></i>
+                    <p>Wishlist</p>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="sticky-footer sticky-content fix-bottom">
+
+        <a href="/" class="sticky-link  ">
+            <i class="w-icon-home"></i>
+            <p>Home</p>
+        </a>
+        <a href="/store" class="sticky-link">
+            <i class="w-icon-products"></i>
+            <p>Store</p>
+        </a>
+        <a class="btm-img" href="/"> <img src="/images/logo-2.png" alt=""></a>
+        <% if (user) { %>
+            <a href="/account" class="sticky-link">
+                <i class="w-icon-account"></i>
+                <p>Account</p>
+            </a>
+            <% } else { %>
+                <a href="/auth/login" class="sticky-link">
+                    <i class="w-icon-account"></i>
+                    <p>Login</p>
+                </a>
+                <% } %>
+
+
+                    <a href="/contact" class="sticky-link">
+                        <i class="w-icon-call2"></i>
+                        <p>Contact </p>
+                    </a>
+    </div>
+    <!-- End of Sticky Footer -->
+
+    <!-- Start of Scroll Top -->
+    <a id="scroll-top" class="scroll-top" href="#top" title="Top" role="button"> <i class="w-icon-angle-up"></i> <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"> <circle id="progress-indicator" fill="transparent" stroke="#000000" stroke-miterlimit="10" cx="35" cy="35" r="34" style="stroke-dasharray: 16.4198, 400;"></circle> </svg> </a>
+    <!-- End of Scroll Top -->
+
+  <!-- Start of Mobile Menu -->
+    <div class="mobile-menu-wrapper">
+        <div class="mobile-menu-overlay"></div>
+        <!-- End of .mobile-menu-overlay -->
+
+        <a href="#" class="mobile-menu-close"><i class="close-icon"></i></a>
+        <!-- End of .mobile-menu-close -->
+
+        <div class="mobile-menu-container scrollable">
+         <img class="side-logo" src="/images/logo.png" alt="logo">
+            <!-- End of Search Form -->
+            <div class="tab">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a href="#main-menu" class="nav-link active">Main Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#categories" class="nav-link">Categories</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane active" id="main-menu">
+                    <ul class="mobile-menu">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/store">Store</a></li>
+                        <% if (user) { %>
+                        <li><a href="/account">Profile</a></li>
+                        <% } else { %>
+                        <li><a href="/auth/login">Login</a></li>
+                        <% } %>
+                        <li><a href="/wishlist">Wishlist</a></li>
+                        <li><a href="/cart">Cart</a></li>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/blogs">Blogs</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+
+                    </ul>
+                </div>
+                <div class="tab-pane" id="categories">
+                    <ul class="mobile-menu">
+                        <% categories.forEach(category=> { %>
+                            <li>
+                                <a style="gap: 10px!important; display: flex;" href="/store?category=<%= category._id %>">
+                                    <img style="height: 30px; width: 30px; border-radius: 50px;"
+                                        src="<%= category.imageUrl || '/images/hofmaan/sample3.jpg' %>" alt="">
+                                    <%= category.name %>
+                                </a>
+                                <% if (category.subCategories && category.subCategories.length> 0) { %>
+                                    <ul>
+                                        <% category.subCategories.forEach(sub=> { %>
+                                            <% if (sub.isActive) { %>
+                                                <li>
+                                                    <a href="/store?subcategory=<%= sub._id %>">
+                                                        <%= sub.name %>
+                                                    </a>
+                                                </li>
+                                                <% } %>
+                                                    <% }); %>
+                                    </ul>
+                                    <% } %>
+                            </li>
+                            <% }); %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of Mobile Menu -->
+
+
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <!-- Plugin JS File -->
+   <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+    <script src="/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+    <script src="/js/main.min.js"></script>
+          <script src="/js/script.js"></script>
+</body>
+
+
+
+</html>

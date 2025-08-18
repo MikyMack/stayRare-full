@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+
+<head>
+    <!-- Basic Page Needs -->
+    <meta charset="utf-8">
+    <title>Hofmaan   Testimonials</title>
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Theme Style -->
+    <link rel="stylesheet" type="text/css" href="/admin-css/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/animation.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap-select.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <!-- Font -->
+    <link rel="stylesheet" href="/admin-font/fonts.css">
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="/admin-icon/style.css">
+
+    <!-- Favicon and Touch Icons  -->
+    <link rel="shortcut icon" href="/images/logo-2.png">
+    <link rel="apple-touch-icon-precomposed" href="/images/logo-2.png">
+    <style>
+        /* Ensure toggle switch is visible */
+        .peer:checked~.peer-checked\:bg-blue-600 {
+            background-color: #2563eb;
+        }
+
+        /* Fix icon alignment */
+        .icon-edit,
+        .icon-trash-2 {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Toggle switch styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #3B82F6;
+        }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #3B82F6;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Icons styling */
+        .icon-edit,
+        .icon-trash-2 {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        /* Image dimensions */
+        .wg-table .w-40 img {
+            width: 160px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        #currentImagePreview img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+
+        /* This is already included in the HTML classes above, but just in case */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.toggle-slider {
+            background-color: #2196F3;
+        }
+
+        input:checked+.toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Testimonial specific styles */
+        .table-testimonials .testimonial-item {
+            border-bottom: 1px solid #eee;
+            padding: 12px 0;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #e6f7ee;
+            color: #10b981;
+        }
+
+        .status-inactive {
+            background-color: #fff1f2;
+            color: #f43f5e;
+        }
+
+        /* Star rating */
+        .star-rating {
+            color: #fbbf24;
+            letter-spacing: 2px;
+        }
+
+        /* Modal adjustments */
+        .modal-content {
+            max-width: 600px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .modal .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal .close:hover {
+            color: #333;
+        }
+
+        /* Toast Notification Styles */
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            border-radius: 4px;
+            color: white;
+            z-index: 1001;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-notification.success {
+            background-color: #10b981;
+        }
+
+        .toast-notification.error {
+            background-color: #f43f5e;
+        }
+    </style>
+</head>
+
+<body class="body">
+
+    <!-- #wrapper -->
+    <div id="wrapper">
+        <!-- #page -->
+        <div id="page" class="">
+            <!-- layout-wrap -->
+            <div class="layout-wrap loader-off">
+                <!-- preload -->
+                <div id="preload" class="preload-container">
+                    <div class="preloading">
+                        <span></span>
+                    </div>
+                </div>
+                <!-- /preload -->
+                <!-- section-menu-left -->
+                <div class="section-menu-left">
+                    <div class="box-logo">
+                        <a href="/admin/dashboard" id="site-logo-inner">
+                            <img style="width:60px;" id="logo_header" alt="logo" src="/images/logo.png"
+                                data-light="/images/logo.png" data-dark="/images/logo.png">
+                        </a>
+                        <div class="button-show-hide">
+                            <i class="icon-chevron-left"></i>
+                        </div>
+                    </div>
+                    <div class="section-menu-left-wrap">
+                        <div class="center">
+                            <div class="center-item">
+                         <ul class="">
+                                    <li class="menu-item ">
+                                        <a href="/admin/dashboard" class="">
+                                            <div class="icon">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M12.2652 3.57566C12.1187 3.42921 11.8813 3.42921 11.7348 3.57566L5.25 10.0605V19.8748C5.25 20.0819 5.41789 20.2498 5.625 20.2498H9V16.1248C9 15.0893 9.83947 14.2498 10.875 14.2498H13.125C14.1605 14.2498 15 15.0893 15 16.1248V20.2498H18.375C18.5821 20.2498 18.75 20.0819 18.75 19.8748V10.0605L12.2652 3.57566ZM20.25 11.5605L21.2197 12.5302C21.5126 12.8231 21.9874 12.8231 22.2803 12.5302C22.5732 12.2373 22.5732 11.7624 22.2803 11.4695L13.3258 2.51499C12.5936 1.78276 11.4064 1.78276 10.6742 2.515L1.71967 11.4695C1.42678 11.7624 1.42678 12.2373 1.71967 12.5302C2.01256 12.8231 2.48744 12.8231 2.78033 12.5302L3.75 11.5605V19.8748C3.75 20.9104 4.58947 21.7498 5.625 21.7498H18.375C19.4105 21.7498 20.25 20.9104 20.25 19.8748V11.5605ZM13.5 20.2498H10.5V16.1248C10.5 15.9177 10.6679 15.7498 10.875 15.7498H13.125C13.3321 15.7498 13.5 15.9177 13.5 16.1248V20.2498Z"
+                                                        fill="#111111" />
+                                                </svg>
+                                            </div>
+                                            <div class="text">Admin Dashboard</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="/admin/products" class="menu-item-button">
+                                            <div class="icon"><i class="icon-file-plus"></i></div>
+                                            <div class="text">Product Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/category" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Category Management</div>
+                                        </a>
+                                      
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="/admin/coupons" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Coupons Management</div>
+                                        </a>
+                                      
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/orders" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Orders Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/users" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">User Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin-banners" class="menu-item-button">
+                                            <div class="icon">
+                                                <svg width="24" height="22" viewBox="0 0 22 18" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M0.5 1.875C0.5 0.839466 1.33947 0 2.375 0H19.625C20.6605 0 21.5 0.839466 21.5 1.875V3.375C21.5 4.29657 20.8351 5.06285 19.9589 5.22035L19.3733 15.1762C19.28 16.7619 17.9669 18 16.3785 18H5.62154C4.03311 18 2.71999 16.7619 2.62671 15.1762L2.04108 5.22035C1.16485 5.06285 0.5 4.29657 0.5 3.375V1.875ZM2.75659 3.75C2.75266 3.74997 2.74873 3.74997 2.74479 3.75H2.375C2.16789 3.75 2 3.58211 2 3.375V1.875C2 1.66789 2.16789 1.5 2.375 1.5H19.625C19.8321 1.5 20 1.66789 20 1.875V3.375C20 3.58211 19.8321 3.75 19.625 3.75H19.2552C19.2513 3.74997 19.2473 3.74997 19.2434 3.75H2.75659ZM3.54541 5.25L4.12412 15.0881C4.17076 15.8809 4.82732 16.5 5.62154 16.5H16.3785C17.1727 16.5 17.8292 15.8809 17.8759 15.0881L18.4546 5.25H3.54541ZM8.24976 8.25C8.24976 7.83579 8.58554 7.5 8.99976 7.5H12.9998C13.414 7.5 13.7498 7.83579 13.7498 8.25C13.7498 8.66421 13.414 9 12.9998 9H8.99976C8.58554 9 8.24976 8.66421 8.24976 8.25Z"
+                                                        fill="#111111" />
+                                                </svg>
+                                            </div>
+                                            <div class="text">Banner Management</div>
+                                        </a>
+                                   
+                                    </li>
+                                  
+                                    <li class="menu-item">
+                                        <a href="/admin-blogs" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-users"></i></div>
+                                            <div class="text">Blogs Management</div>
+                                        </a>
+                                      
+                                    </li>
+                                    <li class="menu-item active">
+                                        <a href="/admin-testimonials" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-star-o"></i></div>
+                                            <div class="text">Testimonials Management</div>
+                                        </a>
+                                       
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="/auth/admin-logout" class="">
+                                            <div class="icon">
+                                                <svg width="24" height="22" viewBox="0 0 20 20" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M8.125 18.6875C8.125 18.903 8.0394 19.1097 7.88702 19.262C7.73465 19.4144 7.52799 19.5 7.3125 19.5H1.625C1.19402 19.5 0.780698 19.3288 0.475951 19.024C0.171205 18.7193 0 18.306 0 17.875V1.625C0 1.19402 0.171205 0.780698 0.475951 0.475951C0.780698 0.171205 1.19402 0 1.625 0H7.3125C7.52799 0 7.73465 0.0856026 7.88702 0.237976C8.0394 0.390349 8.125 0.597012 8.125 0.8125C8.125 1.02799 8.0394 1.23465 7.88702 1.38702C7.73465 1.5394 7.52799 1.625 7.3125 1.625H1.625V17.875H7.3125C7.52799 17.875 7.73465 17.9606 7.88702 18.113C8.0394 18.2653 8.125 18.472 8.125 18.6875ZM19.2623 9.17516L15.1998 5.11266C15.0474 4.9602 14.8406 4.87455 14.625 4.87455C14.4094 4.87455 14.2026 4.9602 14.0502 5.11266C13.8977 5.26511 13.812 5.47189 13.812 5.6875C13.812 5.90311 13.8977 6.10989 14.0502 6.26234L16.7263 8.9375H7.3125C7.09701 8.9375 6.89035 9.0231 6.73798 9.17548C6.5856 9.32785 6.5 9.53451 6.5 9.75C6.5 9.96549 6.5856 10.1722 6.73798 10.3245C6.89035 10.4769 7.09701 10.5625 7.3125 10.5625H16.7263L14.0502 13.2377C13.8977 13.3901 13.812 13.5969 13.812 13.8125C13.812 14.0281 13.8977 14.2349 14.0502 14.3873C14.2026 14.5398 14.4094 14.6255 14.625 14.6255C14.8406 14.6255 15.0474 14.5398 15.1998 14.3873L19.2623 10.3248C19.3379 10.2494 19.3978 10.1598 19.4387 10.0611C19.4796 9.9625 19.5006 9.85678 19.5006 9.75C19.5006 9.64322 19.4796 9.5375 19.4387 9.43886C19.3978 9.34023 19.3379 9.25062 19.2623 9.17516Z"
+                                                        fill="#111111" />
+                                                </svg>
+                                            </div>
+                                            <div class="text">Log out</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /section-menu-left -->
+                <!-- section-content-right -->
+                <div class="section-content-right">
+                    <!-- header-dashboard -->
+                    <div class="header-dashboard">
+                        <div class="wrap">
+                            <div class="header-left">
+                                <a href="/admin/dashboard">
+                                    <img style="width: 50px;" id="logo_header_mobile" alt=""
+                                        src="/images/logo.png" data-light="/images/logo.png"
+                                        data-dark="/images/logo.png">
+                                </a>
+                                <div class="button-show-hide">
+                                    <i class="icon-chevron-left"></i>
+                                </div>
+                            </div>
+                            <div class="header-grid">
+                                <div class="header-item button-dark-light">
+                                    <i class="icon-moon"></i>
+                                </div>
+
+
+                                <div class="header-item button-zoom-maximize">
+                                    <div class="">
+                                        <i class="icon-maximize"></i>
+                                    </div>
+                                </div>
+                                <div class="popup-wrap user type-header">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="header-user wg-user">
+                                                <span class="image">
+                                                    <img src="admin-images/avatar/user-1.png" alt="">
+                                                </span>
+                                                <span class="flex flex-column">
+                                                    <span class="body-text text-main-dark">JOANNA</span>
+                                                    <span class="text-tiny">Admin</span>
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end has-content"
+                                            aria-labelledby="dropdownMenuButton3">
+
+                                            <li>
+                                                <a href="#" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-headphones"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Support</div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/logout" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-log-out"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Log out</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /header-dashboard -->
+                    <!-- main-content -->
+                    <div class="main-content">
+                        <!-- main-content-wrap -->
+                        <div class="main-content-inner">
+                            <!-- main-content-wrap -->
+                            <div class="main-content-wrap">
+                                <div class="flex items-center flex-wrap justify-between gap20 mb-30">
+                                    <h3>Testimonial Management</h3>
+                                    <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                                        <li>
+                                            <a href="/admin/dashboard">
+                                                <div class="text-tiny">Dashboard</div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <i class="icon-chevron-right"></i>
+                                        </li>
+                                        <li>
+                                            <div class="text-tiny">Testimonials</div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Banner Management -->
+                                <!-- Testimonial Management -->
+                                <div class="wg-box">
+                                    <div class="flex items-center justify-between gap10 flex-wrap">
+                                        <div class="flex gap10">
+                                            <a class="tf-button style-1 w208" href="#"
+                                                onclick="showAddTestimonialModal()">
+                                                <i class="icon-plus"></i>Add Testimonial
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="testimonial-cards" id="testimonial-list">
+                                        <!-- Testimonials will be injected here dynamically -->
+                                    </div>
+
+                                    <div class="divider"></div>
+                                </div>
+
+                                <!-- Add Testimonial Modal -->
+                                <div id="addTestimonialModal" class="modal">
+                                    <div class="modal-content">
+                                        <span class="close" onclick="closeModal('addTestimonialModal')">&times;</span>
+                                        <h4>Add New Testimonial</h4>
+                                        <form id="addTestimonialForm" enctype="multipart/form-data">
+                                            <div class="form-group">
+                                                <label for="testimonialName">Name*</label>
+                                                <input type="text" id="testimonialName" name="name" required
+                                                    class="w-full">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="testimonialDesignation">Designation*</label>
+                                                <input type="text" id="testimonialDesignation" name="designation"
+                                                    required class="w-full">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="testimonialContent">Content*</label>
+                                                <textarea id="testimonialContent" name="content" required class="w-full"
+                                                    rows="3"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="testimonialRating">Rating*</label>
+                                                <select id="testimonialRating" name="rating" required class="w-full">
+                                                    <option value="5">★★★★★</option>
+                                                    <option value="4">★★★★☆</option>
+                                                    <option value="3">★★★☆☆</option>
+                                                    <option value="2">★★☆☆☆</option>
+                                                    <option value="1">★☆☆☆☆</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="testimonialImage">Image*</label>
+                                                <input type="file" id="testimonialImage" name="image" accept="image/*"
+                                                    required>
+                                                <div class="text-tiny text-gray-500 mt-1">Only JPEG, JPG, PNG allowed
+                                                    (Max 5MB)</div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="flex items-center">
+                                                    <input type="checkbox" id="testimonialIsActive" name="isActive"
+                                                        class="mr-2" checked>
+                                                    <span>Active Testimonial</span>
+                                                </label>
+                                            </div>
+                                            <button type="submit" class="tf-button style-1">Create Testimonial</button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Edit Testimonial Modal -->
+                                <div id="editTestimonialModal" class="modal">
+                                    <div class="modal-content">
+                                        <span class="close" onclick="closeModal('editTestimonialModal')">&times;</span>
+                                        <h4>Edit Testimonial</h4>
+                                        <form id="editTestimonialForm" enctype="multipart/form-data">
+                                            <input type="hidden" id="editTestimonialId">
+                                            <div class="form-group">
+                                                <label for="editTestimonialName">Name*</label>
+                                                <input type="text" id="editTestimonialName" name="name" required
+                                                    class="w-full">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editTestimonialDesignation">Designation*</label>
+                                                <input type="text" id="editTestimonialDesignation" name="designation"
+                                                    required class="w-full">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editTestimonialContent">Content*</label>
+                                                <textarea id="editTestimonialContent" name="content" required
+                                                    class="w-full" rows="3"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editTestimonialRating">Rating*</label>
+                                                <select id="editTestimonialRating" name="rating" required
+                                                    class="w-full">
+                                                    <option value="5">★★★★★</option>
+                                                    <option value="4">★★★★☆</option>
+                                                    <option value="3">★★★☆☆</option>
+                                                    <option value="2">★★☆☆☆</option>
+                                                    <option value="1">★☆☆☆☆</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editTestimonialImage">Image</label>
+                                                <input type="file" id="editTestimonialImage" name="image"
+                                                    accept="image/*">
+                                                <div class="text-tiny text-gray-500 mt-1">Leave empty to keep current
+                                                    image</div>
+                                                <div id="currentTestimonialImagePreview" class="mt-2"></div>
+                                            </div>
+                                            <button type="submit" class="tf-button style-1">Update Testimonial</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /main-content-wrap -->
+                        </div>
+                        <script>
+                            // Testimonial Management Functions
+                            function showAddTestimonialModal() {
+                                showModal('addTestimonialModal');
+                            }
+                            // Load Testimonials
+                            async function loadTestimonials() {
+                                try {
+                                    const response = await fetch('/testimonials');
+                                    const { success, testimonials } = await response.json();
+
+                                    if (success) {
+                                        const testimonialList = document.getElementById('testimonial-list');
+                                        testimonialList.innerHTML = '';
+                                        testimonialList.style = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;';
+
+                                        testimonials.forEach(testimonial => {
+                                            const statusClass = testimonial.isActive ? 'status-active' : 'status-inactive';
+                                            const statusText = testimonial.isActive ? 'Active' : 'Inactive';
+
+                                            const stars = '★'.repeat(testimonial.rating) + '☆'.repeat(5 - testimonial.rating);
+
+                                            const testimonialCard = document.createElement('div');
+                                            testimonialCard.style = 'border: 1px solid #ccc; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); padding: 10px; text-align: center;';
+                                            testimonialCard.innerHTML = `
+                                                <div style="width: 100%; height: 100px; overflow: hidden;">
+                                                    <img src="${testimonial.imageUrl}" alt="${testimonial.name}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                                </div>
+                                                <div style="font-weight: bold; margin-top: 10px;">${testimonial.name}</div>
+                                                <div style="color: gray; margin-bottom: 10px;">${testimonial.designation}</div>
+                                                <div style="margin-bottom: 10px;">${testimonial.content}</div>
+                                                <div style="margin-bottom: 10px;">${stars}</div>
+                                                <div style="margin-bottom: 10px;">
+                                                    <span class="status-badge ${statusClass}">${statusText}</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-around;">
+                                                    <button class="tf-button style-5 small" onclick="editTestimonial('${testimonial._id}')">
+                                                        <i class="icon-edit"></i>
+                                                    </button>
+                                                    <button class="tf-button style-3 small" onclick="toggleTestimonialStatus('${testimonial._id}')">
+                                                        <i class="icon-power"></i>
+                                                    </button>
+                                                    <button class="tf-button style-6 small" onclick="deleteTestimonial('${testimonial._id}')">
+                                                        <i class="icon-trash-2"></i>
+                                                    </button>
+                                                </div>
+                                            `;
+                                            testimonialList.appendChild(testimonialCard);
+                                        });
+                                    }
+                                } catch (error) {
+                                    console.error('Error loading testimonials:', error);
+                                }
+                            }
+
+                            // Add Testimonial
+                            document.getElementById('addTestimonialForm').addEventListener('submit', async function (e) {
+                                e.preventDefault();
+
+                                const formData = new FormData(this);
+                                formData.append('isActive', document.getElementById('testimonialIsActive').checked);
+
+                                try {
+                                    const response = await fetch('/admin-testimonials', {
+                                        method: 'POST',
+                                        body: formData
+                                    });
+
+                                    const result = await response.json();
+
+                                    if (result.success) {
+                                        closeModal('addTestimonialModal');
+                                        this.reset();
+                                        loadTestimonials();
+                                        showToast('Testimonial added successfully!');
+                                    }
+                                } catch (error) {
+                                    console.error('Error adding testimonial:', error);
+                                    showToast('Error adding testimonial', 'error');
+                                }
+                            });
+
+                            // Edit Testimonial
+                            async function editTestimonial(id) {
+                                try {
+                                    // Changed to use the correct admin route
+                                    const response = await fetch(`/admin-testimonials/${id}`);
+
+                                    if (!response.ok) {
+                                        const error = await response.json();
+                                        throw new Error(error.message || 'Failed to fetch testimonial');
+                                    }
+
+                                    const { success, testimonial } = await response.json();
+
+                                    if (success) {
+                                        // Populate edit form
+                                        document.getElementById('editTestimonialId').value = testimonial._id;
+                                        document.getElementById('editTestimonialName').value = testimonial.name;
+                                        document.getElementById('editTestimonialDesignation').value = testimonial.designation;
+                                        document.getElementById('editTestimonialContent').value = testimonial.content;
+                                        document.getElementById('editTestimonialRating').value = testimonial.rating;
+
+                                        // Show current image preview
+                                        const preview = document.getElementById('currentTestimonialImagePreview');
+                                        preview.innerHTML = `
+                <img src="${testimonial.imageUrl}" 
+                     class="w-24 h-24 object-cover rounded-md border"
+                     alt="Current testimonial image">
+                <p class="text-xs mt-1 text-gray-500">Current Image</p>
+            `;
+
+                                        showModal('editTestimonialModal');
+                                    }
+                                } catch (error) {
+                                    console.error('Edit error:', error);
+                                    showToast(error.message || 'Error loading testimonial', 'error');
+                                }
+                            }
+                            // Update Testimonial
+                            document.getElementById('editTestimonialForm').addEventListener('submit', async function (e) {
+                                e.preventDefault();
+
+                                const id = document.getElementById('editTestimonialId').value;
+                                const formData = new FormData(this);
+
+                                try {
+                                    const response = await fetch(`/admin-testimonials/${id}`, {
+                                        method: 'PUT',
+                                        body: formData
+                                    });
+
+                                    const result = await response.json();
+
+                                    if (result.success) {
+                                        closeModal('editTestimonialModal');
+                                        loadTestimonials();
+                                        showToast('Testimonial updated successfully!');
+                                    }
+                                } catch (error) {
+                                    console.error('Error updating testimonial:', error);
+                                }
+                            });
+
+                            // Toggle Testimonial Status
+                            async function toggleTestimonialStatus(id) {
+                                try {
+                                    const response = await fetch(`/admin-testimonials/toggle-status/${id}`, {
+                                        method: 'PATCH'
+                                    });
+
+                                    const result = await response.json();
+
+                                    if (result.success) {
+                                        loadTestimonials();
+                                        showToast(`Testimonial ${result.message}`);
+                                    }
+                                } catch (error) {
+                                    console.error('Error toggling testimonial status:', error);
+                                }
+                            }
+
+                            // Delete Testimonial
+                            async function deleteTestimonial(id) {
+                                if (confirm('Are you sure you want to delete this testimonial?')) {
+                                    try {
+                                        const response = await fetch(`/admin-testimonials/${id}`, {
+                                            method: 'DELETE'
+                                        });
+
+                                        const result = await response.json();
+
+                                        if (result.success) {
+                                            loadTestimonials();
+                                            showToast('Testimonial deleted successfully!');
+                                        }
+                                    } catch (error) {
+                                        console.error('Error deleting testimonial:', error);
+                                    }
+                                }
+                            }
+
+                            // Initialize on page load
+                            document.addEventListener('DOMContentLoaded', function () {
+                                loadTestimonials();
+                            });
+                            function showModal(modalId) {
+                                document.getElementById(modalId).style.display = 'block';
+                                document.body.style.overflow = 'hidden'; // Prevent scrolling
+                            }
+
+                            function closeModal(modalId) {
+                                document.getElementById(modalId).style.display = 'none';
+                                document.body.style.overflow = 'auto'; // Re-enable scrolling
+                            }
+
+                            // Close modals when clicking outside content
+                            window.onclick = function (event) {
+                                document.querySelectorAll('.modal').forEach(modal => {
+                                    if (event.target == modal) {
+                                        closeModal(modal.id);
+                                    }
+                                });
+                            };
+
+                            function showToast(message, type = 'success') {
+                                const toast = document.createElement('div');
+                                toast.className = `toast-notification ${type}`;
+                                toast.textContent = message;
+                                document.body.appendChild(toast);
+
+                                setTimeout(() => {
+                                    toast.classList.add('show');
+                                }, 100);
+
+                                setTimeout(() => {
+                                    toast.classList.remove('show');
+                                    setTimeout(() => {
+                                        toast.remove();
+                                    }, 300);
+                                }, 3000);
+                            }
+                        </script>
+                        <!-- /main-content-wrap -->
+
+                        <!-- bottom-page -->
+                        <div class="bottom-page">
+                            <div class="body-text">Copyright © 2025 <a href="">Hofmaan</a>.
+                                Developed by Trivlogic Private Limited All rights reserved</div>
+                        </div>
+                        <!-- /bottom-page -->
+                    </div>
+                    <!-- /main-content -->
+                </div>
+                <!-- /section-content-right -->
+            </div>
+            <!-- /layout-wrap -->
+        </div>
+        <!-- /#page -->
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Javascript -->
+    <script src="/admin-js/jquery.min.js"></script>/
+    <script src="/admin-js/bootstrap.min.js"></script>
+    <script src="/admin-js/bootstrap-select.min.js"></script>
+    <script src="/admin-js/zoom.js"></script>
+    <script src="/admin-js/switcher.js"></script>
+    <script defer src="/admin-js/theme-settings.js"></script>
+    <script defer src="/admin-js/main.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<!--<![endif]-->
+
+<head>
+    <!-- Basic Page Needs -->
+    <meta charset="utf-8">
+    <title>Hofmaan - Admin Dashboard</title>
+
+    <meta name="author" content="trivlogic.com">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maxim/um-scale=1">
+
+    <!-- Theme Style -->
+    <link rel="stylesheet" type="text/css" href="/admin-css/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/animation.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap-select.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Font -->
+    <link rel="stylesheet" href="/admin-font/fonts.css">
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="/admin-icon/style.css">
+
+    <!-- Favicon and Touch Icons  -->
+    <link rel="shortcut icon" href="/images/logo-2.png">
+    <link rel="apple-touch-icon-precomposed" href="/images/logo-2.png">
+
+</head>
+
+<body>
+
+    <!-- #wrapper -->
+    <div id="wrapper">
+        <!-- #page -->
+        <div id="page" class="">
+            <!-- layout-wrap -->
+            <div class="layout-wrap">
+                <!-- preload -->
+                <div id="preload" class="preload-container">
+                    <div class="preloading">
+                        <span></span>
+                    </div>
+                </div>
+                <!-- /preload -->
+                <!-- section-menu-left -->
+                <div class="section-menu-left">
+                    <div class="box-logo">
+                        <a href="/admin/dashboard" id="site-logo-inner">
+                            <img style="width:60px;" id="logo_header" alt="Hofmaan" src="/images/logo.png"
+                                data-light="/images/logo.png" data-dark="/images/logo.png">
+                        </a>
+                        <div class="button-show-hide">
+                            <i class="icon-chevron-left"></i>
+                        </div>
+                    </div>
+                    <div class="section-menu-left-wrap">
+                        <div class="center">
+                            <div class="center-item">
+                                <ul class="">
+                                    <li class="menu-item active">
+                                        <a href="/admin/dashboard" class="">
+                                            <div class="icon">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M12.2652 3.57566C12.1187 3.42921 11.8813 3.42921 11.7348 3.57566L5.25 10.0605V19.8748C5.25 20.0819 5.41789 20.2498 5.625 20.2498H9V16.1248C9 15.0893 9.83947 14.2498 10.875 14.2498H13.125C14.1605 14.2498 15 15.0893 15 16.1248V20.2498H18.375C18.5821 20.2498 18.75 20.0819 18.75 19.8748V10.0605L12.2652 3.57566ZM20.25 11.5605L21.2197 12.5302C21.5126 12.8231 21.9874 12.8231 22.2803 12.5302C22.5732 12.2373 22.5732 11.7624 22.2803 11.4695L13.3258 2.51499C12.5936 1.78276 11.4064 1.78276 10.6742 2.515L1.71967 11.4695C1.42678 11.7624 1.42678 12.2373 1.71967 12.5302C2.01256 12.8231 2.48744 12.8231 2.78033 12.5302L3.75 11.5605V19.8748C3.75 20.9104 4.58947 21.7498 5.625 21.7498H18.375C19.4105 21.7498 20.25 20.9104 20.25 19.8748V11.5605ZM13.5 20.2498H10.5V16.1248C10.5 15.9177 10.6679 15.7498 10.875 15.7498H13.125C13.3321 15.7498 13.5 15.9177 13.5 16.1248V20.2498Z"
+                                                        fill="#111111" />
+                                                </svg>
+                                            </div>
+                                            <div class="text">Admin Dashboard</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="/admin/products" class="menu-item-button">
+                                            <div class="icon"><i class="icon-file-plus"></i></div>
+                                            <div class="text">Product Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/category" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Category Management</div>
+                                        </a>
+                                      
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="/admin/coupons" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Coupons Management</div>
+                                        </a>
+                                      
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/orders" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Orders Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/users" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">User Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin-banners" class="menu-item-button">
+                                            <div class="icon">
+                                                <svg width="24" height="22" viewBox="0 0 22 18" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M0.5 1.875C0.5 0.839466 1.33947 0 2.375 0H19.625C20.6605 0 21.5 0.839466 21.5 1.875V3.375C21.5 4.29657 20.8351 5.06285 19.9589 5.22035L19.3733 15.1762C19.28 16.7619 17.9669 18 16.3785 18H5.62154C4.03311 18 2.71999 16.7619 2.62671 15.1762L2.04108 5.22035C1.16485 5.06285 0.5 4.29657 0.5 3.375V1.875ZM2.75659 3.75C2.75266 3.74997 2.74873 3.74997 2.74479 3.75H2.375C2.16789 3.75 2 3.58211 2 3.375V1.875C2 1.66789 2.16789 1.5 2.375 1.5H19.625C19.8321 1.5 20 1.66789 20 1.875V3.375C20 3.58211 19.8321 3.75 19.625 3.75H19.2552C19.2513 3.74997 19.2473 3.74997 19.2434 3.75H2.75659ZM3.54541 5.25L4.12412 15.0881C4.17076 15.8809 4.82732 16.5 5.62154 16.5H16.3785C17.1727 16.5 17.8292 15.8809 17.8759 15.0881L18.4546 5.25H3.54541ZM8.24976 8.25C8.24976 7.83579 8.58554 7.5 8.99976 7.5H12.9998C13.414 7.5 13.7498 7.83579 13.7498 8.25C13.7498 8.66421 13.414 9 12.9998 9H8.99976C8.58554 9 8.24976 8.66421 8.24976 8.25Z"
+                                                        fill="#111111" />
+                                                </svg>
+                                            </div>
+                                            <div class="text">Banner Management</div>
+                                        </a>
+                                   
+                                    </li>
+                                  
+                                    <li class="menu-item">
+                                        <a href="/admin-blogs" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-users"></i></div>
+                                            <div class="text">Blogs Management</div>
+                                        </a>
+                                      
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin-testimonials" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-star-o"></i></div>
+                                            <div class="text">Testimonials Management</div>
+                                        </a>
+                                       
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="/auth/admin-logout" class="">
+                                            <div class="icon">
+                                                <svg width="24" height="22" viewBox="0 0 20 20" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M8.125 18.6875C8.125 18.903 8.0394 19.1097 7.88702 19.262C7.73465 19.4144 7.52799 19.5 7.3125 19.5H1.625C1.19402 19.5 0.780698 19.3288 0.475951 19.024C0.171205 18.7193 0 18.306 0 17.875V1.625C0 1.19402 0.171205 0.780698 0.475951 0.475951C0.780698 0.171205 1.19402 0 1.625 0H7.3125C7.52799 0 7.73465 0.0856026 7.88702 0.237976C8.0394 0.390349 8.125 0.597012 8.125 0.8125C8.125 1.02799 8.0394 1.23465 7.88702 1.38702C7.73465 1.5394 7.52799 1.625 7.3125 1.625H1.625V17.875H7.3125C7.52799 17.875 7.73465 17.9606 7.88702 18.113C8.0394 18.2653 8.125 18.472 8.125 18.6875ZM19.2623 9.17516L15.1998 5.11266C15.0474 4.9602 14.8406 4.87455 14.625 4.87455C14.4094 4.87455 14.2026 4.9602 14.0502 5.11266C13.8977 5.26511 13.812 5.47189 13.812 5.6875C13.812 5.90311 13.8977 6.10989 14.0502 6.26234L16.7263 8.9375H7.3125C7.09701 8.9375 6.89035 9.0231 6.73798 9.17548C6.5856 9.32785 6.5 9.53451 6.5 9.75C6.5 9.96549 6.5856 10.1722 6.73798 10.3245C6.89035 10.4769 7.09701 10.5625 7.3125 10.5625H16.7263L14.0502 13.2377C13.8977 13.3901 13.812 13.5969 13.812 13.8125C13.812 14.0281 13.8977 14.2349 14.0502 14.3873C14.2026 14.5398 14.4094 14.6255 14.625 14.6255C14.8406 14.6255 15.0474 14.5398 15.1998 14.3873L19.2623 10.3248C19.3379 10.2494 19.3978 10.1598 19.4387 10.0611C19.4796 9.9625 19.5006 9.85678 19.5006 9.75C19.5006 9.64322 19.4796 9.5375 19.4387 9.43886C19.3978 9.34023 19.3379 9.25062 19.2623 9.17516Z"
+                                                        fill="#111111" />
+                                                </svg>
+                                            </div>
+                                            <div class="text">Log out</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /section-menu-left -->
+                <!-- section-content-right -->
+                <div class="section-content-right">
+                    <!-- header-dashboard -->
+                    <div class="header-dashboard">
+                        <div class="wrap">
+                            <div class="header-left">
+                                <a href="/dashboard">
+                                    <img style="width: 50px;" id="logo_header_mobile" alt="Hofmaan" src="/images/logo.png"
+                                        data-light="img/logo.png" data-dark="img/logo.png">
+                                </a>
+                                <div class="button-show-hide">
+                                    <i class="icon-chevron-left"></i>
+                                </div>
+                               
+                            </div>
+                            <div class="header-grid">
+                                <div class="header-item button-dark-light">
+                                    <i class="icon-moon"></i>
+                                </div>
+                               
+                                
+
+                                <div class="header-item button-zoom-maximize">
+                                    <div class="">
+                                        <i class="icon-maximize"></i>
+                                    </div>
+                                </div>
+                                <div class="popup-wrap user type-header">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="header-user wg-user">
+                                                <span class="image">
+                                                    <img src="/admin-images/avatar/user-1.png" alt="Hofmaan">
+                                                </span>
+                                                <span class="flex flex-column">
+                                                    <span class="body-text text-main-dark">Hofmaan</span>
+                                                    <span class="text-tiny">Admin</span>
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end has-content"
+                                            aria-labelledby="dropdownMenuButton3">
+
+                                            <li>
+                                                <a href="#" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-headphones"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Support</div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/auth/admin-logout" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-log-out"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Log out</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /header-dashboard -->
+                    <!-- main-content -->
+                    <div class="main-content">
+                        <!-- main-content-wrap -->
+                        <div class="main-content-inner">
+                            <!-- main-content-wrap -->
+                            <div class="main-content-wrap">
+                                <div class="tf-section-4 mb-30">
+                                    <!-- chart-default -->
+                                    <div class="wg-chart-default">
+                                        <div class="top">
+                                            <div class="flex items-center gap14">
+                                                <div class="image type-white">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52"
+                                                        viewBox="0 0 48 52" fill="none">
+                                                        <path
+                                                            d="M19.1094 2.12943C22.2034 0.343099 26.0154 0.343099 29.1094 2.12943L42.4921 9.85592C45.5861 11.6423 47.4921 14.9435 47.4921 18.5162V33.9692C47.4921 37.5418 45.5861 40.8431 42.4921 42.6294L29.1094 50.3559C26.0154 52.1423 22.2034 52.1423 19.1094 50.3559L5.72669 42.6294C2.63268 40.8431 0.726688 37.5418 0.726688 33.9692V18.5162C0.726688 14.9435 2.63268 11.6423 5.72669 9.85592L19.1094 2.12943Z"
+                                                            fill="#22C55E" />
+                                                    </svg>
+                                                    <span class="icon">
+                                                        <svg width="19.5" height="19.5" viewBox="0 0 20 21" fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                d="M10 2.25C5.44365 2.25 1.75 5.94365 1.75 10.5C1.75 15.0563 5.44365 18.75 10 18.75C14.5563 18.75 18.25 15.0563 18.25 10.5C18.25 5.94365 14.5563 2.25 10 2.25ZM0.25 10.5C0.25 5.11522 4.61522 0.75 10 0.75C15.3848 0.75 19.75 5.11522 19.75 10.5C19.75 15.8848 15.3848 20.25 10 20.25C4.61522 20.25 0.25 15.8848 0.25 10.5ZM10 3.75C10.4142 3.75 10.75 4.08579 10.75 4.5V5.3157C11.3768 5.42679 11.9745 5.67882 12.4691 6.07178L12.884 6.40137C13.2084 6.65902 13.2624 7.13081 13.0048 7.45514C12.7471 7.77947 12.2753 7.83353 11.951 7.57588L11.5361 7.24629C11.309 7.06586 11.0392 6.93462 10.75 6.85259V9.80961C11.4021 9.91435 12.0381 10.1591 12.5714 10.559C13.3164 11.1178 13.75 11.9035 13.75 12.75C13.75 13.5965 13.3164 14.3822 12.5714 14.941C12.0381 15.3409 11.4021 15.5856 10.75 15.6904V16.5C10.75 16.9142 10.4142 17.25 10 17.25C9.58579 17.25 9.25 16.9142 9.25 16.5V15.6904C8.59794 15.5856 7.96206 15.3409 7.42886 14.941L6.54999 14.2818C6.21862 14.0333 6.15147 13.5632 6.40001 13.2318C6.64854 12.9004 7.11865 12.8333 7.45001 13.0818L8.32888 13.741C8.5864 13.9341 8.90284 14.0771 9.25 14.1616V11.1844C8.63267 11.075 8.03304 10.8274 7.53058 10.4283C6.81822 9.86237 6.41752 9.07872 6.41752 8.25003C6.41752 7.42133 6.81822 6.63768 7.53058 6.07178C8.02533 5.67876 8.6231 5.42672 9.25 5.31565V4.5C9.25 4.08579 9.58579 3.75 10 3.75ZM9.25 6.85252C8.96071 6.93454 8.69081 7.0658 8.46361 7.24629C8.06987 7.55907 7.91752 7.92707 7.91752 8.25003C7.91752 8.57298 8.06987 8.94098 8.46361 9.25376C8.68603 9.43046 8.95518 9.56376 9.25 9.64747V6.85252ZM10.75 11.3384V14.1616C11.0972 14.0772 11.4138 13.9342 11.6713 13.741C12.0978 13.4211 12.25 13.0551 12.25 12.75C12.25 12.4449 12.0978 12.0789 11.6713 11.759C11.4138 11.5658 11.0972 11.4228 10.75 11.3384Z"
+                                                                fill="white" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <div class="flex gap10 items-center">
+                                                        <div class="body-text mt-2 mb-4">Total Earnings</div>
+                                                        <div class="box-icon-trending up">
+                                                            <i class="icon-trending-up"></i>
+                                                            <div class="body-title number">1.56%</div>
+                                                        </div>
+                                                    </div>
+                                                    <h4>₹<%= dashboardData.totalEarnings.toLocaleString() %></h4>
+                                                </div>
+                                            </div>
+                                            <div class="dropdown default">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                                    data-bs-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="false">
+                                                    <span class="view-all">Weekly<i
+                                                            class="icon-chevron-down"></i></span>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a href="javascript:void(0);">Monthly</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="javascript:void(0);">Yearly</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="wrap-chart">
+                                            <div class="wrap-line-chart" id="line-chart-1"></div>
+                                        </div>
+                                    </div>
+                                    <!-- /chart-default -->
+                                    <!-- chart-default -->
+                                    <div class="wg-chart-default">
+                                        <div class="top">
+                                            <div class="flex items-center gap14">
+                                                <div class="image type-white">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52"
+                                                        viewBox="0 0 48 52" fill="none">
+                                                        <path
+                                                            d="M19.1094 2.12943C22.2034 0.343099 26.0154 0.343099 29.1094 2.12943L42.4921 9.85592C45.5861 11.6423 47.4921 14.9435 47.4921 18.5162V33.9692C47.4921 37.5418 45.5861 40.8431 42.4921 42.6294L29.1094 50.3559C26.0154 52.1423 22.2034 52.1423 19.1094 50.3559L5.72669 42.6294C2.63268 40.8431 0.726688 37.5418 0.726688 33.9692V18.5162C0.726688 14.9435 2.63268 11.6423 5.72669 9.85592L19.1094 2.12943Z"
+                                                            fill="#FF5200" />
+                                                    </svg>
+                                                    <span class="icon">
+                                                        <svg width="20" height="21" viewBox="0 0 20 21" fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                d="M9.99959 1.5C8.34273 1.5 6.99959 2.84315 6.99959 4.5V5.25H12.9996V4.5C12.9996 2.84315 11.6564 1.5 9.99959 1.5ZM14.4996 5.25V4.5C14.4996 2.01472 12.4849 0 9.99959 0C7.51431 0 5.49959 2.01472 5.49959 4.5V5.25H3.51238C2.55283 5.25 1.74813 5.97444 1.64768 6.92872L0.384527 18.9287C0.267993 20.0358 1.13603 21 2.24922 21H17.75C18.8631 21 19.7312 20.0358 19.6147 18.9287L18.3515 6.92872C18.251 5.97444 17.4463 5.25 16.4868 5.25H14.4996ZM12.9996 6.75H6.99959V8.16146C7.22974 8.36745 7.37459 8.66681 7.37459 9C7.37459 9.62132 6.87091 10.125 6.24959 10.125C5.62827 10.125 5.12459 9.62132 5.12459 9C5.12459 8.66681 5.26943 8.36745 5.49959 8.16146V6.75H3.51238C3.32047 6.75 3.15953 6.89489 3.13944 7.08574L1.87628 19.0857C1.85298 19.3072 2.02659 19.5 2.24922 19.5H17.75C17.9726 19.5 18.1462 19.3072 18.1229 19.0857L16.8597 7.08574C16.8396 6.89489 16.6787 6.75 16.4868 6.75H14.4996V8.16146C14.7297 8.36746 14.8746 8.66681 14.8746 9C14.8746 9.62132 14.3709 10.125 13.7496 10.125C13.1283 10.125 12.6246 9.62132 12.6246 9C12.6246 8.66681 12.7694 8.36745 12.9996 8.16146V6.75Z"
+                                                                fill="white" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <div class="flex gap15 items-center">
+                                                        <div class="body-text mt-2 mb-4">Total Orders</div>
+                                                        <div class="box-icon-trending down">
+                                                            <i class="icon-trending-down"></i>
+                                                            <div class="body-title number">1.56%</div>
+                                                        </div>
+                                                    </div>
+                                                    <h4><%= dashboardData.totalOrders.toLocaleString() %></h4>
+                                                </div>
+                                            </div>
+                                            <div class="dropdown default">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                                    data-bs-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="false">
+                                                    <span class="view-all">Monthly<i
+                                                            class="icon-chevron-down"></i></span>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a href="javascript:void(0);">Weekly</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="javascript:void(0);">Yearly</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="wrap-chart">
+                                            <div class="wrap-line-chart" id="line-chart-2"></div>
+                                        </div>
+                                    </div>
+                                    <!-- /chart-default -->
+                                    <!-- chart-default -->
+                                    <div class="wg-chart-default">
+                                        <div class="top">
+                                            <div class="flex items-center gap14">
+                                                <div class="image type-white">
+                                                    <svg width="52" height="52" viewBox="0 0 48 52" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M19.1084 2.12894C22.2024 0.34261 26.0144 0.342611 29.1084 2.12894L42.4911 9.85544C45.5851 11.6418 47.4911 14.943 47.4911 18.5157V33.9687C47.4911 37.5413 45.5851 40.8426 42.4911 42.6289L29.1084 50.3554C26.0144 52.1418 22.2024 52.1418 19.1084 50.3554L5.72571 42.6289C2.6317 40.8426 0.725712 37.5413 0.725712 33.9687V18.5157C0.725712 14.943 2.6317 11.6418 5.72571 9.85544L19.1084 2.12894Z"
+                                                            fill="#8F77F3" />
+                                                    </svg>
+                                                    <span class="icon">
+                                                        <svg width="24" height="25" viewBox="0 0 24 25" fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                d="M4.61976 16.1198C5.51618 15.2233 6.73199 14.7197 7.99973 14.7197H15.9997C17.2675 14.7197 18.4833 15.2233 19.3797 16.1198C20.2761 17.0162 20.7797 18.232 20.7797 19.4997V21.4997C20.7797 21.9305 20.4305 22.2797 19.9997 22.2797C19.5689 22.2797 19.2197 21.9305 19.2197 21.4997V19.4997C19.2197 18.6457 18.8805 17.8267 18.2766 17.2228C17.6727 16.619 16.8537 16.2797 15.9997 16.2797H7.99973C7.14573 16.2797 6.32671 16.619 5.72284 17.2228C5.11898 17.8267 4.77973 18.6457 4.77973 19.4997V21.4997C4.77973 21.9305 4.43051 22.2797 3.99973 22.2797C3.56894 22.2797 3.21973 21.9305 3.21973 21.4997V19.4997C3.21973 18.232 3.72333 17.0162 4.61976 16.1198Z"
+                                                                fill="white" />
+                                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                d="M11.9997 4.27973C10.2214 4.27973 8.77973 5.72137 8.77973 7.49973C8.77973 9.27808 10.2214 10.7197 11.9997 10.7197C13.7781 10.7197 15.2197 9.27808 15.2197 7.49973C15.2197 5.72137 13.7781 4.27973 11.9997 4.27973ZM7.21973 7.49973C7.21973 4.85981 9.35981 2.71973 11.9997 2.71973C14.6396 2.71973 16.7797 4.85981 16.7797 7.49973C16.7797 10.1396 14.6396 12.2797 11.9997 12.2797C9.35981 12.2797 7.21973 10.1396 7.21973 7.49973Z"
+                                                                fill="white" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <div class="flex gap9 items-center">
+                                                        <div class="body-text mt-2 mb-4">Customers</div>
+                                                        <div class="box-icon-trending up color-violet">
+                                                            <i class="icon-trending-up"></i>
+                                                            <div class="body-title number">1.56%</div>
+                                                        </div>
+                                                    </div>
+                                                    <h4><%= dashboardData.totalCustomers.toLocaleString() %></h4>
+                                                </div>
+                                            </div>
+                                            <div class="dropdown default">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                                    data-bs-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="false">
+                                                    <span class="view-all">Yearly<i
+                                                            class="icon-chevron-down"></i></span>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a href="javascript:void(0);">Monthly</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="javascript:void(0);">Weekly</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="wrap-chart">
+                                            <div class="wrap-line-chart" id="line-chart-3"></div>
+                                        </div>
+                                    </div>
+                                    <!-- /chart-default -->
+                                  
+                                </div>
+                                <div class="tf-section-2 mb-30">
+                                
+                                    <div class="flex gap20 flex-wrap-mobile">
+
+                                        <!-- top-countries -->
+                                        <div class="wg-box w-half">
+                                            <div class="flex items-center justify-between">
+                                                <h5>Top sale</h5>
+                                                <div class="dropdown default style-box">
+                                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                        <a href="/admin-products-list" class="view-all">Weekly<i
+                                                                class="icon-chevron-down"></i></a>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a href="javascript:void(0);">Yearly</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript:void(0);">Monthly</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <ul class="flex flex-column h-full has-divider-line">
+                                                <% dashboardData.topProducts.forEach(product => { %>
+                                                    <li class="wg-product">
+                                                        <div class="name flex-grow">
+                                                            <div class="image">
+                                                                <% if (product.images) { %>
+                                                                    <img src="<%= product.images[0] %>" alt="<%= product.name %>">
+                                                                <% } else { %>
+                                                                    <img src="/img/placeholder-product.jpg" alt="<%= product.name %>">
+                                                                <% } %>
+                                                            </div>
+                                                            <div>
+                                                                <div class="title">
+                                                                    <a href="#" class="body-text"><%= product.name %></a>
+                                                                </div>
+                                                                <div class="price text-tiny">₹<%= (product.totalRevenue / product.totalSales).toFixed(2) %></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="sale body-text"><%= product.totalSales %> Sales</div>
+                                                    </li>
+                                                <% }); %>
+                                            </ul>
+                                        </div>
+                                        <!-- /top-countries -->
+                                    </div>
+                                </div>
+                                <div class="tf-section-5">
+                                    <div class="wg-box">
+                                        <div class="flex items-center justify-between">
+                                            <h5>Recent orders</h5>
+                                        </div>
+                                        <div class="wg-table table-recent-orders">
+                                            <!-- Table headers remain the same -->
+                                            <div class="divider mb-14"></div>
+                                            <ul class="flex flex-col h-full has-divider-line">
+                                                <% dashboardData.topProducts.forEach(product => { %>
+                                                    <li style="width:50%;">
+                                                        <div class="name flex-grow">
+                                                            <div class="image" style="width: 100px;">
+                                                                <% if (product.images) { %>
+                                                                    <img src="<%= product.images[0] %>" alt="<%= product.name %>">
+                                                                <% } else { %>
+                                                                    <img src="/img/placeholder-product.jpg" alt="<%= product.name %>">
+                                                                <% } %>
+                                                            </div>
+                                                            <div>
+                                                                <div class="title">
+                                                                    <a href="#" class="body-text"><%= product.name || 'Product' %></a>
+                                                                </div>
+                                                                <div class="price text-tiny">
+                                                                    ₹<%= product.totalRevenue && product.totalSales ? 
+                                                                        (product.totalRevenue / product.totalSales).toFixed(2) : 
+                                                                        '0.00' %>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="sale body-text">
+                                                            <%= product.totalSales || '0' %> Sales
+                                                        </div>
+                                                    </li>
+                                                <% }); %>
+                                            </ul>
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /main-content-wrap -->
+                        </div>
+                        <!-- /main-content-wrap -->
+                        <!-- bottom-page -->
+                        <div class="bottom-page">
+                            <div class="body-text">Copyright © 2025 <a href="">Hofmaan</a>.
+                                Developed by Trivlogic Private Limited All rights reserved</div>
+                        </div>
+                        <!-- /bottom-page -->
+                    </div>
+                    <!-- /main-content -->
+                </div>
+                <!-- /section-content-right -->
+            </div>
+            <!-- /layout-wrap -->
+        </div>
+        <!-- /#page -->
+    </div>
+    <!-- /#wrapper -->
+  
+    <!-- Javascript -->
+    <script src="/admin-js/jquery.min.js"></script>
+    <script src="/admin-js/bootstrap.min.js"></script>
+    <script src="/admin-js/bootstrap-select.min.js"></script>
+    <script src="/admin-js/zoom.js"></script>
+    <script src="/admin-js/morris.min.js"></script>
+    <script src="/admin-js/raphael.min.js"></script>
+    <!-- <script src="admin-js/morris.js"></script> -->
+    <!-- <script src="admin-js/jvectormap.min.js"></script>
+    <script src="admin-js/jvectormap-us-lcc.js"></script>
+    <script src="admin-js/jvectormap-data.js"></script>
+    <script src="admin-js/jvectormap.js"></script> -->
+    <script src="/admin-js/apexcharts/apexcharts.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-1.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-2.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-3.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-4.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-5.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-6.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-7.js"></script>
+    <script src="/admin-js/switcher.js"></script>
+    <script defer src="/admin-js/theme-settings.js"></script>
+    <script src="/admin-js/main.js"></script>
+
+</body>
+
+</html>

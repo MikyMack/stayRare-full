@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<!--<![endif]-->
+
+<head>
+    <!-- Basic Page Needs -->
+    <meta charset="utf-8">
+    <title>Hofmaan - Admin Dashboard</title>
+
+    <meta name="author" content="trivlogic.com">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maxim/um-scale=1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Theme Style -->
+    <link rel="stylesheet" type="text/css" href="/admin-css/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/animation.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap-select.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Font -->
+    <link rel="stylesheet" href="/admin-font/fonts.css">
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="/admin-icon/style.css">
+
+    <!-- Favicon and Touch Icons  -->
+    <link rel="shortcut icon" href="/images/logo-2.png">
+    <link rel="apple-touch-icon-precomposed" href="/images/logo-2.png">
+    <style>
+        table,
+        th,
+        td {
+            border: none !important;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- #wrapper -->
+    <div id="wrapper">
+        <!-- #page -->
+        <div id="page" class="">
+            <!-- layout-wrap -->
+            <div class="layout-wrap">
+                <!-- preload -->
+              
+                <!-- /preload -->
+                <!-- section-menu-left -->
+                <div class="section-menu-left">
+                    <div class="box-logo">
+                        <a href="/admin/dashboard" id="site-logo-inner">
+                            <img style="width:60px;" id="logo_header" alt="Hofmaan" src="/images/logo.png"
+                                data-light="/images/logo.png" data-dark="/images/logo.png">
+                        </a>
+                        <div class="button-show-hide">
+                            <i class="icon-chevron-left"></i>
+                        </div>
+                    </div>
+                    <div class="section-menu-left-wrap">
+                        <div class="center">
+                            <div class="center-item">
+                                <ul class="">
+                                    <li class="menu-item ">
+                                        <a href="/admin/dashboard" class="">
+                                            <div class="icon">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M12.2652 3.57566C12.1187 3.42921 11.8813 3.42921 11.7348 3.57566L5.25 10.0605V19.8748C5.25 20.0819 5.41789 20.2498 5.625 20.2498H9V16.1248C9 15.0893 9.83947 14.2498 10.875 14.2498H13.125C14.1605 14.2498 15 15.0893 15 16.1248V20.2498H18.375C18.5821 20.2498 18.75 20.0819 18.75 19.8748V10.0605L12.2652 3.57566ZM20.25 11.5605L21.2197 12.5302C21.5126 12.8231 21.9874 12.8231 22.2803 12.5302C22.5732 12.2373 22.5732 11.7624 22.2803 11.4695L13.3258 2.51499C12.5936 1.78276 11.4064 1.78276 10.6742 2.515L1.71967 11.4695C1.42678 11.7624 1.42678 12.2373 1.71967 12.5302C2.01256 12.8231 2.48744 12.8231 2.78033 12.5302L3.75 11.5605V19.8748C3.75 20.9104 4.58947 21.7498 5.625 21.7498H18.375C19.4105 21.7498 20.25 20.9104 20.25 19.8748V11.5605ZM13.5 20.2498H10.5V16.1248C10.5 15.9177 10.6679 15.7498 10.875 15.7498H13.125C13.3321 15.7498 13.5 15.9177 13.5 16.1248V20.2498Z"
+                                                        fill="#111111" />
+                                                </svg>
+                                            </div>
+                                            <div class="text">Admin Dashboard</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="/admin/products" class="menu-item-button">
+                                            <div class="icon"><i class="icon-file-plus"></i></div>
+                                            <div class="text">Product Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/category" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Category Management</div>
+                                        </a>
+
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="/admin/coupons" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Coupons Management</div>
+                                        </a>
+
+                                    </li>
+                                    <li class="menu-item  active">
+                                        <a href="/admin/orders" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Orders Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/users" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">User Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin-banners" class="menu-item-button">
+                                            <div class="icon">
+                                                <svg width="24" height="22" viewBox="0 0 22 18" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M0.5 1.875C0.5 0.839466 1.33947 0 2.375 0H19.625C20.6605 0 21.5 0.839466 21.5 1.875V3.375C21.5 4.29657 20.8351 5.06285 19.9589 5.22035L19.3733 15.1762C19.28 16.7619 17.9669 18 16.3785 18H5.62154C4.03311 18 2.71999 16.7619 2.62671 15.1762L2.04108 5.22035C1.16485 5.06285 0.5 4.29657 0.5 3.375V1.875ZM2.75659 3.75C2.75266 3.74997 2.74873 3.74997 2.74479 3.75H2.375C2.16789 3.75 2 3.58211 2 3.375V1.875C2 1.66789 2.16789 1.5 2.375 1.5H19.625C19.8321 1.5 20 1.66789 20 1.875V3.375C20 3.58211 19.8321 3.75 19.625 3.75H19.2552C19.2513 3.74997 19.2473 3.74997 19.2434 3.75H2.75659ZM3.54541 5.25L4.12412 15.0881C4.17076 15.8809 4.82732 16.5 5.62154 16.5H16.3785C17.1727 16.5 17.8292 15.8809 17.8759 15.0881L18.4546 5.25H3.54541ZM8.24976 8.25C8.24976 7.83579 8.58554 7.5 8.99976 7.5H12.9998C13.414 7.5 13.7498 7.83579 13.7498 8.25C13.7498 8.66421 13.414 9 12.9998 9H8.99976C8.58554 9 8.24976 8.66421 8.24976 8.25Z"
+                                                        fill="#111111" />
+                                                </svg>
+                                            </div>
+                                            <div class="text">Banner Management</div>
+                                        </a>
+
+                                    </li>
+
+                                    <li class="menu-item">
+                                        <a href="/admin-blogs" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-users"></i></div>
+                                            <div class="text">Blogs Management</div>
+                                        </a>
+
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin-testimonials" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-star-o"></i></div>
+                                            <div class="text">Testimonials Management</div>
+                                        </a>
+
+                                    </li>
+                                    <li class="menu-item">
+                                        <a href="/auth/admin-logout" class="">
+                                            <div class="icon">
+                                                <svg width="24" height="22" viewBox="0 0 20 20" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M8.125 18.6875C8.125 18.903 8.0394 19.1097 7.88702 19.262C7.73465 19.4144 7.52799 19.5 7.3125 19.5H1.625C1.19402 19.5 0.780698 19.3288 0.475951 19.024C0.171205 18.7193 0 18.306 0 17.875V1.625C0 1.19402 0.171205 0.780698 0.475951 0.475951C0.780698 0.171205 1.19402 0 1.625 0H7.3125C7.52799 0 7.73465 0.0856026 7.88702 0.237976C8.0394 0.390349 8.125 0.597012 8.125 0.8125C8.125 1.02799 8.0394 1.23465 7.88702 1.38702C7.73465 1.5394 7.52799 1.625 7.3125 1.625H1.625V17.875H7.3125C7.52799 17.875 7.73465 17.9606 7.88702 18.113C8.0394 18.2653 8.125 18.472 8.125 18.6875ZM19.2623 9.17516L15.1998 5.11266C15.0474 4.9602 14.8406 4.87455 14.625 4.87455C14.4094 4.87455 14.2026 4.9602 14.0502 5.11266C13.8977 5.26511 13.812 5.47189 13.812 5.6875C13.812 5.90311 13.8977 6.10989 14.0502 6.26234L16.7263 8.9375H7.3125C7.09701 8.9375 6.89035 9.0231 6.73798 9.17548C6.5856 9.32785 6.5 9.53451 6.5 9.75C6.5 9.96549 6.5856 10.1722 6.73798 10.3245C6.89035 10.4769 7.09701 10.5625 7.3125 10.5625H16.7263L14.0502 13.2377C13.8977 13.3901 13.812 13.5969 13.812 13.8125C13.812 14.0281 13.8977 14.2349 14.0502 14.3873C14.2026 14.5398 14.4094 14.6255 14.625 14.6255C14.8406 14.6255 15.0474 14.5398 15.1998 14.3873L19.2623 10.3248C19.3379 10.2494 19.3978 10.1598 19.4387 10.0611C19.4796 9.9625 19.5006 9.85678 19.5006 9.75C19.5006 9.64322 19.4796 9.5375 19.4387 9.43886C19.3978 9.34023 19.3379 9.25062 19.2623 9.17516Z"
+                                                        fill="#111111" />
+                                                </svg>
+                                            </div>
+                                            <div class="text">Log out</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /section-menu-left -->
+                <!-- section-content-right -->
+                <div class="section-content-right">
+                    <!-- header-dashboard -->
+                    <div class="header-dashboard">
+                        <div class="wrap">
+                            <div class="header-left">
+                                <a href="/dashboard">
+                                    <img style="width: 50px;" id="logo_header_mobile" alt="Hofmaan"
+                                        src="/images/logo.png" data-light="img/logo.png" data-dark="img/logo.png">
+                                </a>
+                                <div class="button-show-hide">
+                                    <i class="icon-chevron-left"></i>
+                                </div>
+
+                            </div>
+                            <div class="header-grid">
+                                <div class="header-item button-dark-light">
+                                    <i class="icon-moon"></i>
+                                </div>
+
+
+
+                                <div class="header-item button-zoom-maximize">
+                                    <div class="">
+                                        <i class="icon-maximize"></i>
+                                    </div>
+                                </div>
+                                <div class="popup-wrap user type-header">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="header-user wg-user">
+                                                <span class="image">
+                                                    <img src="/admin-images/avatar/user-1.png" alt="Hofmaan">
+                                                </span>
+                                                <span class="flex flex-column">
+                                                    <span class="body-text text-main-dark">Hofmaan</span>
+                                                    <span class="text-tiny">Admin</span>
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end has-content"
+                                            aria-labelledby="dropdownMenuButton3">
+
+                                            <li>
+                                                <a href="#" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-headphones"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Support</div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/auth/admin-logout" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-log-out"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Log out</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /header-dashboard -->
+                    <!-- main-content -->
+                    <div class="main-content">
+                        <div class="order-management-container">
+                            <div class="flex items-center flex-wrap justify-between gap20 mb-30">
+                                <h3>All Orders</h3>
+                                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                                    <li>
+                                        <a href="/admin/dashboard">
+                                            <div class="text-tiny">Dashboard</div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <i class="icon-chevron-right"></i>
+                                    </li>
+                                    <li>
+                                        <a href="/admin/orders">
+                                            <div class="text-tiny">Orders</div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <i class="icon-chevron-right"></i>
+                                    </li>
+                                    <li>
+                                        <div class="text-tiny">All orders</div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Search and Filter Section -->
+                            <div class="order-filter-container">
+                                <div class="order-search-box">
+                                    <input type="text" id="orderSearch" placeholder="Search orders...">
+                                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                                </div>
+                                <div class="order-status-filter">
+                                    <select id="statusFilter">
+                                        <option value="">All Statuses</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Processing">Processing</option>
+                                        <option value="Shipped">Shipped</option>
+                                        <option value="Delivered">Delivered</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="order-table-container">
+                                <table class="order-main-table">
+                                    <thead class="order-table-header">
+                                        <tr>
+                                            <th class="order-header-cell">Order ID</th>
+                                            <th class="order-header-cell">Customer</th>
+                                            <th class="order-header-cell">Amount</th>
+                                            <th class="order-header-cell">Status</th>
+                                            <th class="order-header-cell">Date</th>
+                                            <th class="order-header-cell">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="order-table-body">
+                                        <% orders.forEach(order=> { %>
+                                            <tr class="order-data-row">
+                                                <td class="order-data-cell order-id-cell">
+                                                    <%= order._id.toString().slice(-6).toUpperCase() %>
+                                                </td>
+                                                <td class="order-data-cell">
+                                                    <% if (order.user) { %>
+                                                        <%= order.user.name %>
+                                                            <% } else { %>
+                                                                Guest
+                                                                <% } %>
+                                                </td>
+                                                <td class="order-data-cell order-amount-cell">
+                                                    ₹<%= order.totalAmount.toFixed(2) %>
+                                                </td>
+                                                <td class="order-data-cell">
+                                                    <span
+                                                        class="order-status-badge status-<%= order.orderStatus.toLowerCase() %>">
+                                                        <%= order.orderStatus %>
+                                                    </span>
+                                                </td>
+                                                <td class="order-data-cell">
+                                                    <%= new Date(order.createdAt).toLocaleDateString() %>
+                                                </td>
+                                                <td class="order-data-cell">
+                                                    <div class="order-action-buttons">
+                                                        <button class="order-action-btn order-edit-btn"
+                                                            onclick="openOrderEditModal('<%= order._id %>')">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="order-action-btn order-details-btn"
+                                                            onclick="openOrderDetailsModal('<%= order._id %>')">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Pagination -->
+                            <div class="order-pagination">
+                                <% if (currentPage> 1) { %>
+                                    <a href="/admin/orders?page=<%= currentPage - 1 %>&limit=<%= limit %>"
+                                        class="pagination-btn">
+                                        <i class="fas fa-chevron-left"></i> Previous
+                                    </a>
+                                    <% } %>
+
+                                        <% for (let i=1; i <=totalPages; i++) { %>
+                                            <a href="/admin/orders?page=<%= i %>&limit=<%= limit %>"
+                                                class="pagination-btn <%= currentPage === i ? 'active' : '' %>">
+                                                <%= i %>
+                                            </a>
+                                            <% } %>
+
+                                                <% if (currentPage < totalPages) { %>
+                                                    <a href="/admin/orders?page=<%= currentPage + 1 %>&limit=<%= limit %>"
+                                                        class="pagination-btn">
+                                                        Next <i class="fas fa-chevron-right"></i>
+                                                    </a>
+                                                    <% } %>
+                            </div>
+                        </div>
+
+                        <!-- Order Details Modal -->
+                        <div id="orderDetailsModal" class="order-modal-overlay">
+                            <div class="order-modal-container">
+                                <div class="order-modal-header">
+                                    <h2 class="order-modal-title">Order Details</h2>
+                                    <button class="order-modal-close"
+                                        onclick="closeOrderDetailsModal()">&times;</button>
+                                </div>
+                                <div class="order-modal-content">
+                                    <div class="order-details-grid">
+                                        <!-- Content will be populated by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order Edit Modal -->
+                        <div id="orderEditModal" class="order-modal-overlay">
+                            <div class="order-modal-container">
+                                <div class="order-modal-header">
+                                    <h2 class="order-modal-title">Edit Order</h2>
+                                    <button class="order-modal-close" onclick="closeOrderEditModal()">&times;</button>
+                                </div>
+                                <div class="order-modal-content">
+                                    <form class="order-edit-form" id="orderEditForm">
+                                        <input type="hidden" id="editOrderId">
+                                        <div class="order-form-group">
+                                            <label class="order-form-label">Order Status:</label>
+                                            <select class="order-form-select" id="editOrderStatus">
+                                                <option value="Pending">Pending</option>
+                                                <option value="Processing">Processing</option>
+                                                <option value="Shipped">Shipped</option>
+                                                <option value="Delivered">Delivered</option>
+                                                <option value="Cancelled">Cancelled</option>
+                                            </select>
+                                        </div>
+                                        <div class="order-form-group">
+                                            <label class="order-form-label">Delivery Status:</label>
+                                            <select class="order-form-select" id="editDeliveryStatus">
+                                                <option value="Pending">Pending</option>
+                                                <option value="Processing">Processing</option>
+                                                <option value="Shipped">Shipped</option>
+                                                <option value="In Transit">In Transit</option>
+                                                <option value="Out for Delivery">Out for Delivery</option>
+                                                <option value="Delivered">Delivered</option>
+                                                <option value="Cancelled">Cancelled</option>
+                                                <option value="Failed">Failed</option>
+                                            </select>
+                                        </div>
+                                        <div class="order-form-actions">
+                                            <button type="button" class="order-form-btn order-cancel-btn"
+                                                onclick="closeOrderEditModal()">Cancel</button>
+                                            <button type="submit" class="order-form-btn order-save-btn">Save
+                                                Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const orderSearch = document.getElementById('orderSearch');
+                            const statusFilter = document.getElementById('statusFilter');
+                            const searchBtn = document.querySelector('.search-btn');
+
+                            // Function to apply filters
+                            function applyFilters() {
+                                const searchTerm = orderSearch.value.trim();
+                                const status = statusFilter.value;
+
+                                // Get current URL parameters
+                                const url = new URL(window.location.href);
+                                const searchParams = new URLSearchParams(url.search);
+
+                                // Update parameters
+                                if (searchTerm) {
+                                    searchParams.set('search', searchTerm);
+                                } else {
+                                    searchParams.delete('search');
+                                }
+
+                                if (status) {
+                                    searchParams.set('status', status);
+                                } else {
+                                    searchParams.delete('status');
+                                }
+
+                                // Reset pagination to first page when filtering
+                                searchParams.set('page', '1');
+
+                                // Reload page with new filters
+                                window.location.href = `${url.pathname}?${searchParams.toString()}`;
+                            }
+
+                            // Event listeners
+                            searchBtn.addEventListener('click', applyFilters);
+                            orderSearch.addEventListener('keypress', function (e) {
+                                if (e.key === 'Enter') applyFilters();
+                            });
+                            statusFilter.addEventListener('change', applyFilters);
+                        });
+                        // Global variable to store current order
+                        let currentOrder = null;
+
+                        // Function to open order details modal
+                        async function openOrderDetailsModal(orderId) {
+                            try {
+                                const response = await fetch(`/admin/orders/${orderId}`);
+                                if (!response.ok) throw new Error('Failed to fetch order details');
+
+                                const order = await response.json();
+                                currentOrder = order;
+
+                                // Format dates
+                                const formatDate = (dateStr) => {
+                                    if (!dateStr) return '-';
+                                    const date = new Date(dateStr);
+                                    return date.toLocaleString();
+                                };
+
+                                // Format address
+                                const formatAddress = (address) => {
+                                    if (!address) return '-';
+                                    return `
+                                        ${address.name}<br>
+                                        ${address.addressLine1}<br>
+                                        ${address.addressLine2 ? address.addressLine2 + '<br>' : ''}
+                                        ${address.city}, ${address.state} - ${address.pincode}<br>
+                                        ${address.phone}
+                                    `;
+                                };
+
+                                // Populate modal content
+                                const modalContent = `
+                                    <div class="order-details-section">
+                                        <h3 class="order-section-title">
+                                            <i class="fas fa-shopping-cart"></i>
+                                            Order Information
+                                        </h3>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Order ID:</span>
+                                            <span class="order-detail-value">${order._id.toString().slice(-6).toUpperCase()}</span>
+                                        </div>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Customer:</span>
+                                            <span class="order-detail-value">
+                                                ${order.user?.name || 'Guest'} (${order.user?.email || 'No email'})
+                                            </span>
+                                        </div>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Order Status:</span>
+                                            <span class="order-detail-value">${order.orderStatus}</span>
+                                        </div>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Order Date:</span>
+                                            <span class="order-detail-value">${formatDate(order.createdAt)}</span>
+                                        </div>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Total Amount:</span>
+                                            <span class="order-detail-value">₹${order.totalAmount.toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                    
+                                    <div class="order-details-section">
+                                        <h3 class="order-section-title">
+                                            <i class="fas fa-credit-card"></i>
+                                            Payment Information
+                                        </h3>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Payment Status:</span>
+                                            <span class="order-detail-value">${order.paymentInfo.status}</span>
+                                        </div>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Payment ID:</span>
+                                            <span class="order-detail-value">${order.paymentInfo.razorpayPaymentId || '-'}</span>
+                                        </div>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Coupon Used:</span>
+                                            <span class="order-detail-value">${order.couponUsed?.code || 'None'}</span>
+                                        </div>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Discount:</span>
+                                            <span class="order-detail-value">₹${order.couponUsed?.discountAmount || '0.00'}</span>
+                                        </div>
+                                    </div>
+                    
+                                    <div class="order-details-section">
+                                        <h3 class="order-section-title">
+                                            <i class="fas fa-truck"></i>
+                                            Delivery Information
+                                        </h3>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Delivery Status:</span>
+                                            <span class="order-detail-value">${order.deliveryInfo.status}</span>
+                                        </div>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Courier:</span>
+                                            <span class="order-detail-value">${order.deliveryInfo.courier}</span>
+                                        </div>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">AWB Code:</span>
+                                            <span class="order-detail-value">${order.deliveryInfo.awbCode || '-'}</span>
+                                        </div>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Tracking URL:</span>
+                                            <span class="order-detail-value">
+                                                ${order.deliveryInfo.labelUrl ?
+                                        `<a href="${order.deliveryInfo.labelUrl}" target="_blank">View Label</a>` : '-'}
+                                            </span>
+                                        </div>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Estimated Delivery:</span>
+                                            <span class="order-detail-value">
+                                                ${order.deliveryInfo.estimatedDelivery ?
+                                        formatDate(order.deliveryInfo.estimatedDelivery) : '-'}
+                                            </span>
+                                        </div>
+                                    </div>
+                    
+                                    <div class="order-details-section">
+                                        <h3 class="order-section-title">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            Shipping Address
+                                        </h3>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-value">
+                                                ${formatAddress(order.shippingAddress)}
+                                            </span>
+                                        </div>
+                                    </div>
+                    
+                                    <div class="order-details-section">
+                                        <h3 class="order-section-title">
+                                            <i class="fas fa-box"></i>
+                                            Products (${order.items.length})
+                                        </h3>
+                                        <div class="order-product-list">
+                                            ${order.items.map(item => `
+                                                <div class="order-product-item">
+                                                    <div class="product-image">
+                                                        ${item.product?.images?.[0] ?
+                                                `<img src="${item.product.images[0]}" alt="${item.name}">` :
+                                                '<div class="no-image">No Image</div>'}
+                                                    </div>
+                                                    <div class="product-details">
+                                                        <h4>${item.name}</h4>
+                                                        <p>Quantity: ${item.quantity}</p>
+                                                        <p>Price: ₹${item.price.toFixed(2)}</p>
+                                                        ${item.selectedColor ? `<p>Color: ${item.selectedColor}</p>` : ''}
+                                                        ${item.selectedSize ? `<p>Size: ${item.selectedSize}</p>` : ''}
+                                                    </div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                `;
+
+                                document.querySelector('.order-details-grid').innerHTML = modalContent;
+                                document.getElementById('orderDetailsModal').style.display = 'block';
+                            } catch (error) {
+                                console.error('Error loading order details:', error);
+                                alert('Failed to load order details');
+                            }
+                        }
+
+                        // Function to open order edit modal
+                        async function openOrderEditModal(orderId) {
+                            try {
+                                const response = await fetch(`/admin/orders/${orderId}`);
+                                if (!response.ok) throw new Error('Failed to fetch order details');
+
+                                const order = await response.json();
+                                currentOrder = order;
+
+                                document.getElementById('editOrderId').value = order._id;
+                                document.getElementById('editOrderStatus').value = order.orderStatus;
+                                document.getElementById('editDeliveryStatus').value = order.deliveryInfo.status;
+
+                                document.getElementById('orderEditModal').style.display = 'block';
+                            } catch (error) {
+                                console.error('Error loading order for edit:', error);
+                                alert('Failed to load order for editing');
+                            }
+                        }
+
+                        // Handle form submission for order edit
+                        document.getElementById('orderEditForm').addEventListener('submit', async function (e) {
+                            e.preventDefault();
+
+                            const orderId = document.getElementById('editOrderId').value;
+                            const orderStatus = document.getElementById('editOrderStatus').value;
+                            const deliveryStatus = document.getElementById('editDeliveryStatus').value;
+
+                            try {
+                                const response = await fetch(`/admin/orders/${orderId}`, {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        orderStatus,
+                                        deliveryStatus
+                                    })
+                                });
+
+                                if (!response.ok) throw new Error('Failed to update order');
+
+                                const updatedOrder = await response.json();
+                                alert('Order updated successfully');
+                                closeOrderEditModal();
+                                window.location.reload(); // Refresh to show changes
+                            } catch (error) {
+                                console.error('Error updating order:', error);
+                                alert('Failed to update order');
+                            }
+                        });
+
+                        // Close modals
+                        function closeOrderDetailsModal() {
+                            document.getElementById('orderDetailsModal').style.display = 'none';
+                        }
+
+                        function closeOrderEditModal() {
+                            document.getElementById('orderEditModal').style.display = 'none';
+                        }
+
+                        // Close modals when clicking outside
+                        window.addEventListener('click', function (e) {
+                            if (e.target.classList.contains('order-modal-overlay')) {
+                                closeOrderDetailsModal();
+                                closeOrderEditModal();
+                            }
+                        });
+                    </script>
+                    <!-- /main-content -->
+                </div>
+                <!-- /section-content-right -->
+            </div>
+            <!-- /layout-wrap -->
+        </div>
+        <!-- /#page -->
+    </div>
+    <!-- /#wrapper -->
+
+
+
+    <!-- Javascript -->
+    <script src="/admin-js/jquery.min.js"></script>
+    <script src="/admin-js/bootstrap.min.js"></script>
+    <script src="/admin-js/bootstrap-select.min.js"></script>
+    <script src="/admin-js/zoom.js"></script>
+    <script src="/admin-js/morris.min.js"></script>
+    <script src="/admin-js/raphael.min.js"></script>
+    <!-- <script src="admin-js/morris.js"></script> -->
+    <!-- <script src="admin-js/jvectormap.min.js"></script>
+    <script src="admin-js/jvectormap-us-lcc.js"></script>
+    <script src="admin-js/jvectormap-data.js"></script>
+    <script src="admin-js/jvectormap.js"></script> -->
+    <script src="/admin-js/apexcharts/apexcharts.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-1.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-2.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-3.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-4.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-5.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-6.js"></script>
+    <script src="/admin-js/apexcharts/line-chart-7.js"></script>
+    <script src="/admin-js/switcher.js"></script>
+    <script defer src="/admin-js/theme-settings.js"></script>
+    <script src="/admin-js/main.js"></script>
+
+</body>
+
+</html>
