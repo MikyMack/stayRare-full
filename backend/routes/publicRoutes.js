@@ -317,8 +317,6 @@ router.get('/store', async (req, res) => {
         let sortObj = {};
         switch (sort) {
             case 'price-low':
-                // Sort by effective price: salePrice if > 0, else basePrice
-                // This requires aggregation, but for .find() we can sort by a computed field in-memory after fetching
                 sortObj = { };
                 break;
             case 'price-high':
@@ -337,12 +335,14 @@ router.get('/store', async (req, res) => {
             let fetchedProducts = await Product.find(filter)
                 .skip((effectivePage - 1) * Number(limit))
                 .limit(Number(limit))
+                .populate('category', 'name') // Populate category name
                 .lean();
 
             if (fetchedProducts.length < Number(limit)) {
-                fetchedProducts = await Product.find(filter).lean();
+                fetchedProducts = await Product.find(filter)
+                    .populate('category', 'name') // Populate category name
+                    .lean();
             }
-
 
             fetchedProducts.forEach(p => {
                 p.effectivePrice = (p.salePrice && p.salePrice > 0) ? p.salePrice : p.basePrice;
@@ -363,6 +363,7 @@ router.get('/store', async (req, res) => {
                 .skip((effectivePage - 1) * Number(limit))
                 .limit(Number(limit))
                 .sort(sortObj)
+                .populate('category', 'name') // Populate category name
                 .lean();
         }
 
@@ -428,7 +429,6 @@ router.get('/store', async (req, res) => {
     }
 });
 
-
 router.get('/product/:id', async (req, res) => {
     try {
         const productId = req.params.id;
@@ -445,6 +445,25 @@ router.get('/product/:id', async (req, res) => {
                 categories: []
             });
         }
+
+        // Helper function to convert color names to hex codes
+        const getColorCode = (colorName) => {
+            const colorMap = {
+                'black': '#222',
+                'red': '#C93A3E',
+                'grey': '#E4E4E4',
+                'blue': '#1E90FF',
+                'green': '#2E8B57',
+                'white': '#FFFFFF',
+                'yellow': '#FFD700',
+                'pink': '#FFC0CB',
+                'purple': '#800080',
+                'orange': '#FFA500',
+                'brown': '#A52A2A'
+            };
+            return colorMap[colorName.toLowerCase()] || '#CCCCCC';
+        };
+
         const categories = await Category.find({ isActive: true })
             .select('name imageUrl isActive subCategories')
             .lean();
@@ -478,7 +497,8 @@ router.get('/product/:id', async (req, res) => {
             product,
             relatedProducts,
             category,
-            categories
+            categories,
+            getColorCode // Pass the helper function to the view
         });
     } catch (err) {
         console.error('Error fetching product details:', err);

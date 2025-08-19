@@ -583,7 +583,7 @@
         <div class="shop-banner position-relative  ">
           <div class="background-img" style="background-color: #eeeeee;">
             <img style="object-fit: cover;" loading="lazy" src="images/stayrare/poster-7.jpg" width="1759" height="420"
-              alt="Pattern" class="slideshow-bg__img object-fit-cotain">
+              alt="Pattern" class="slideshow-bg__img object-fit-contain">
           </div>
           <div class="shop-banner__content container position-absolute start-50 top-50 translate-middle">
             <h2 class="h1 smooth-16 text-uppercase fw-bold mb-3 mb-xl-4 mb-xl-5">
@@ -606,34 +606,39 @@
 
         <div class="shop-acs d-flex align-items-center justify-content-between justify-content-md-end flex-grow-1">
           <form id="sortForm" method="get" class="d-inline">
-            <% // Build query string for all filters except sort function buildQueryString(filters, overrideSort) {
-              const params=[]; if (filters.category) params.push('category=' + encodeURIComponent(filters.category));
-                if (filters.subcategory) params.push(' subcategory=' + encodeURIComponent(filters.subcategory));
-                if (filters.q) params.push(' q=' + encodeURIComponent(filters.q));
-                if (filters.minPrice) params.push(' minPrice=' + encodeURIComponent(filters.minPrice));
-                if (filters.maxPrice) params.push(' maxPrice=' + encodeURIComponent(filters.maxPrice));
-                if (filters.size) params.push(' size=' + encodeURIComponent(filters.size));
-                if (filters.color) params.push(' color=' + encodeURIComponent(filters.color));
-                if (filters.limit) params.push(' limit=' + encodeURIComponent(filters.limit));
-                if (filters.categoryPage) params.push(' categoryPage=' + encodeURIComponent(filters.categoryPage));
-                if (filters.subcategoryPage) params.push(' subcategoryPage=' + encodeURIComponent(filters.subcategoryPage));
+            <%
+              function buildQueryString(filters, overrideSort) {
+                const params = [];
+                if (filters.category) params.push('category=' + encodeURIComponent(filters.category));
+                if (filters.subcategory) params.push('subcategory=' + encodeURIComponent(filters.subcategory));
+                if (filters.q) params.push('q=' + encodeURIComponent(filters.q));
+                if (filters.minPrice) params.push('minPrice=' + encodeURIComponent(filters.minPrice));
+                if (filters.maxPrice) params.push('maxPrice=' + encodeURIComponent(filters.maxPrice));
+                if (filters.size) params.push('size=' + encodeURIComponent(filters.size));
+                if (filters.color) params.push('color=' + encodeURIComponent(filters.color));
+                if (filters.limit) params.push('limit=' + encodeURIComponent(filters.limit));
+                if (filters.categoryPage) params.push('categoryPage=' + encodeURIComponent(filters.categoryPage));
+                if (filters.subcategoryPage) params.push('subcategoryPage=' + encodeURIComponent(filters.subcategoryPage));
                 if (overrideSort !== undefined) {
-                  params.push(' sort=' + encodeURIComponent(overrideSort));
+                  params.push('sort=' + encodeURIComponent(overrideSort));
                 } else if (filters.sort) {
-                  params.push(' sort=' + encodeURIComponent(filters.sort));
+                  params.push('sort=' + encodeURIComponent(filters.sort));
                 }
-                return params.join(' &'); } const sortValue=filters.sort || 'newest' ; %>
-              <select class="shop-acs__select form-select w-auto border-0 py-0 order-1 order-md-0"
-                aria-label="Sort Items" name="sort"
-                onchange="location.href='/store?<%= buildQueryString(filters, this.value) %>'.replace(/sort=[^&]*/, 'sort=' + encodeURIComponent(this.value));">
-                <option value="newest" <%=sortValue==='newest' ? 'selected' : '' %>>Default Sorting</option>
-                <option value="featured" <%=sortValue==='featured' ? 'selected' : '' %>>Featured</option>
-                <option value="bestseller" <%=sortValue==='bestseller' ? 'selected' : '' %>>Best selling</option>
-                <option value="az" <%=sortValue==='az' ? 'selected' : '' %>>Alphabetically, A-Z</option>
-                <option value="za" <%=sortValue==='za' ? 'selected' : '' %>>Alphabetically, Z-A</option>
-                <option value="price-low" <%=sortValue==='price-low' ? 'selected' : '' %>>Price, low to high</option>
-                <option value="price-high" <%=sortValue==='price-high' ? 'selected' : '' %>>Price, high to low</option>
-              </select>
+                return params.join('&');
+              }
+              const sortValue = filters && filters.sort ? filters.sort : 'newest';
+            %>
+            <select class="shop-acs__select form-select w-auto border-0 py-0 order-1 order-md-0"
+            aria-label="Sort Items" name="sort"
+            onchange="location.href='/store?<%= buildQueryString(filters) %>&sort=' + this.value;">
+            <option value="newest" <%= sortValue==='newest' ? 'selected' : '' %>>Default Sorting</option>
+            <option value="featured" <%= sortValue==='featured' ? 'selected' : '' %>>Featured</option>
+            <option value="bestseller" <%= sortValue==='bestseller' ? 'selected' : '' %>>Best selling</option>
+            <option value="az" <%= sortValue==='az' ? 'selected' : '' %>>Alphabetically, A-Z</option>
+            <option value="za" <%= sortValue==='za' ? 'selected' : '' %>>Alphabetically, Z-A</option>
+            <option value="price-low" <%= sortValue==='price-low' ? 'selected' : '' %>>Price, low to high</option>
+            <option value="price-high" <%= sortValue==='price-high' ? 'selected' : '' %>>Price, high to low</option>
+          </select>
           </form>
           <div class="shop-asc__seprator mx-3 bg-light d-none d-lg-block order-md-1"></div>
           <div class="shop-filter d-flex align-items-center order-0 order-md-3">
@@ -649,200 +654,222 @@
       </div><!-- /.d-flex justify-content-between -->
 
       <div class="products-grid row row-cols-2 row-cols-md-3 row-cols-lg-4" id="products-grid">
-        <% if (Array.isArray(products) && products.length> 0) { %>
-          <% products.forEach(function(product) { // Calculate discount percentage if applicable let discount=0; if
-            (product.basePrice && product.salePrice && product.salePrice < product.basePrice) {
-            discount=Math.round(((product.basePrice - product.salePrice) / product.basePrice) * 100); } // For
-            color/size variants const hasColorVariants=product.hasColorVariants && Array.isArray(product.colorVariants)
-            && product.colorVariants.length> 0;
-            const hasSizeVariants = product.hasSizeVariants && Array.isArray(product.sizeVariants) &&
-            product.sizeVariants.length > 0;
-            %>
-            <div class="product-card-wrapper">
-              <div class="product-card mb-3 mb-md-4 mb-xxl-5">
-                <div class="pc__img-wrapper">
-                  <div class="swiper-container background-img js-swiper-slider"
-                    data-settings='{"resizeObserver": true}'>
-                    <div class="swiper-wrapper">
-                      <% if (Array.isArray(product.images) && product.images.length> 0) { %>
-                        <% product.images.forEach(function(img, idx) { %>
-                          <div class="swiper-slide">
-                            <a href="/product/<%= product._id %>">
-                              <img loading="lazy" src="<%= img %>" width="330" height="400" alt="<%= product.name %>"
-                                class="pc__img">
-                            </a>
-                          </div>
-                          <% }) %>
-                            <% } else { %>
-                              <div class="swiper-slide">
-                                <a href="/product/<%= product._id %>">
-                                  <img loading="lazy" src="images/placeholder.png" width="330" height="400"
-                                    alt="No Image" class="pc__img">
-                                </a>
-                              </div>
-                              <% } %>
-                    </div>
-                    <span class="pc__img-prev"><svg width="7" height="11" viewBox="0 0 7 11"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <use href="#icon_prev_sm" />
-                      </svg></span>
-                    <span class="pc__img-next"><svg width="7" height="11" viewBox="0 0 7 11"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <use href="#icon_next_sm" />
-                      </svg></span>
-                  </div>
-                  <div
-                    class="anim_appear-bottom position-absolute bottom-0 start-0 w-100 d-none d-sm-flex align-items-center">
-                    <form class="w-100 js-product-add-cart-form" data-product-id="<%= product._id %>">
-                      <div class="d-flex flex-column flex-md-row align-items-center w-100">
-                        <% if (hasColorVariants) { %>
-                          <select class="form-select form-select-sm me-2 mb-2 mb-md-0 js-select-color" name="color"
-                            style="max-width: 110px;">
-                            <option value="">Color</option>
-                            <% product.colorVariants.forEach(function(variant) { %>
-                              <option value="<%= variant.color %>" data-stock="<%= variant.stock %>">
-                                <%= variant.color %>
-                                  <% if (variant.stock===0) { %> (Out of stock) <% } %>
-                              </option>
-                              <% }) %>
-                          </select>
-                          <% } %>
-                            <% if (hasSizeVariants) { %>
-                              <select class="form-select form-select-sm me-2 mb-2 mb-md-0 js-select-size" name="size"
-                                style="max-width: 110px;">
-                                <option value="">Size</option>
-                                <% product.sizeVariants.forEach(function(variant) { %>
-                                  <option value="<%= variant.size %>" data-stock="<%= variant.stock %>">
-                                    <%= variant.size %>
-                                      <% if (variant.stock===0) { %> (Out of stock) <% } %>
-                                  </option>
-                                  <% }) %>
-                              </select>
-                              <% } %>
-                                <button type="submit"
-                                  class="btn btn-primary flex-grow-1 fs-base ps-3 ps-xxl-4 pe-0 border-0 text-uppercase fw-medium js-add-cart"
-                                  data-product-id="<%= product._id %>" title="Add To Cart">Add To Cart</button>
-                                <button type="button"
-                                  class="btn btn-primary flex-grow-1 fs-base ps-0 pe-3 pe-xxl-4 border-0 text-uppercase fw-medium js-quick-view"
-                                  data-bs-toggle="modal" data-bs-target="#quickView"
-                                  data-product-id="<%= product._id %>" title="Quick view">Quick View</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-                <div class="pc__info position-relative">
-                  <p class="pc__category third-color">
-                    <%= product.category && product.category.name ? product.category.name : (product.category
-                      || 'Category' ) %>
-                  </p>
-                  <h6 class="pc__title">
-                    <a href="/product/<%= product._id %>">
+        <% if (Array.isArray(products) && products.length > 0) { %>
+          <% products.forEach(function(product) {
+            var discount = 0;
+            if (product.basePrice && product.salePrice && product.salePrice < product.basePrice) {
+              discount = Math.round(((product.basePrice - product.salePrice) / product.basePrice) * 100);
+            }
+            var hasColorVariants = product.hasColorVariants && Array.isArray(product.colorVariants) && product.colorVariants.length > 0;
+            var hasSizeVariants = product.hasSizeVariants && Array.isArray(product.sizeVariants) && product.sizeVariants.length > 0;
+            var isOutOfStock = false;
+            if (!hasColorVariants && !hasSizeVariants) {
+              isOutOfStock = (typeof product.stock === 'number' && product.stock === 0);
+            } else if (hasColorVariants && !hasSizeVariants) {
+              isOutOfStock = product.colorVariants.every(function(variant) { return variant.stock === 0; });
+            } else if (!hasColorVariants && hasSizeVariants) {
+              isOutOfStock = product.sizeVariants.every(function(variant) { return variant.stock === 0; });
+            } else if (hasColorVariants && hasSizeVariants) {
+              isOutOfStock = product.colorVariants.every(function(variant) { return variant.stock === 0; }) &&
+                             product.sizeVariants.every(function(variant) { return variant.stock === 0; });
+            }
+            var mainImg = (Array.isArray(product.images) && product.images.length > 0) ? product.images[0] : 'images/placeholder.png';
+            var secondImg = (Array.isArray(product.images) && product.images.length > 1) ? product.images[1] : mainImg;
+          %>
+            <div class="product-card-wrapper mb-3 mb-md-4 mb-xxl-5">
+              <div class="catchy-product-card">
+                <div class="catchy-img-hover" style="height: 340px; min-height: 320px;">
+                  <a href="/product/<%= product._id %>" style="display:block; width:100%; height:100%; position:relative;">
+                    <img loading="lazy" src="<%= mainImg %>" alt="<%= product.name %>" class="catchy-img-main" style="width:100%;height:100%;object-fit:cover;">
+                    <img loading="lazy" src="<%= secondImg %>" alt="<%= product.name %> second" class="catchy-img-second" style="width:100%;height:100%;object-fit:cover;">
+                  </a>
+                  <% if (discount > 0) { %>
+                    <span class="catchy-discount-badge">
+                      <i class="bi bi-lightning-charge-fill me-1"></i>
+                      <%= discount %>% OFF
+                    </span>
+                  <% } %>
+                  <button type="button"
+                    class="catchy-wishlist-btn js-add-to-wishlist-grid"
+                    data-product-id="<%= product._id %>"
+                    title="Add to Wishlist">
+                    <i class="bi bi-heart-fill love-icon"></i>
+                  </button>
+                  <% if (isOutOfStock) { %>
+                    <span class="catchy-outofstock-badge">
+                      <i class="bi bi-x-octagon me-1"></i> Out of Stock
+                    </span>
+                  <% } %>
+                  <div class="catchy-bottom-overlay">
+                    <span class="catchy-category">
+                      <i class="bi bi-tag-fill me-1"></i>
+                      <%= product.category && product.category.name ? product.category.name : (product.category || 'Category') %>
+                    </span>
+                    <a href="/product/<%= product._id %>" class="catchy-title text-decoration-none">
                       <%= product.name %>
                     </a>
-                  </h6>
-                  <div class="product-card__price d-flex align-items-center">
-                    <% if (product.basePrice && product.salePrice && product.salePrice < product.basePrice) { %>
-                      <span class="money price-old">₹<%= product.basePrice %></span>
-                      <span class="money price ms-2">₹<%= product.salePrice %></span>
-                      <span class="badge bg-success ms-2">
-                        <%= discount %>% OFF
-                      </span>
-                      <% } else { %>
-                        <span class="money price">₹<%= product.basePrice %></span>
-                        <% } %>
                   </div>
-                  <% if (hasColorVariants) { %>
-                    <div class="d-flex align-items-center mt-1">
-                      <% product.colorVariants.forEach(function(variant, idx) { %>
-                        <span class="swatch-color pc__swatch-color<%= idx === 0 ? ' swatch_active' : '' %>"
-                          data-color="<%= variant.color %>"
-                          title="<%= variant.color %> <%= variant.stock === 0 ? '(Out of stock)' : '' %>"
-                          style="border: 1px solid #ccc; width: 18px; height: 18px; display: inline-block; border-radius: 50%; margin-right: 4px; cursor: pointer;"></span>
-                        <% }) %>
-                    </div>
+                </div>
+                <div class="pc__info position-relative pt-3 px-2 pb-2">
+                  <div class="product-card__price d-flex align-items-center mb-2 justify-content-center">
+                    <% if (product.basePrice && product.salePrice && product.salePrice < product.basePrice) { %>
+                      <span class="money price-old" style="color:#888;text-decoration:line-through;">₹<%= product.basePrice %></span>
+                      <span class="money price ms-2" style="color:#27ae60;font-weight:700;">₹<%= product.salePrice %></span>
+                    <% } else { %>
+                      <span class="money price" style="color:#222;font-weight:700;">₹<%= product.basePrice %></span>
                     <% } %>
-                      <% if (hasSizeVariants) { %>
-                        <div class="d-flex align-items-center mt-1">
-                          <% product.sizeVariants.forEach(function(variant, idx) { %>
-                            <span class="badge bg-light text-dark border me-1" data-opacity="<%= variant.stock === 0 ? '0.5' : '1' %>"
-                              style="font-size: 0.85em;">
-                              <%= variant.size %>
-                            </span>
-                            <% }) %>
+                  </div>
+                  <div>
+                    <% if (hasColorVariants) { %>
+                      <div class="variant-group mb-1" data-variant-name="Color">
+                        <div class="variant-label fw-bold" style="font-size:0.95em;">Color:</div>
+                        <div class="variant-options d-flex flex-wrap">
+                          <% product.colorVariants.forEach(function(variant) { %>
+                            <button type="button"
+                              class="variant-option-btn btn btn-sm border me-1 mb-1 px-2 py-1"
+                              data-variant-name="Color"
+                              data-variant-value="<%= variant.color %>"
+                              <%= variant.stock <= 0 ? 'disabled' : '' %>
+                              title="<%= variant.color %>">
+                              <span class="variant-color-dot d-inline-block me-1" style="width:16px;height:16px;border-radius:50%;background:<%= variant.color %>;border:1px solid #ccc;vertical-align:middle;"></span>
+                              <%= variant.color %>
+                              <% if (variant.stock <= 0) { %>
+                                <span style="font-size:0.8em;color:#c00;"> (Out of stock)</span>
+                              <% } %>
+                            </button>
+                          <% }) %>
                         </div>
-                        <% } %>
+                      </div>
+                    <% } %>
+                    <% if (hasSizeVariants) { %>
+                      <div class="variant-group mb-1" data-variant-name="Size">
+                        <div class="variant-label fw-bold" style="font-size:0.95em;">Size:</div>
+                        <div class="variant-options d-flex flex-wrap">
+                          <% product.sizeVariants.forEach(function(variant) { %>
+                            <button type="button"
+                              class="variant-option-btn btn btn-sm border me-1 mb-1 px-2 py-1"
+                              data-variant-name="Size"
+                              data-variant-value="<%= variant.size %>"
+                              <%= variant.stock <= 0 ? 'disabled' : '' %>
+                              title="<%= variant.size %>">
+                              <%= variant.size %>
+                              <% if (variant.stock <= 0) { %>
+                                <span style="font-size:0.8em;color:#c00;"> (Out of stock)</span>
+                              <% } %>
+                            </button>
+                          <% }) %>
+                        </div>
+                      </div>
+                    <% } %>
+                    <div class="d-flex align-items-center mt-2">
+                      <button type="button"
+                        class="btn btn-primary btn-sm flex-grow-1 me-2 js-add-to-cart-grid"
+                        data-product-id="<%= product._id %>"
+                        <%= isOutOfStock ? 'disabled' : '' %>
+                        >
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <% }) %>
-              <% } else { %>
-                <div class="col-12">
-                  <div class="alert alert-info text-center">No products found.</div>
-                </div>
-                <% } %>
+          <% }) %>
+        <% } else { %>
+          <div class="col-12">
+            <div class="alert alert-info text-center">No products found. Try searching for something else!</div>
+          </div>
+        <% } %>
       </div>
 
       <script>
-        // Toastify helper
-        function showToast(message, type = "error") {
-          Toastify({
-            text: message,
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-            backgroundColor: type === "success" ? "#28a745" : "#dc3545",
-            stopOnFocus: true,
-          }).showToast();
+        // Helper: show toast
+        function showToast(message, type = "success") {
+          if (window.Toastify) {
+            Toastify({
+              text: message,
+              duration: 3000,
+              gravity: "top",
+              position: "right",
+              backgroundColor: type === "error" ? "#e74c3c" : "#27ae60",
+              stopOnFocus: true
+            }).showToast();
+          } else {
+            // fallback
+            // (do not use alert, just log)
+            console[type === "error" ? "error" : "log"](message);
+          }
         }
 
-        // Add to cart handler for all product cards
+        // Track selected variants for each product card
+        const selectedVariants = {};
+
+        // Variant selection logic
         document.addEventListener('DOMContentLoaded', function () {
-          document.querySelectorAll('.js-product-add-cart-form').forEach(function (form) {
-            form.addEventListener('submit', function (e) {
-              e.preventDefault();
-              const productId = form.getAttribute('data-product-id');
-              const colorSelect = form.querySelector('.js-select-color');
-              const sizeSelect = form.querySelector('.js-select-size');
-              let color = colorSelect ? colorSelect.value : null;
-              let size = sizeSelect ? sizeSelect.value : null;
-              let colorStock = colorSelect ? (colorSelect.selectedOptions[0]?.getAttribute('data-stock') || 0) : null;
-              let sizeStock = sizeSelect ? (sizeSelect.selectedOptions[0]?.getAttribute('data-stock') || 0) : null;
+          // Variant button click
+          document.querySelectorAll('.products-grid').forEach(function(grid) {
+            grid.addEventListener('click', function(e) {
+              if (e.target.closest('.variant-option-btn')) {
+                const btn = e.target.closest('.variant-option-btn');
+                const card = btn.closest('.catchy-product-card');
+                const productId = card.querySelector('.js-add-to-cart-grid').getAttribute('data-product-id');
+                const variantName = btn.getAttribute('data-variant-name');
+                const variantValue = btn.getAttribute('data-variant-value');
+                // Store selection
+                if (!selectedVariants[productId]) selectedVariants[productId] = {};
+                selectedVariants[productId][variantName] = variantValue;
+                // Remove active from siblings
+                btn.parentElement.querySelectorAll('.variant-option-btn').forEach(function(sib) {
+                  if (sib.getAttribute('data-variant-name') === variantName) {
+                    sib.classList.remove('active');
+                  }
+                });
+                btn.classList.add('active');
+              }
+            });
+          });
 
-              // Check if color/size required and selected
-              if (colorSelect && !color) {
-                showToast("Please select a color.");
+          // Add to cart
+          document.querySelectorAll('.js-add-to-cart-grid').forEach(function(btn) {
+            btn.addEventListener('click', async function() {
+              const productId = btn.getAttribute('data-product-id');
+              const card = btn.closest('.catchy-product-card');
+              const productData = window.productsData && window.productsData[productId];
+              // Get selected variants
+              const selected = selectedVariants[productId] || {};
+              // Check if variants required and selected
+              let color = null, size = null;
+              if (card.querySelector('[data-variant-name="Color"]')) {
+                color = selected['Color'] || null;
+                if (!color) {
+                  showToast("Please select a color.", "error");
+                  return;
+                }
+              }
+              if (card.querySelector('[data-variant-name="Size"]')) {
+                size = selected['Size'] || null;
+                if (!size) {
+                  showToast("Please select a size.", "error");
+                  return;
+                }
+              }
+              // Check if selected variant is out of stock
+              let outOfStock = false;
+              if (color && productData && productData.colorVariants) {
+                const variant = productData.colorVariants.find(v => v.color === color);
+                if (variant && variant.stock <= 0) outOfStock = true;
+              }
+              if (size && productData && productData.sizeVariants) {
+                const variant = productData.sizeVariants.find(v => v.size === size);
+                if (variant && variant.stock <= 0) outOfStock = true;
+              }
+              if (outOfStock) {
+                showToast("Selected variant is out of stock.", "error");
                 return;
               }
-              if (sizeSelect && !size) {
-                showToast("Please select a size.");
-                return;
-              }
-              // Check stock
-              if (colorSelect && colorStock == 0) {
-                showToast("Selected color is out of stock.");
-                return;
-              }
-              if (sizeSelect && sizeStock == 0) {
-                showToast("Selected size is out of stock.");
-                return;
-              }
-
-              // If both color and size, check both stocks
-              if (colorSelect && sizeSelect && (colorStock == 0 || sizeStock == 0)) {
-                showToast("Selected variant is out of stock.");
-                return;
-              }
-
-              // Prepare payload
-              const payload = {
-                productId: productId,
-                color: color,
-                size: size,
-                quantity: 1
-              };
-
-              // User check via meta tag
-              if (document.querySelector('meta[name="sr-auth"]').getAttribute('content') === '1') {
+              // Auth check
+              var metaAuth = document.querySelector('meta[name="sr-auth"]');
+              if (metaAuth && metaAuth.getAttribute('content') === '1') {
                 // Authenticated user: send to server
                 fetch('/cart/add', {
                   method: 'POST',
@@ -850,44 +877,128 @@
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                   },
-                  body: JSON.stringify(payload)
+                  body: JSON.stringify({
+                    productId: productId,
+                    color: color,
+                    size: size,
+                    quantity: 1
+                  })
                 })
-                  .then(res => res.json())
-                  .then(data => {
+                  .then(function(res) { return res.json(); })
+                  .then(function(data) {
                     if (data.success) {
-                      showToast("Added to cart!", "success");
+                      showToast("Product added to cart", "success");
                     } else {
-                      showToast(data.message || "Could not add to cart.");
+                      showToast(data.message || "Could not add to cart.", "error");
                     }
                   })
-                  .catch(() => showToast("Error adding to cart."));
+                  .catch(function() { showToast("Error adding to cart.", "error"); });
               } else {
                 // Guest: use localStorage
-                let cart = [];
+                var cart = [];
                 try {
                   cart = JSON.parse(localStorage.getItem('cart')) || [];
                 } catch (e) { cart = []; }
                 // Check if already in cart (same product, color, size)
-                const exists = cart.find(item =>
-                  item.productId === productId &&
-                  (!color || item.color === color) &&
-                  (!size || item.size === size)
-                );
+                var exists = cart.find(function(item) {
+                  return item.productId === productId &&
+                    (!color || item.color === color) &&
+                    (!size || item.size === size);
+                });
                 if (exists) {
-                  showToast("Already in cart.");
+                  showToast("Already in cart.", "error");
                   return;
                 }
-                cart.push(payload);
+                cart.push({
+                  productId: productId,
+                  color: color,
+                  size: size,
+                  quantity: 1
+                });
                 localStorage.setItem('cart', JSON.stringify(cart));
-                showToast("Added to cart!", "success");
+                showToast("Product added to cart", "success");
               }
             });
           });
+
+          // Add to wishlist
+          document.querySelectorAll('.js-add-to-wishlist-grid').forEach(function(btn) {
+            btn.addEventListener('click', async function() {
+              const productId = btn.getAttribute('data-product-id');
+              const card = btn.closest('.catchy-product-card');
+              const productData = window.productsData && window.productsData[productId];
+              // Get selected variants
+              const selected = selectedVariants[productId] || {};
+              let color = null, size = null;
+              if (card.querySelector('[data-variant-name="Color"]')) {
+                color = selected['Color'] || null;
+              }
+              if (card.querySelector('[data-variant-name="Size"]')) {
+                size = selected['Size'] || null;
+              }
+              // Toggle active state for love icon
+              btn.classList.toggle('active');
+              // Auth check
+              var metaAuth = document.querySelector('meta[name="sr-auth"]');
+              if (metaAuth && metaAuth.getAttribute('content') === '1') {
+                // Authenticated user: send to server
+                fetch('/create-wishlist', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                  },
+                  body: JSON.stringify({
+                    productId: productId,
+                    color: color,
+                    size: size
+                  })
+                })
+                  .then(function(res) { return res.json(); })
+                  .then(function(data) {
+                    if (data.success) {
+                      showToast("Added to your wishlist! 💖", "success");
+                    } else {
+                      showToast(data.message || "Could not add to wishlist.", "error");
+                    }
+                  })
+                  .catch(function() { showToast("Error adding to wishlist.", "error"); });
+              } else {
+                // Guest: use localStorage
+                var wishlist = [];
+                try {
+                  wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+                } catch (e) { wishlist = []; }
+                // Check if already in wishlist (same product, color, size)
+                var exists = wishlist.find(function(item) {
+                  return item.productId === productId &&
+                    (!color || item.color === color) &&
+                    (!size || item.size === size);
+                });
+                if (exists) {
+                  showToast("Already in wishlist.", "error");
+                  return;
+                }
+                wishlist.push({
+                  productId: productId,
+                  color: color,
+                  size: size
+                });
+                localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                showToast("Added to your wishlist! 💖", "success");
+              }
+            });
+          });
+
+          // Optionally, expose products data for variant stock checks
+          if (!window.productsData) window.productsData = {};
+          <% products.forEach(function(product) { %>
+            window.productsData["<%= product._id %>"] = <%- JSON.stringify(product) %>;
+          <% }); %>
         });
       </script>
-
       <nav class="shop-pages d-flex justify-content-between mt-3" aria-label="Page navigation">
-        <% if (typeof pagination !=='undefined' && pagination) { %>
+        <% if (typeof pagination !== 'undefined' && pagination) { %>
           <a href="<%= pagination.prevPageUrl %>"
             class="btn-link d-inline-flex align-items-center <%= pagination.hasPrev ? '' : 'disabled' %>">
             <svg class="me-1" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
@@ -896,14 +1007,14 @@
             <span class="fw-medium">PREV</span>
           </a>
           <ul class="pagination mb-0">
-            <% for (var i=1; i <=pagination.totalPages; i++) { %>
+            <% for (var i = 1; i <= pagination.totalPages; i++) { %>
               <li class="page-item">
                 <a class="btn-link px-1 mx-2 <%= i === pagination.currentPage ? 'btn-link_active' : '' %>"
                   href="<%= pagination.pageUrl(i) %>">
                   <%= i %>
                 </a>
               </li>
-              <% } %>
+            <% } %>
           </ul>
           <a href="<%= pagination.nextPageUrl %>"
             class="btn-link d-inline-flex align-items-center <%= pagination.hasNext ? '' : 'disabled' %>">
@@ -912,27 +1023,26 @@
               <use href="#icon_next_sm" />
             </svg>
           </a>
-          <% } else { %>
-            <a href="#" class="btn-link d-inline-flex align-items-center disabled">
-              <svg class="me-1" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
-                <use href="#icon_prev_sm" />
-              </svg>
-              <span class="fw-medium">PREV</span>
-            </a>
-            <ul class="pagination mb-0">
-              <li class="page-item"><a class="btn-link px-1 mx-2 btn-link_active" href="#">1</a></li>
-            </ul>
-            <a href="#" class="btn-link d-inline-flex align-items-center disabled">
-              <span class="fw-medium me-1">NEXT</span>
-              <svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
-                <use href="#icon_next_sm" />
-              </svg>
-            </a>
-            <% } %>
+        <% } else { %>
+          <a href="#" class="btn-link d-inline-flex align-items-center disabled">
+            <svg class="me-1" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
+              <use href="#icon_prev_sm" />
+            </svg>
+            <span class="fw-medium">PREV</span>
+          </a>
+          <ul class="pagination mb-0">
+            <li class="page-item"><a class="btn-link px-1 mx-2 btn-link_active" href="#">1</a></li>
+          </ul>
+          <a href="#" class="btn-link d-inline-flex align-items-center disabled">
+            <span class="fw-medium me-1">NEXT</span>
+            <svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
+              <use href="#icon_next_sm" />
+            </svg>
+          </a>
+        <% } %>
       </nav>
     </section><!-- /.shop-main container -->
   </main>
-
   <div class="mb-5 pb-xl-5"></div>
 
   <!-- Footer Type 1 -->
@@ -1041,10 +1151,7 @@
                 </svg>
               </a>
             </li>
-
           </ul>
-
-
         </div><!-- /.footer-column -->
       </div><!-- /.row-cols-5 -->
     </div><!-- /.footer-middle container -->
@@ -1109,389 +1216,6 @@
       </div><!-- /.col-3 -->
     </div><!-- /.row -->
   </footer><!-- /.footer-mobile container position-fixed d-md-none bottom-0 -->
-
-  <!-- Filters Drawer -->
-  <div class="aside-filters aside aside_right" id="shopFilter">
-    <div class="aside-header d-flex align-items-center">
-      <h3 class="text-uppercase fs-6 mb-0">Filter By</h3>
-      <button class="btn-close-lg js-close-aside btn-close-aside ms-auto"></button>
-    </div><!-- /.aside-header -->
-
-    <div class="aside-content">
-      <!-- Product Categories Filter -->
-      <div class="accordion" id="categories-list">
-        <div class="accordion-item mb-4">
-          <h5 class="accordion-header" id="accordion-heading-1">
-            <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button" data-bs-toggle="collapse"
-              data-bs-target="#accordion-filter-1" aria-expanded="true" aria-controls="accordion-filter-1">
-              Product Categories
-              <svg class="accordion-button__icon type2" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
-                <g aria-hidden="true" stroke="none" fill-rule="evenodd">
-                  <path
-                    d="M5.35668 0.159286C5.16235 -0.053094 4.83769 -0.0530941 4.64287 0.159286L0.147611 5.05963C-0.0492049 5.27473 -0.049205 5.62357 0.147611 5.83813C0.344427 6.05323 0.664108 6.05323 0.860924 5.83813L5 1.32706L9.13858 5.83867C9.33589 6.05378 9.65507 6.05378 9.85239 5.83867C10.0492 5.62357 10.0492 5.27473 9.85239 5.06018L5.35668 0.159286Z" />
-                </g>
-              </svg>
-            </button>
-          </h5>
-          <div id="accordion-filter-1" class="accordion-collapse collapse show border-0"
-            aria-labelledby="accordion-heading-1" data-bs-parent="#categories-list">
-            <div class="accordion-body px-0 pb-0">
-              <ul class="list list-inline row row-cols-2 mb-0">
-                <% categories.forEach(function(category) { %>
-                  <li class="list-item">
-                    <a href="/store?<%= 
-                        [
-                          'category=' + encodeURIComponent(category.slug || category._id),
-                          filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
-                          filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
-                          filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
-                          filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
-                          filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
-                          filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
-                          'limit=' + encodeURIComponent(filters.limit)
-                        ].filter(Boolean).join('&')
-                      %>"
-                      class="menu-link py-1 <%= (filters.category == (category.slug || category._id)) ? 'active' : '' %>">
-                      <%= category.name %>
-                    </a>
-                    <% if (category.subCategories && category.subCategories.length) { %>
-                      <ul class="list list-inline row row-cols-1 ms-3 mb-2">
-                        <% category.subCategories.forEach(function(subcat) { %>
-                          <li class="list-item">
-                            <a href="/store?<%= 
-                                [
-                                  'category=' + encodeURIComponent(category.slug || category._id),
-                                  'subcategory=' + encodeURIComponent(subcat._id),
-                                  filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
-                                  filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
-                                  filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
-                                  filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
-                                  filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
-                                  filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
-                                  'limit=' + encodeURIComponent(filters.limit)
-                                ].filter(Boolean).join('&')
-                              %>"
-                              class="menu-link py-1 ms-2 <%= (filters.subcategory == subcat._id) ? 'active' : '' %>">
-                              <%= subcat.name %>
-                            </a>
-                          </li>
-                          <% }) %>
-                      </ul>
-                      <% } %>
-                  </li>
-                  <% }) %>
-              </ul>
-            </div>
-          </div>
-        </div><!-- /.accordion-item -->
-      </div><!-- /.accordion -->
-
-      <!-- Color Filter -->
-      <div class="accordion" id="color-filters">
-        <div class="accordion-item mb-4">
-          <h5 class="accordion-header" id="accordion-heading-11">
-            <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button" data-bs-toggle="collapse"
-              data-bs-target="#accordion-filter-2" aria-expanded="true" aria-controls="accordion-filter-2">
-              Color
-              <svg class="accordion-button__icon type2" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
-                <g aria-hidden="true" stroke="none" fill-rule="evenodd">
-                  <path
-                    d="M5.35668 0.159286C5.16235 -0.053094 4.83769 -0.0530941 4.64287 0.159286L0.147611 5.05963C-0.0492049 5.27473 -0.049205 5.62357 0.147611 5.83813C0.344427 6.05323 0.664108 6.05323 0.860924 5.83813L5 1.32706L9.13858 5.83867C9.33589 6.05378 9.65507 6.05378 9.85239 5.83867C10.0492 5.62357 10.0492 5.27473 9.85239 5.06018L5.35668 0.159286Z" />
-                </g>
-              </svg>
-            </button>
-          </h5>
-          <div id="accordion-filter-2" class="accordion-collapse collapse show border-0"
-            aria-labelledby="accordion-heading-11" data-bs-parent="#color-filters">
-            <div class="accordion-body px-0 pb-0">
-              <div class="d-flex flex-wrap">
-                <% // Collect all unique colors from products let colorSet=new Set(); products.forEach(function(product)
-                  { if (product.colorVariants && product.colorVariants.length) {
-                  product.colorVariants.forEach(function(variant) { if (variant.color) colorSet.add(variant.color); });
-                  } }); let colorArray=Array.from(colorSet).sort(); let selectedColors=(filters.color || ''
-                  ).split(',').filter(Boolean); %>
-                  <% colorArray.forEach(function(color) { %>
-                    <a href="/store?<%= 
-                      [
-                        filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
-                        filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
-                        filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
-                        filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
-                        filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
-                        filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
-                        'color=' + encodeURIComponent(
-                          selectedColors.includes(color) 
-                            ? selectedColors.filter(c => c !== color).join(',') 
-                            : (selectedColors.concat([color])).join(',')
-                        ),
-                        filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
-                        'limit=' + encodeURIComponent(filters.limit)
-                      ].filter(Boolean).join('&')
-                    %>" class="swatch-color js-filter <%= selectedColors.includes(color) ? 'swatch_active' : '' %>"
-                      data-color="<%= color %>">
-                    </a>
-                    <% }) %>
-              </div>
-            </div>
-          </div>
-        </div><!-- /.accordion-item -->
-      </div><!-- /.accordion -->
-
-      <!-- Size Filter -->
-      <div class="accordion" id="size-filters">
-        <div class="accordion-item mb-4">
-          <h5 class="accordion-header" id="accordion-heading-size">
-            <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button" data-bs-toggle="collapse"
-              data-bs-target="#accordion-filter-size" aria-expanded="true" aria-controls="accordion-filter-size">
-              Sizes
-              <svg class="accordion-button__icon type2" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
-                <g aria-hidden="true" stroke="none" fill-rule="evenodd">
-                  <path
-                    d="M5.35668 0.159286C5.16235 -0.053094 4.83769 -0.0530941 4.64287 0.159286L0.147611 5.05963C-0.0492049 5.27473 -0.049205 5.62357 0.147611 5.83813C0.344427 6.05323 0.664108 6.05323 0.860924 5.83813L5 1.32706L9.13858 5.83867C9.33589 6.05378 9.65507 6.05378 9.85239 5.83867C10.0492 5.62357 10.0492 5.27473 9.85239 5.06018L5.35668 0.159286Z" />
-                </g>
-              </svg>
-            </button>
-          </h5>
-          <div id="accordion-filter-size" class="accordion-collapse collapse show border-0"
-            aria-labelledby="accordion-heading-size" data-bs-parent="#size-filters">
-            <div class="accordion-body px-0 pb-0">
-              <div class="d-flex flex-wrap">
-                <% // Collect all unique sizes from products let sizeSet=new Set(); products.forEach(function(product) {
-                  if (product.sizeVariants && product.sizeVariants.length) {
-                  product.sizeVariants.forEach(function(variant) { if (variant.size) sizeSet.add(variant.size); }); }
-                  }); let sizeArray=Array.from(sizeSet).sort(); let selectedSizes=(filters.size || ''
-                  ).split(',').filter(Boolean); %>
-                  <% sizeArray.forEach(function(size) { %>
-                    <a href="/store?<%= 
-                      [
-                        filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
-                        filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
-                        filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
-                        filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
-                        filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
-                        'size=' + encodeURIComponent(
-                          selectedSizes.includes(size) 
-                            ? selectedSizes.filter(s => s !== size).join(',') 
-                            : (selectedSizes.concat([size])).join(',')
-                        ),
-                        filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
-                        filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
-                        'limit=' + encodeURIComponent(filters.limit)
-                      ].filter(Boolean).join('&')
-                    %>"
-                      class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter <%= selectedSizes.includes(size) ? 'active' : '' %>">
-                      <%= size %>
-                    </a>
-                    <% }) %>
-              </div>
-            </div>
-          </div>
-        </div><!-- /.accordion-item -->
-      </div><!-- /.accordion -->
-
-      <!-- Price Filter -->
-      <div class="accordion" id="price-filters">
-        <div class="accordion-item mb-4">
-          <h5 class="accordion-header mb-2" id="accordion-heading-price">
-            <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button" data-bs-toggle="collapse"
-              data-bs-target="#accordion-filter-price" aria-expanded="true" aria-controls="accordion-filter-price">
-              Price
-              <svg class="accordion-button__icon type2" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
-                <g aria-hidden="true" stroke="none" fill-rule="evenodd">
-                  <path
-                    d="M5.35668 0.159286C5.16235 -0.053094 4.83769 -0.0530941 4.64287 0.159286L0.147611 5.05963C-0.0492049 5.27473 -0.049205 5.62357 0.147611 5.83813C0.344427 6.05323 0.664108 6.05323 0.860924 5.83813L5 1.32706L9.13858 5.83867C9.33589 6.05378 9.65507 6.05378 9.85239 5.83867C10.0492 5.62357 10.0492 5.27473 9.85239 5.06018L5.35668 0.159286Z" />
-                </g>
-              </svg>
-            </button>
-          </h5>
-          <div id="accordion-filter-price" class="accordion-collapse collapse show border-0"
-            aria-labelledby="accordion-heading-price" data-bs-parent="#price-filters">
-            <% // Find min and max price from products let minProductPrice=null, maxProductPrice=null;
-              products.forEach(function(product) { let price=(product.salePrice && product.salePrice> 0) ?
-              product.salePrice : product.basePrice;
-              if (typeof price === 'number') {
-              if (minProductPrice === null || price < minProductPrice) minProductPrice=price; if (maxProductPrice===null
-                || price> maxProductPrice) maxProductPrice = price;
-                }
-                });
-                // Fallbacks
-                minProductPrice = minProductPrice !== null ? minProductPrice : 0;
-                maxProductPrice = maxProductPrice !== null ? maxProductPrice : 1000;
-                let selectedMin = filters.minPrice ? Number(filters.minPrice) : minProductPrice;
-                let selectedMax = filters.maxPrice ? Number(filters.maxPrice) : maxProductPrice;
-                %>
-                <form method="get" class="d-block">
-                  <% // Keep all other filters in the form as hidden fields Object.keys(filters).forEach(function(key) {
-                    if (['minPrice', 'maxPrice' ].includes(key)) return; if (filters[key]) { %>
-                    <input type="hidden" name="<%= key %>" value="<%= filters[key] %>">
-                    <% } }); %>
-                      <div class="d-flex align-items-center mb-2">
-                        <label class="me-2 text-secondary" for="minPrice">Min:</label>
-                        <input type="number" min="<%= minProductPrice %>" max="<%= maxProductPrice %>" step="1"
-                          name="minPrice" id="minPrice" class="form-control form-control-sm w-auto"
-                          value="<%= selectedMin %>">
-                        <label class="mx-2 text-secondary" for="maxPrice">Max:</label>
-                        <input type="number" min="<%= minProductPrice %>" max="<%= maxProductPrice %>" step="1"
-                          name="maxPrice" id="maxPrice" class="form-control form-control-sm w-auto"
-                          value="<%= selectedMax %>">
-                        <button type="submit" class="btn btn-sm btn-primary ms-2">Apply</button>
-                      </div>
-                      <div class="price-range__info d-flex align-items-center mt-2">
-                        <div class="me-auto">
-                          <span class="text-secondary">Min Price: </span>
-                          <span class="price-range__min">₹<%= selectedMin %></span>
-                        </div>
-                        <div>
-                          <span class="text-secondary">Max Price: </span>
-                          <span class="price-range__max">₹<%= selectedMax %></span>
-                        </div>
-                      </div>
-                </form>
-          </div>
-        </div><!-- /.accordion-item -->
-      </div><!-- /.accordion -->
-
-      <!-- Active Filter Tags -->
-      <div class="filter-active-tags pt-2">
-        <% // Show active filter tags for color, size, price, category, subcategory, q let hasActive=false; // Color
-          tags if (selectedColors.length) { selectedColors.forEach(function(color) { hasActive=true; %>
-          <a href="/store?<%= 
-            [
-              filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
-              filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
-              filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
-              filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
-              filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
-              filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
-              'color=' + encodeURIComponent(selectedColors.filter(c => c !== color).join(',')),
-              filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
-              'limit=' + encodeURIComponent(filters.limit)
-            ].filter(Boolean).join('&')
-          %>" class="filter-tag d-inline-flex align-items-center mb-3 me-3 text-uppercase js-filter">
-            <i class="btn-close-xs d-inline-block"></i>
-            <span class="ms-2">
-              <%= color %>
-            </span>
-          </a>
-          <% }); } %>
-            <% // Size tags if (selectedSizes.length) { selectedSizes.forEach(function(size) { hasActive=true; %>
-              <a href="/store?<%= 
-            [
-              filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
-              filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
-              filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
-              filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
-              filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
-              'size=' + encodeURIComponent(selectedSizes.filter(s => s !== size).join(',')),
-              filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
-              filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
-              'limit=' + encodeURIComponent(filters.limit)
-            ].filter(Boolean).join('&')
-          %>" class="filter-tag d-inline-flex align-items-center mb-3 me-3 text-uppercase js-filter">
-                <i class="btn-close-xs d-inline-block"></i>
-                <span class="ms-2">
-                  <%= size %>
-                </span>
-              </a>
-              <% }); } %>
-                <% // Price tags if (filters.minPrice || filters.maxPrice) { hasActive=true; %>
-                  <a href="/store?<%= 
-            [
-              filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
-              filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
-              filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
-              filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
-              filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
-              filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
-              'limit=' + encodeURIComponent(filters.limit)
-            ].filter(Boolean).join('&')
-          %>" class="filter-tag d-inline-flex align-items-center mb-3 me-3 text-uppercase js-filter">
-                    <i class="btn-close-xs d-inline-block"></i>
-                    <span class="ms-2">
-                      <% if (filters.minPrice && filters.maxPrice) { %>
-                        ₹<%= filters.minPrice %> - ₹<%= filters.maxPrice %>
-                            <% } else if (filters.minPrice) { %>
-                              Min Price: ₹<%= filters.minPrice %>
-                                <% } else { %>
-                                  Max Price: ₹<%= filters.maxPrice %>
-                                    <% } %>
-                    </span>
-                  </a>
-                  <% } %>
-                    <% // Category tag if (filters.category) { hasActive=true; let cat=categories.find(c=> (c.slug ===
-                      filters.category || c._id.toString() === filters.category));
-                      %>
-                      <a href="/store?<%= 
-            [
-              filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
-              filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
-              filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
-              filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
-              filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
-              filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
-              filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
-              'limit=' + encodeURIComponent(filters.limit)
-            ].filter(Boolean).join('&')
-          %>" class="filter-tag d-inline-flex align-items-center mb-3 me-3 text-uppercase js-filter">
-                        <i class="btn-close-xs d-inline-block"></i>
-                        <span class="ms-2">
-                          <%= cat ? cat.name : filters.category %>
-                        </span>
-                      </a>
-                      <% } %>
-                        <% // Subcategory tag if (filters.subcategory) { hasActive=true; let subcatName='' ;
-                          categories.forEach(function(cat) { if (cat.subCategories && cat.subCategories.length) {
-                          cat.subCategories.forEach(function(subcat) { if (subcat._id.toString()===filters.subcategory)
-                          subcatName=subcat.name; }); } }); %>
-                          <a href="/store?<%= 
-            [
-              filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
-              filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
-              filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
-              filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
-              filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
-              filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
-              filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
-              'limit=' + encodeURIComponent(filters.limit)
-            ].filter(Boolean).join('&')
-          %>" class="filter-tag d-inline-flex align-items-center mb-3 me-3 text-uppercase js-filter">
-                            <i class="btn-close-xs d-inline-block"></i>
-                            <span class="ms-2">
-                              <%= subcatName || filters.subcategory %>
-                            </span>
-                          </a>
-                          <% } %>
-                            <% // Search query tag if (filters.q) { hasActive=true; %>
-                              <a href="/store?<%= 
-            [
-              filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
-              filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
-              filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
-              filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
-              filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
-              filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
-              filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
-              'limit=' + encodeURIComponent(filters.limit)
-            ].filter(Boolean).join('&')
-          %>" class="filter-tag d-inline-flex align-items-center mb-3 me-3 text-uppercase js-filter">
-                                <i class="btn-close-xs d-inline-block"></i>
-                                <span class="ms-2">Search: <%= filters.q %></span>
-                              </a>
-                              <% } %>
-                                <% if (hasActive) { %>
-                                  <div>
-                                    <a href="/store?limit=<%= encodeURIComponent(filters.limit) %>"
-                                      class="filter-tag d-flex align-items-center text-uppercase js-filter">
-                                      <i class="btn-close-xs d-inline-block"></i>
-                                      <span class="ms-2">RESET FILTER</span>
-                                    </a>
-                                  </div>
-                                  <% } %>
-      </div>
-    </div><!-- /.aside-content -->
-  </div>
-
-
 
 
   <!-- Cart Drawer -->
@@ -1587,163 +1311,6 @@
       <a href="shop_checkout.html" class="btn btn-primary mt-3 d-block">Checkout</a>
     </div><!-- /.aside-content -->
   </div><!-- /.aside -->
-
-
-
-
-  <!-- Quick View -->
-  <div class="modal fade" id="quickView" tabindex="-1">
-    <div class="modal-dialog quick-view modal-dialog-centered">
-      <div class="modal-content">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        <div class="product-single">
-          <div class="product-single__media m-0">
-            <div class="product-single__image position-relative w-100">
-              <div class="swiper-container js-swiper-slider" data-settings='{
-                  "slidesPerView": 1,
-                  "slidesPerGroup": 1,
-                  "effect": "none",
-                  "loop": false,
-                  "navigation": {
-                    "nextEl": ".modal-dialog.quick-view .product-single__media .swiper-button-next",
-                    "prevEl": ".modal-dialog.quick-view .product-single__media .swiper-button-prev"
-                  }
-                }'>
-                <div class="swiper-wrapper">
-                  <div class="swiper-slide product-single__image-item">
-                    <img loading="lazy" src="images/stayrare/prd-1.webp" alt="">
-                  </div>
-                  <div class="swiper-slide product-single__image-item">
-                    <img loading="lazy" src="images/stayrare/prd-2.webp" alt="">
-                  </div>
-                  <div class="swiper-slide product-single__image-item">
-                    <img loading="lazy" src="images/stayrare/prd-1.webp" alt="">
-                  </div>
-                  <div class="swiper-slide product-single__image-item">
-                    <img loading="lazy" src="images/stayrare/prd-13.webp" alt="">
-                  </div>
-                </div>
-                <div class="swiper-button-prev"><svg width="7" height="11" viewBox="0 0 7 11"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <use href="#icon_prev_sm" />
-                  </svg></div>
-                <div class="swiper-button-next"><svg width="7" height="11" viewBox="0 0 7 11"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <use href="#icon_next_sm" />
-                  </svg></div>
-              </div>
-            </div>
-          </div>
-          <div class="product-single__detail">
-            <h1 class="product-single__name">Lightweight Black Over Sized T-shirt</h1>
-            <div class="product-card__price d-flex align-items-center">
-              <span class="money price-old">₹529</span>
-              <span class="money price">₹399</span>
-            </div>
-            <div class="product-single__short-desc">
-              <p>Phasellus sed volutpat orci. Fusce eget lore mauris vehicula elementum gravida nec dui. Aenean aliquam
-                varius ipsum, non ultricies tellus sodales eu. Donec dignissim viverra nunc, ut aliquet magna posuere
-                eget.</p>
-            </div>
-            <form name="addtocart-form" method="post">
-              <div class="product-single__swatches">
-                <div class="product-swatch text-swatches">
-                  <label>Sizes</label>
-                  <div class="swatch-list">
-                    <input type="radio" name="size" id="swatch-1">
-                    <label class="swatch js-swatch" for="swatch-1" aria-label="Extra Small" data-bs-toggle="tooltip"
-                      data-bs-placement="top" title="Extra Small">XS</label>
-                    <input type="radio" name="size" id="swatch-2" checked>
-                    <label class="swatch js-swatch" for="swatch-2" aria-label="Small" data-bs-toggle="tooltip"
-                      data-bs-placement="top" title="Small">S</label>
-                    <input type="radio" name="size" id="swatch-3">
-                    <label class="swatch js-swatch" for="swatch-3" aria-label="Middle" data-bs-toggle="tooltip"
-                      data-bs-placement="top" title="Middle">M</label>
-                    <input type="radio" name="size" id="swatch-4">
-                    <label class="swatch js-swatch" for="swatch-4" aria-label="Large" data-bs-toggle="tooltip"
-                      data-bs-placement="top" title="Large">L</label>
-                    <input type="radio" name="size" id="swatch-5">
-                    <label class="swatch js-swatch" for="swatch-5" aria-label="Extra Large" data-bs-toggle="tooltip"
-                      data-bs-placement="top" title="Extra Large">XL</label>
-                  </div>
-
-                </div>
-                <div class="product-swatch color-swatches">
-                  <label>Color</label>
-                  <div class="swatch-list">
-                    <input type="radio" name="color" id="swatch-11">
-                    <label class="swatch swatch-color js-swatch" for="swatch-11" aria-label="Black"
-                      data-bs-toggle="tooltip" data-bs-placement="top" title="Black" style="color: #222"></label>
-                    <input type="radio" name="color" id="swatch-12" checked>
-                    <label class="swatch swatch-color js-swatch" for="swatch-12" aria-label="Red"
-                      data-bs-toggle="tooltip" data-bs-placement="top" title="Red" style="color: #C93A3E"></label>
-                    <input type="radio" name="color" id="swatch-13">
-                    <label class="swatch swatch-color js-swatch" for="swatch-13" aria-label="Grey"
-                      data-bs-toggle="tooltip" data-bs-placement="top" title="Grey" style="color: #E4E4E4"></label>
-                  </div>
-                </div>
-              </div>
-              <div class="product-single__addtocart">
-                <div class="qty-control position-relative">
-                  <input type="number" name="quantity" value="1" min="1" class="qty-control__number text-center">
-                  <div class="qty-control__reduce">-</div>
-                  <div class="qty-control__increase">+</div>
-                </div><!-- .qty-control -->
-                <button type="submit" class="btn btn-primary btn-addtocart js-open-aside" data-aside="cartDrawer">Buy
-                  Now</button>
-              </div>
-            </form>
-            <div class="product-single__addtolinks">
-              <a href="#" class="menu-link menu-link_us-s add-to-wishlist"><svg width="16" height="16"
-                  viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_heart" />
-                </svg><span>Add to Wishlist</span></a>
-              <share-button class="share-button">
-
-                <details id="Details-share-template__main" class="m-1 xl:m-1.5" hidden="">
-                  <summary class="btn-solid m-1 xl:m-1.5 pt-3.5 pb-3 px-5">+</summary>
-                  <div id="Article-share-template__main"
-                    class="share-button__fallback flex items-center absolute top-full left-0 w-full px-2 py-4 bg-container shadow-theme border-t z-10">
-                    <div class="field grow mr-4">
-                      <label class="field__label sr-only" for="url">Link</label>
-                      <input type="text" class="field__input w-full" id="url"
-                        value="https://uomo-crystal.myshopify.com/blogs/news/go-to-wellness-tips-for-mental-health"
-                        placeholder="Link" onclick="this.select();" readonly="">
-                    </div>
-                    <button class="share-button__copy no-js-hidden">
-                      <svg class="icon icon-clipboard inline-block mr-1" width="11" height="13" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" viewBox="0 0 11 13">
-                        <path fill-rule="evenodd" clip-rule="evenodd"
-                          d="M2 1a1 1 0 011-1h7a1 1 0 011 1v9a1 1 0 01-1 1V1H2zM1 2a1 1 0 00-1 1v9a1 1 0 001 1h7a1 1 0 001-1V3a1 1 0 00-1-1H1zm0 10V3h7v9H1z"
-                          fill="currentColor"></path>
-                      </svg>
-                      <span class="sr-only">Copy link</span>
-                    </button>
-                  </div>
-                </details>
-              </share-button>
-              <script src="js/details-disclosure.js" defer="defer"></script>
-              <script src="js/share.js" defer="defer"></script>
-            </div>
-            <div class="product-single__meta-info mb-0">
-              <div class="meta-item">
-                <label>SKU:</label>
-                <span>N/A</span>
-              </div>
-              <div class="meta-item">
-                <label>Categories:</label>
-                <span>Casual & Urban Wear, Jackets, Men</span>
-              </div>
-              <div class="meta-item">
-                <label>Tags:</label>
-                <span>biker, black, bomber, leather</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.quickview position-fixed -->
 
 
   <!-- Go To Top -->

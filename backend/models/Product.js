@@ -28,6 +28,18 @@ const sizeVariantSchema = new mongoose.Schema({
     required: true,
     min: 0,
     default: 0
+  },
+  chest: {
+    type: String,
+    required: false
+  },
+  length: {
+    type: String,
+    required: false
+  },
+  sleeve: {
+    type: String,
+    required: false
   }
 });
 

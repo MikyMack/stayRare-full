@@ -151,7 +151,6 @@ exports.createProduct = async (req, res) => {
         mainImageFiles.map(file => uploadToS3(file, 'products'))
       );
       
-    
       const colorVariantFiles = req.files.filter(file =>
         file.fieldname.includes('colorVariants') && file.fieldname.includes('[image]')
       );
@@ -184,13 +183,16 @@ exports.createProduct = async (req, res) => {
       }
     }
 
-    // Process size variants
+    // Process size variants (now with length, chest, sleeve)
     if (sizeVariants) {
       try {
         const raw = typeof sizeVariants === 'string' ? JSON.parse(sizeVariants) : sizeVariants;
         parsedSizeVariants = Object.values(raw).map(variant => ({
           size: variant.size,
-          stock: variant.stock || 0
+          stock: variant.stock || 0,
+          length: typeof variant.length !== 'undefined' ? variant.length : undefined,
+          chest: typeof variant.chest !== 'undefined' ? variant.chest : undefined,
+          sleeve: typeof variant.sleeve !== 'undefined' ? variant.sleeve : undefined
         }));
       } catch (e) {
         console.error('Error parsing size variants:', e);
@@ -387,34 +389,37 @@ exports.updateProduct = async (req, res) => {
         parsedColorVariants = [];
     }
 
-    // --- Process Size Variants ---
-let parsedSizeVariants = [];
-if (req.body.sizeVariants) {
-    let rawSizeVariants;
-    try {
-        rawSizeVariants = typeof req.body.sizeVariants === 'string'
-            ? JSON.parse(req.body.sizeVariants)
-            : req.body.sizeVariants;
-    } catch (e) {
-        console.error('Error parsing size variants:', e);
-        rawSizeVariants = {};
+    // --- Process Size Variants (now with length, chest, sleeve) ---
+    let parsedSizeVariants = [];
+    if (req.body.sizeVariants) {
+        let rawSizeVariants;
+        try {
+            rawSizeVariants = typeof req.body.sizeVariants === 'string'
+                ? JSON.parse(req.body.sizeVariants)
+                : req.body.sizeVariants;
+        } catch (e) {
+            console.error('Error parsing size variants:', e);
+            rawSizeVariants = {};
+        }
+
+        // Get IDs of variants to delete
+        const deletedVariantIds = Array.isArray(req.body.deletedSizeVariants) 
+            ? req.body.deletedSizeVariants 
+            : req.body.deletedSizeVariants ? [req.body.deletedSizeVariants] : [];
+
+        parsedSizeVariants = Object.entries(rawSizeVariants)
+            .filter(([key]) => !deletedVariantIds.includes(key))
+            .map(([key, variant]) => ({
+                _id: key, // Preserve the ID if it exists
+                size: variant.size,
+                stock: variant.stock || 0,
+                length: typeof variant.length !== 'undefined' ? variant.length : undefined,
+                chest: typeof variant.chest !== 'undefined' ? variant.chest : undefined,
+                sleeve: typeof variant.sleeve !== 'undefined' ? variant.sleeve : undefined
+            }));
+    } else {
+        parsedSizeVariants = [];
     }
-
-    // Get IDs of variants to delete
-    const deletedVariantIds = Array.isArray(req.body.deletedSizeVariants) 
-        ? req.body.deletedSizeVariants 
-        : req.body.deletedSizeVariants ? [req.body.deletedSizeVariants] : [];
-
-    parsedSizeVariants = Object.entries(rawSizeVariants)
-        .filter(([key]) => !deletedVariantIds.includes(key))
-        .map(([key, variant]) => ({
-            _id: key, // Preserve the ID if it exists
-            size: variant.size,
-            stock: variant.stock || 0
-        }));
-} else {
-    parsedSizeVariants = [];
-}
 
     // --- Process Reviews ---
     let parsedReviews = [];

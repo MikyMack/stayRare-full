@@ -910,6 +910,21 @@
                                                                         <span style="color: #888; margin-left: 6px;">Stock:
                                                                             <%= variant.stock %>
                                                                         </span>
+                                                                        <% if (typeof variant.length !== 'undefined' && variant.length !== null && variant.length !== '') { %>
+                                                                            <span style="color: #888; margin-left: 6px;">Length:
+                                                                                <%= variant.length %>
+                                                                            </span>
+                                                                        <% } %>
+                                                                        <% if (typeof variant.chest !== 'undefined' && variant.chest !== null && variant.chest !== '') { %>
+                                                                            <span style="color: #888; margin-left: 6px;">Chest:
+                                                                                <%= variant.chest %>
+                                                                            </span>
+                                                                        <% } %>
+                                                                        <% if (typeof variant.sleeve !== 'undefined' && variant.sleeve !== null && variant.sleeve !== '') { %>
+                                                                            <span style="color: #888; margin-left: 6px;">Sleeve:
+                                                                                <%= variant.sleeve %>
+                                                                            </span>
+                                                                        <% } %>
                                                                     </li>
                                                                 <% }); %>
                                                             </ul>
@@ -1600,18 +1615,18 @@
                                         });
                                     }
                                     function removeColorVariantOption(btn) {
-    if (confirm('Remove this color variant?')) {
-        const variantDiv = btn.closest('.color-variant-option');
-        // Add a hidden input to mark this variant for deletion
-        const deleteInput = document.createElement('input');
-        deleteInput.type = 'hidden';
-        deleteInput.name = `deletedColorVariants[]`;
-        deleteInput.value = variantDiv.dataset.colorId;
-        document.getElementById('productForm').appendChild(deleteInput);
-        // Remove the variant
-        variantDiv.remove();
-    }
-}
+                                        if (confirm('Remove this color variant?')) {
+                                            const variantDiv = btn.closest('.color-variant-option');
+                                            // Add a hidden input to mark this variant for deletion
+                                            const deleteInput = document.createElement('input');
+                                            deleteInput.type = 'hidden';
+                                            deleteInput.name = `deletedColorVariants[]`;
+                                            deleteInput.value = variantDiv.dataset.colorId;
+                                            document.getElementById('productForm').appendChild(deleteInput);
+                                            // Remove the variant
+                                            variantDiv.remove();
+                                        }
+                                    }
 
                                     function addSizeVariantOption() {
                                         const container = document.getElementById('sizeVariantOptions');
@@ -1629,6 +1644,18 @@
                                                     <label>Stock</label>
                                                     <input type="number" name="sizeVariants[${sizeId}][stock]" min="0" value="0" required>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label>Length</label>
+                                                    <input type="text" name="sizeVariants[${sizeId}][length]" placeholder="Length">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Chest</label>
+                                                    <input type="text" name="sizeVariants[${sizeId}][chest]" placeholder="Chest">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Sleeve</label>
+                                                    <input type="text" name="sizeVariants[${sizeId}][sleeve]" placeholder="Sleeve">
+                                                </div>
                                                 <button type="button" class="btn btn-sm btn-danger" onclick="removeSizeVariantOption(this)">
                                                     <i class="icon-trash"></i>
                                                 </button>
@@ -1637,18 +1664,18 @@
                                         container.appendChild(sizeDiv);
                                     }
                                     function removeSizeVariantOption(btn) {
-    if (confirm('Remove this size variant?')) {
-        const variantDiv = btn.closest('.size-variant-option');
-        // Add a hidden input to mark this variant for deletion
-        const deleteInput = document.createElement('input');
-        deleteInput.type = 'hidden';
-        deleteInput.name = `deletedSizeVariants[]`;
-        deleteInput.value = variantDiv.dataset.sizeId;
-        document.getElementById('productForm').appendChild(deleteInput);
-        // Remove the variant
-        variantDiv.remove();
-    }
-}
+                                        if (confirm('Remove this size variant?')) {
+                                            const variantDiv = btn.closest('.size-variant-option');
+                                            // Add a hidden input to mark this variant for deletion
+                                            const deleteInput = document.createElement('input');
+                                            deleteInput.type = 'hidden';
+                                            deleteInput.name = `deletedSizeVariants[]`;
+                                            deleteInput.value = variantDiv.dataset.sizeId;
+                                            document.getElementById('productForm').appendChild(deleteInput);
+                                            // Remove the variant
+                                            variantDiv.remove();
+                                        }
+                                    }
                                     function addReviewInput(review = {}) {
                                         const container = document.getElementById('reviewInputs');
                                         const reviewId = Date.now() + Math.floor(Math.random() * 1000);
@@ -1728,7 +1755,15 @@
                                         }
                                         if (hasSizeVariants) {
                                             sizeList = Array.from(document.querySelectorAll('.size-variant-option')).map(div => {
-                                                return div.querySelector('input[name*="[size]"]').value;
+                                                const size = div.querySelector('input[name*="[size]"]').value;
+                                                const length = div.querySelector('input[name*="[length]"]').value;
+                                                const chest = div.querySelector('input[name*="[chest]"]').value;
+                                                const sleeve = div.querySelector('input[name*="[sleeve]"]').value;
+                                                let details = size;
+                                                if (length) details += ` (Length: ${length})`;
+                                                if (chest) details += ` (Chest: ${chest})`;
+                                                if (sleeve) details += ` (Sleeve: ${sleeve})`;
+                                                return details;
                                             });
                                         }
 
@@ -2057,8 +2092,140 @@
                                                         <div class="form-row">
                                                             <div class="form-group">
                                                                 <label>Size <span class="required">*</span></label>
-                                                                <input type="text" name="sizeVariants[${sizeId}][size]" value="${size.size}" required>
+                                                                <input type="text" name="sizeVariants[${sizeId}][size]" value="${size.size || ''}" required>
                                                             </div>
+                                                            <div class="form-group">
+                                                                <label>Stock</label>
+                                                                <input type="number" name="sizeVariants[${sizeId}][stock]" min="0" value="${size.stock || 0}" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Length</label>
+                                                                <input type="text" name="sizeVariants[${sizeId}][length]" value="${typeof size.length !== 'undefined' ? size.length : ''}" placeholder="Length">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Chest</label>
+                                                                <input type="text" name="sizeVariants[${sizeId}][chest]" value="${typeof size.chest !== 'undefined' ? size.chest : ''}" placeholder="Chest">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Sleeve</label>
+                                                                <input type="text" name="sizeVariants[${sizeId}][sleeve]" value="${typeof size.sleeve !== 'undefined' ? size.sleeve : ''}" placeholder="Sleeve">
+                                                            </div>
+                                                            <button type="button" class="btn btn-sm btn-danger" onclick="removeSizeVariantOption(this)">
+                                                                <i class="icon-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    `;
+                                                    sizeContainer.appendChild(sizeDiv);
+                                                });
+                                            }
+                                            // Product Details
+                                            document.getElementById('articleNo').value = (product.productDetails && product.productDetails.articleNo) || '';
+                                            document.getElementById('brand').value = (product.productDetails && product.productDetails.brand) || '';
+                                            document.getElementById('productType').value = (product.productDetails && product.productDetails.productType) || '';
+                                            document.getElementById('soleMaterial').value = (product.productDetails && product.productDetails.soleMaterial) || '';
+                                            document.getElementById('productCollection').value = (product.productDetails && product.productDetails.productCollection) || '';
+                                           
+                                            const reviewInputsContainer = document.getElementById('reviewInputs');
+                                            reviewInputsContainer.innerHTML = '';
+                                            if (product.reviews && product.reviews.length > 0) {
+                                                product.reviews.forEach((rev) => {
+                                                    addReviewInput({
+                                                        name: rev.name,
+                                                        rating: rev.rating,
+                                                        review: rev.review
+                                                    });
+                                                });
+                                            }
+
+                                            mainImagesFiles.forEach(item => { try { URL.revokeObjectURL(item.url); } catch(e){} });
+                                            mainImagesFiles = [];
+                                            renderMainImagesPreview();
+                                            makeExistingImagesSortable();
+                                            goToStep(1);
+                                        } catch (err) {
+                                            console.error('Error loading product:', err);
+                                            alert('Failed to load product data');
+                                        }
+                                    }
+
+                                    function removeImage(btn) {
+                                        btn.closest('.existing-image').remove();
+                                    }
+
+                                    async function toggleProductStatus(productId, currentStatus) {
+                                        if (!confirm(`Are you sure you want to ${currentStatus ? 'deactivate' : 'activate'} this product?`)) {
+                                            return;
+                                        }
+                                        try {
+                                            const response = await fetch(`/products/${productId}/status`, {
+                                                method: 'PATCH',
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                },
+                                                body: JSON.stringify({
+                                                    status: currentStatus ? 'inactive' : 'active'
+                                                })
+                                            });
+                                            const result = await response.json();
+                                            if (result.success) {
+                                                window.location.reload();
+                                            } else {
+                                                alert('Error: ' + (result.message || 'Failed to update status'));
+                                            }
+                                        } catch (err) {
+                                            console.error('Error toggling status:', err);
+                                            alert('An error occurred while updating the status');
+                                        }
+                                    }
+
+                                    async function deleteProduct(productId) {
+                                        if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+                                            return;
+                                        }
+                                        try {
+                                            const response = await fetch(`/products/${productId}`, {
+                                                method: 'DELETE'
+                                            });
+                                            const result = await response.json();
+                                            if (result.success) {
+                                                const row = document.getElementById(`product-row-${productId}`);
+                                                if (row) row.remove();
+                                                window.location.reload();
+                                            } else {
+                                                alert('Error: ' + (result.message || 'Failed to delete product'));
+                                            }
+                                        } catch (err) {
+                                            console.error('Error deleting product:', err);
+                                            alert('An error occurred while deleting the product');
+                                        }
+                                    }
+
+                                    function previewImages(files, container) {
+                                        container.innerHTML = '';
+                                        if (!files || !files.length) return;
+                                        Array.from(files).forEach(file => {
+                                            const reader = new FileReader();
+                                            reader.onload = function (e) {
+                                                const img = document.createElement('img');
+                                                img.src = e.target.result;
+                                                img.style.maxWidth = '40px';
+                                                img.style.maxHeight = '40px';
+                                                container.appendChild(img);
+                                            };
+                                            reader.readAsDataURL(file);
+                                        });
+                                    }
+                                </script>
+                            </div>
+     
+                        </div>
+
+                        <div class="bottom-page">
+                            <div class="body-text">Copyright © 2025 <a href="">Stayrare</a>.
+                                Developed by Trivlogic Private Limited All rights reserved</div>
+                        </div>
+                        <!-- /section-content-right -->
+                    </div>
                                                             <div class="form-group">
                                                                 <label>Stock</label>
                                                                 <input type="number" name="sizeVariants[${sizeId}][stock]" min="0" value="${size.stock}" required>
