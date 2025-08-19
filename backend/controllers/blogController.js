@@ -45,7 +45,7 @@ exports.createBlog = async (req, res) => {
             imageUrl
         });
 
-        await newBlog.save();
+        await newBlog.save();  
         res.status(201).json({ message: "Blog created successfully", newBlog });
     } catch (error) {
         res.status(500).json({ message: "Error creating blog", error: error.message });

@@ -762,50 +762,15 @@
 
                     <!-- Product Name -->
                     <h1 class="product-single__name"
-                        style="text-transform: uppercase; font-size:2.1rem;font-weight:800;letter-spacing:1px;color:#222;">
+                        style="text-transform: uppercase; font-size:2.1rem;font-weight:800;letter-spacing:1px;color:#222;"
+                        data-product-name="<%= product.name %>">
                         <%= product.name || 'Product Name' %>
                     </h1>
 
-                    <!-- Rating -->
-                    <div class="product-single__rating mb-2">
-                        <div class="reviews-group d-flex">
-                            <% const avgRating=product.reviews && product.reviews.length> 0 ?
-                                product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length
-                                : 0;
-                                const fullStars = Math.floor(avgRating);
-                                const hasHalfStar = avgRating % 1 >= 0.5;
-                                %>
-                                <% for (let i=0; i < 5; i++) { %>
-                                    <% if (i < fullStars) { %>
-                                        <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
-                                            <use href="#icon_star" />
-                                        </svg>
-                                        <% } else if (i===fullStars && hasHalfStar) { %>
-                                            <svg class="review-star" viewBox="0 0 9 9"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <use href="#icon_half_star" />
-                                            </svg>
-                                            <% } else { %>
-                                                <svg class="review-star" viewBox="0 0 9 9"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <use href="#icon_empty_star" />
-                                                </svg>
-                                                <% } %>
-                                                    <% } %>
-                        </div>
-                        <span class="reviews-note text-lowercase text-secondary ms-1">
-                            <% if (product.reviews && product.reviews.length> 0) { %>
-                                <%= product.reviews.length %>
-                                    <%= product.reviews.length===1 ? 'review' : 'reviews' %>
-                                        <% } else { %>
-                                            No reviews yet
-                                            <% } %>
-                        </span>
-                    </div>
-
                     <!-- Price -->
                     <div class="product-card__price d-flex align-items-center gap-1">
-                        <span class="money price details-rate">
+                        <span class="money price details-rate"
+                              data-product-price="<%= product.salePrice> 0 ? product.salePrice : product.basePrice %>">
                             ₹<%= product.salePrice> 0 ? product.salePrice : product.basePrice %>
                         </span>
                         <% if (product.salePrice> 0 && product.salePrice < product.basePrice) { %>
@@ -946,6 +911,38 @@
                                             product.productDetails.productType : 'fashion' %>
                                     </span>
                                 </div>
+                    <% if (product.productDetails) { %>
+                        <% if (product.productDetails.articleNo) { %>
+                            <div class="meta-item">
+                                <label>SKU No:</label>
+                                <span><%= product.productDetails.articleNo %></span>
+                            </div>
+                        <% } %>
+                        <!-- <% if (product.productDetails.brand) { %>
+                            <div class="meta-item">
+                                <label>Brand:</label>
+                                <span><%= product.productDetails.brand %></span>
+                            </div>
+                        <% } %>
+                        <% if (product.productDetails.productType) { %>
+                            <div class="meta-item">
+                                <label>Product Type:</label>
+                                <span><%= product.productDetails.productType %></span>
+                            </div>
+                        <% } %>
+                        <% if (product.productDetails.soleMaterial) { %>
+                            <div class="meta-item">
+                                <label>Sole Material:</label>
+                                <span><%= product.productDetails.soleMaterial %></span>
+                            </div>
+                        <% } %>
+                        <% if (product.productDetails.productCollection) { %>
+                            <div class="meta-item">
+                                <label>Collection:</label>
+                                <span><%= product.productDetails.productCollection %></span>
+                            </div>
+                        <% } %> -->
+                    <% } %>
                     </div>
 
                     <!-- Return Policy Section (static) -->
@@ -1326,10 +1323,58 @@
                         } else {
                             // Guest cart (localStorage)
                             try {
-                                // Get guest cart from localStorage or initialize
+                                const CART_KEY = 'cart';
+
+                                // Get product name and image from EJS variables as fallback
+                                let productName = "<%= product.name ? product.name.replace(/"/g, '&quot;') : '' %>";
+                                let productImage = "<%= (product.images && product.images.length > 0) ? product.images[0] : '/images/stayrare/prd-3.webp' %>";
+
+                                // Try to get from DOM if available (for future-proofing, but EJS fallback is always set)
+                                const productNameAttr = document.querySelector('[data-product-name]');
+                                if (productNameAttr) {
+                                    const domName = productNameAttr.getAttribute('data-product-name');
+                                    if (domName && domName.trim()) productName = domName.trim();
+                                }
+                                // Try to get from product title element if not already set
+                                if (!productName) {
+                                    const productTitle = document.querySelector('.product-title, .product-single__title, h1.product-title');
+                                    if (productTitle && productTitle.textContent.trim()) {
+                                        productName = productTitle.textContent.trim();
+                                    }
+                                }
+
+                                // Try to get image from DOM if available
+                                const productImageAttr = document.querySelector('[data-product-image]');
+                                if (productImageAttr) {
+                                    const domImg = productImageAttr.getAttribute('data-product-image');
+                                    if (domImg && domImg.trim()) productImage = domImg.trim();
+                                }
+                                if (!productImage) {
+                                    // Try to get from product image element
+                                    const productImgEl = document.querySelector('.product-main-image img, .product-single__media img');
+                                    if (productImgEl && productImgEl.getAttribute('src')) {
+                                        productImage = productImgEl.getAttribute('src');
+                                    }
+                                }
+
+                                // If price is dynamic (e.g., based on size/color), adjust accordingly
+                                let price = 0;
+                                const priceElement = document.querySelector('[data-product-price]');
+                                if (priceElement) {
+                                    price = parseFloat(priceElement.getAttribute('data-product-price')) || 0;
+                                } else {
+                                    // fallback: try to get price from visible text
+                                    let priceText = '';
+                                    const priceTextEl = document.querySelector('.product-price, .product-single__price, .price');
+                                    if (priceTextEl) {
+                                        priceText = priceTextEl.textContent || '';
+                                    }
+                                    price = parseFloat(priceText.replace(/[^0-9.]/g, '')) || 0;
+                                }
+
                                 let guestCart = [];
                                 try {
-                                    guestCart = JSON.parse(localStorage.getItem('guestCart')) || [];
+                                    guestCart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
                                 } catch (err) {
                                     guestCart = [];
                                 }
@@ -1339,10 +1384,12 @@
                                 for (let item of guestCart) {
                                     if (
                                         item.productId === productId &&
-                                        item.size === size &&
-                                        item.color === color
+                                        item.selectedSize === size &&
+                                        item.selectedColor === color
                                     ) {
                                         item.quantity += quantity;
+                                        // Update total for this item
+                                        item.total = item.price * item.quantity;
                                         found = true;
                                         break;
                                     }
@@ -1351,12 +1398,16 @@
                                     guestCart.push({
                                         productId,
                                         quantity,
-                                        size,
-                                        color
+                                        selectedSize: size,
+                                        selectedColor: color,
+                                        price,
+                                        productName,
+                                        productImage,
+                                        total: price * quantity
                                     });
                                 }
 
-                                localStorage.setItem('guestCart', JSON.stringify(guestCart));
+                                localStorage.setItem(CART_KEY, JSON.stringify(guestCart));
 
                                 // Update cart count in header if the element exists
                                 const cartCountElement = document.querySelector('.cart-count');
@@ -1392,96 +1443,95 @@
                 }
 
                 // Add to Wishlist functionality
-              // Add to Wishlist functionality
-const addToWishlistBtn = document.getElementById('addToWishlist');
-if (addToWishlistBtn) {
-  addToWishlistBtn.addEventListener('click', async function(e) {
-    e.preventDefault();
-    
-    const isUserLoggedIn = this.getAttribute('data-user-logged-in') === 'true';
-    if (!isUserLoggedIn) {
-      Toastify({
-        text: "Please login to add items to your wishlist",
-        className: "toastify-warning",
-        duration: 3000,
-        close: true,
-        gravity: "top",
-        position: "right",
-        stopOnFocus: true,
-        onClick: function() {
-          window.location.href = '/login?returnTo=' + encodeURIComponent(window.location.pathname);
-        }
-      }).showToast();
-      return;
-    }
-    
-    const productId = this.getAttribute('data-product-id');
-    const sizeInput = document.querySelector('input[name="size"]:checked');
-    const colorInput = document.querySelector('input[name="color"]:checked');
-    
-    // Get size value (if size variants exist)
-    const size = sizeInput ? sizeInput.value : null;
-    
-    // Get color name (not ID) from the value attribute
-    const selectedColor = colorInput ? colorInput.value : null;
-    
-    try {
-      const response = await fetch('/create-wishlist', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify({
-          productId,
-          selectedSize: size,
-          selectedColor: selectedColor  // Now sending the color name
-        })
-      });
-      
-      const result = await response.json();
-      
-      if (response.ok) {
-        Toastify({
-          text: result.message || "Product added to wishlist successfully!",
-          className: "toastify-success",
-          duration: 3000,
-          close: true,
-          gravity: "top",
-          position: "right",
-          stopOnFocus: true
-        }).showToast();
-        
-        // Update wishlist count in header if the element exists
-        const wishlistCountElement = document.querySelector('.wishlist-count');
-        if (wishlistCountElement) {
-          wishlistCountElement.textContent = result.wishlistCount || 0;
-        }
-      } else {
-        Toastify({
-          text: result.error || "Failed to add product to wishlist",
-          className: "toastify-error",
-          duration: 3000,
-          close: true,
-          gravity: "top",
-          position: "right",
-          stopOnFocus: true
-        }).showToast();
-      }
-    } catch (error) {
-      console.error('Error adding to wishlist:', error);
-      Toastify({
-        text: "An error occurred while adding to wishlist",
-        className: "toastify-error",
-        duration: 3000,
-        close: true,
-        gravity: "top",
-        position: "right",
-        stopOnFocus: true
-      }).showToast();
-    }
-  });
-}
+                const addToWishlistBtn = document.getElementById('addToWishlist');
+                if (addToWishlistBtn) {
+                  addToWishlistBtn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    
+                    const isUserLoggedIn = this.getAttribute('data-user-logged-in') === 'true';
+                    if (!isUserLoggedIn) {
+                      Toastify({
+                        text: "Please login to add items to your wishlist",
+                        className: "toastify-warning",
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        stopOnFocus: true,
+                        onClick: function() {
+                          window.location.href = '/login?returnTo=' + encodeURIComponent(window.location.pathname);
+                        }
+                      }).showToast();
+                      return;
+                    }
+                    
+                    const productId = this.getAttribute('data-product-id');
+                    const sizeInput = document.querySelector('input[name="size"]:checked');
+                    const colorInput = document.querySelector('input[name="color"]:checked');
+                    
+                    // Get size value (if size variants exist)
+                    const size = sizeInput ? sizeInput.value : null;
+                    
+                    // Get color name (not ID) from the value attribute
+                    const selectedColor = colorInput ? colorInput.value : null;
+                    
+                    try {
+                      const response = await fetch('/create-wishlist', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                          productId,
+                          selectedSize: size,
+                          selectedColor: selectedColor  // Now sending the color name
+                        })
+                      });
+                      
+                      const result = await response.json();
+                      
+                      if (response.ok) {
+                        Toastify({
+                          text: result.message || "Product added to wishlist successfully!",
+                          className: "toastify-success",
+                          duration: 3000,
+                          close: true,
+                          gravity: "top",
+                          position: "right",
+                          stopOnFocus: true
+                        }).showToast();
+                        
+                        // Update wishlist count in header if the element exists
+                        const wishlistCountElement = document.querySelector('.wishlist-count');
+                        if (wishlistCountElement) {
+                          wishlistCountElement.textContent = result.wishlistCount || 0;
+                        }
+                      } else {
+                        Toastify({
+                          text: result.error || "Failed to add product to wishlist",
+                          className: "toastify-error",
+                          duration: 3000,
+                          close: true,
+                          gravity: "top",
+                          position: "right",
+                          stopOnFocus: true
+                        }).showToast();
+                      }
+                    } catch (error) {
+                      console.error('Error adding to wishlist:', error);
+                      Toastify({
+                        text: "An error occurred while adding to wishlist",
+                        className: "toastify-error",
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        stopOnFocus: true
+                      }).showToast();
+                    }
+                  });
+                }
             });
 
             // Highlight selected size/color

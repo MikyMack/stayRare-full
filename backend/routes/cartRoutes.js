@@ -123,12 +123,23 @@ router.delete('/remove-cart/:itemId', isUser, async (req, res) => {
 // Clear cart
 router.delete('/clear-cart', isUser, async (req, res) => {
   try {
-    const cart = await Cart.findOneAndUpdate(
-      { user: req.user._id },
-      { $set: { items: [], couponCode: null, couponType: null, discount: 0 } },
-      { new: true }
-    );
-    res.status(200).json(cart || { items: [] });
+    const cart = await Cart.findOne({ user: req.user._id });
+    if (!cart) return res.status(404).json({ error: 'Cart not found' });
+
+    cart.items = [];
+    cart.couponInfo = {
+      code: null,
+      discountType: null,
+      discountValue: 0,
+      discountAmount: 0,
+      validated: false,
+      minPurchase: 0
+    };
+    cart.subtotal = 0;
+    cart.total = 0;
+    await cart.save();
+
+    res.status(200).json(cart);
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }
