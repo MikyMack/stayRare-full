@@ -1,29 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-KTMNTPV3');</script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Stay rare | Privacy Policy</title>
-      <link rel="shortcut icon" href="images/stayrare/fav.png" type="image/x-icon">
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="author" content="flexkit">
 
-            <script>
-        WebFontConfig = {
-            google: { families: ['Poppins:400,500,600,700,800'] }
-        };
-        ( function ( d ) {
-            var wf = d.createElement( 'script' ), s = d.scripts[0];
-            wf.src = '/js/webfont.js';
-            wf.async = true;
-            s.parentNode.insertBefore( wf, s );
-        } )( document );
-    </script>
-
-     <link rel="preconnect" href="https://fonts.gstatic.com/">
+  <link rel="shortcut icon" href="images/stayrare/fav.png" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.gstatic.com/">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
@@ -34,9 +17,13 @@
   <link rel="stylesheet" href="css/plugins/jquery.fancybox.css" type="text/css">
   <link rel="stylesheet" href="css/style.css" type="text/css">
 
-    <!-- Vendor CSS -->
-    <link rel="stylesheet" type="text/css" href="/vendor/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="/vendor/animate/animate.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Plugin CSS -->
+
+
+    <!-- Default CSS -->
+  <title> PRIVACY & POLICY| STAY RARE</title>
     <style>
         :root {
             --theme-color: #001F3F;
@@ -177,58 +164,456 @@
             }
         }
     </style>
+        <style>
+                .icon-container {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .icon {
+            position: relative;
+            width: 20px;
+            height:20px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .icon:hover {
+            transform: scale(1.1);
+        }
+
+        .icon-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #3B1D58;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            border: 2px solid #f5f5f5;
+        }
+
+        .icon:nth-child(2) .badge {
+            background: #ef4444;
+        }
+
+        .icon:nth-child(3) .badge {
+            background: #3B1D58;
+        }
+
+        :root {
+            --primary-color: #001F3F;
+            --primary-hover: #001F3F;
+            --text-color: #1f2937;
+            --light-text: #6b7280;
+            --border-color: #e5e7eb;
+            --bg-color: #f9fafb;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --radius: 0.5rem;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Main Content */
+        .page-content {
+            padding: 2rem 0;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .title-sub {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* Layout */
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 992px) {
+            .checkout-layout {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        /* Address Selection */
+        .address-selection {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .address-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .address-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .address-card:hover {
+            border-color: var(--primary-color);
+        }
+
+        .address-card.selected {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        .address-card h5 {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .address-card p {
+            margin-bottom: 0.25rem;
+            color: var(--light-text);
+            font-size: 0.875rem;
+        }
+
+        .address-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+
+        .use-address-btn {
+            margin-top: 0.75rem;
+            background: none;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .use-address-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .checkbox-input {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 1rem;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        .order-table th,
+        .order-table td {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .order-table th {
+            font-weight: 600;
+        }
+
+        .order-table tfoot th {
+            font-weight: 700;
+        }
+
+        .order-table tfoot tr:last-child th,
+        .order-table tfoot tr:last-child td {
+            border-bottom: none;
+            font-size: 1.125rem;
+        }
+
+        .product-name {
+            font-weight: 500;
+        }
+
+        .product-name small {
+            color: var(--light-text);
+            font-size: 0.875rem;
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            margin-top: 1.5rem;
+        }
+
+        .payment-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+
+        .payment-header {
+            padding: 1rem;
+            background-color: var(--bg-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payment-header:hover {
+            background-color: #f3f4f6;
+        }
+
+        .payment-body {
+            padding: 1rem;
+            display: none;
+        }
+
+        .payment-body.expanded {
+            display: block;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 10px 5px;
+            border-radius: var(--radius);
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        /* Coupon Section */
+        .coupon-toggle {
+            margin-bottom: 1rem;
+        }
+
+        .coupon-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .input-wrapper-inline {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background-color: #ecfdf5;
+            color: var(--success-color);
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background-color: #fef2f2;
+            color: var(--error-color);
+            border: 1px solid #fecaca;
+        }
+
+        /* Utility Classes */
+        .mt-1 {
+            margin-top: 0.25rem;
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-3 {
+            margin-top: 0.75rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .mt-5 {
+            margin-top: 1.5rem;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.25rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 0.75rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-5 {
+            margin-bottom: 1.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="page-wrapper">
-       <div class="header-mobile header_sticky">
+  <div class="header-mobile header_sticky">
     <div class="container d-flex align-items-center h-100">
-      <a class="mobile-nav-activator d-block position-relative" href="#">
-        <svg class="nav-icon" width="25" height="18" viewBox="0 0 25 18" xmlns="http://www.w3.org/2000/svg">
-          <use href="#icon_nav" />
-        </svg>
-        <span class="btn-close-lg position-absolute top-0 start-0 w-100"></span>
+      <a class="mobile-nav-activator d-block position-relative"  href="#">
+        <img style="height: 30px; width: 30px;" class="menu-icn nav-icon" src="/images/menu.png" alt="">
+        <div class="btn-close-lg position-absolute top-0 start-0 w-100 cls-btn"></div>
       </a>
 
       <div class="logo">
         <a href="/">
-        <a href="/">
-          <img src="images/stayrare/logo.png" alt="Uomo" class="logo__image d-block">
+          <img src="images/stayrare/logo.png" alt="stayrare" class="logo__image d-block">
         </a>
       </div><!-- /.logo -->
 
-      <a href="#" class="header-tools__item header-tools__cart js-open-aside" data-aside="cartDrawer">
-        <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <use href="#icon_cart" />
-        </svg>
-        <span class="cart-amount d-block position-absolute js-cart-items-count">3</span>
+      <a href="/cart" class="header-tools__item header-tools__cart " >
+           <div class="icon">
+            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <div class="badge">3</div>
+        </div>
       </a>
     </div><!-- /.container -->
 
-    <nav
-      class="header-mobile__navigation navigation d-flex flex-column w-100 position-absolute top-100 bg-body overflow-auto">
-
+    <nav class="header-mobile__navigation navigation d-flex flex-column w-100 position-absolute top-100 bg-body overflow-auto">
+ 
 
       <div class="container">
         <div class="overflow-hidden">
           <ul class="navigation__list list-unstyled position-relative">
             <li class="navigation__item">
               <a href="/" class="navigation__link js-nav-right d-flex align-items-center">Home</a>
-
+       
             </li>
             <li class="navigation__item">
-              <a href="" class="navigation__link js-nav-right d-flex align-items-center">Store
-                <svg class="ms-auto" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_next_sm" />
-                </svg>
-              </a>
+              <a style="display: flex; justify-content: space-between!important;" href="#" class="navigation__link js-nav-right d-flex align-items-center justify-between">Store <span><i class="ri-arrow-right-s-line"></i></span></a>
               <div class="sub-menu position-absolute top-0 start-100 w-100 d-none">
-                <a href="#" class="navigation__link js-nav-left d-flex align-items-center border-bottom mb-3">
-                  <svg class="me-2" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
-                    <use href="#icon_prev_sm" />
-                  </svg>
-                  Store
-                </a>
-                <div class="sub-menu__wrapper">
+                <a href="#" class="navigation__link js-nav-left d-flex align-items-center border-bottom mb-3"><i class="ri-arrow-left-s-line"></i>Store</a>
+              <div class="sub-menu__wrapper">
                   <% if (typeof categories !== 'undefined' && categories.length) { %>
                     <% categories.forEach(function(category) { %>
                       <a href="/store?category=<%= category._id %>" class="navigation__link js-nav-right d-flex align-items-center">
@@ -265,25 +650,25 @@
                 </div>
               </div>
             </li>
-
-            <li class="navigation__item">
+      
+                     <li class="navigation__item">
               <a href="/about" class="navigation__link">About</a>
             </li>
-            </li>
-            <li class="navigation__item">
+                </li>
+                     <li class="navigation__item">
               <a href="/blogs" class="navigation__link">blogs</a>
             </li>
 
+       
 
 
 
-
-
+   
 
             <li class="navigation__item">
               <a href="/contact" class="navigation__link">Contact</a>
             </li>
-
+      
           </ul><!-- /.navigation__list -->
         </div><!-- /.overflow-hidden -->
       </div><!-- /.container -->
@@ -305,128 +690,39 @@
 
 
           <ul class="container social-links d-flex justify-content-around list-unstyled d-flex flex-wrap mb-0">
-            <li>
-              <a href="https://www.facebook.com/" class="footer__social-link d-block ps-0">
-                <svg class="svg-icon svg-icon_facebook" width="9" height="15" viewBox="0 0 9 15"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_facebook" />
-                </svg>
+               <li>
+              <a href="https://www.facebook.com/" class="footer__social-link d-block">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+<g fill="black" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M17.525,9h-3.525v-2c0,-1.032 0.084,-1.682 1.563,-1.682h1.868v-3.18c-0.909,-0.094 -1.823,-0.14 -2.738,-0.138c-2.713,0 -4.693,1.657 -4.693,4.699v2.301h-3v4l3,-0.001v9.001h4v-9.003l3.066,-0.001z"></path></g></g>
+</svg>
               </a>
             </li>
             <li>
-              <a href="https://twitter.com/" class="footer__social-link d-block">
-                <svg class="svg-icon svg-icon_x" width="14" height="13" viewBox="0 0 1200 1227"
-                  xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-                  <path
-                    d="M 880 0 L 585 455 L 290 0 H 0 L 425 623 L 0 1227 H 290 L 585 772 L 880 1227 H 1170 L 745 623 L 1170 0 Z" />
-                </svg>
-
+              <a href="https://www.twitter.com/" class="footer__social-link d-block">
+                <svg class="svg-icon svg-icon_x" width="14" height="13" viewBox="0 0 1200 1227" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <path d="M 880 0 L 585 455 L 290 0 H 0 L 425 623 L 0 1227 H 290 L 585 772 L 880 1227 H 1170 L 745 623 L 1170 0 Z"/>
+</svg>
               </a>
             </li>
             <li>
               <a href="https://www.instagram.com/" class="footer__social-link d-block">
-                <svg class="svg-icon svg-icon_instagram" width="14" height="13" viewBox="0 0 14 13"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_instagram" />
-                </svg>
+               <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+<g fill="black" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M8,3c-2.757,0 -5,2.243 -5,5v8c0,2.757 2.243,5 5,5h8c2.757,0 5,-2.243 5,-5v-8c0,-2.757 -2.243,-5 -5,-5zM8,5h8c1.654,0 3,1.346 3,3v8c0,1.654 -1.346,3 -3,3h-8c-1.654,0 -3,-1.346 -3,-3v-8c0,-1.654 1.346,-3 3,-3zM17,6c-0.55228,0 -1,0.44772 -1,1c0,0.55228 0.44772,1 1,1c0.55228,0 1,-0.44772 1,-1c0,-0.55228 -0.44772,-1 -1,-1zM12,7c-2.757,0 -5,2.243 -5,5c0,2.757 2.243,5 5,5c2.757,0 5,-2.243 5,-5c0,-2.757 -2.243,-5 -5,-5zM12,9c1.654,0 3,1.346 3,3c0,1.654 -1.346,3 -3,3c-1.654,0 -3,-1.346 -3,-3c0,-1.654 1.346,-3 3,-3z"></path></g></g>
+</svg>
               </a>
             </li>
             <li>
               <a href="https://www.youtube.com/" class="footer__social-link d-block">
-                <svg class="svg-icon svg-icon_youtube" width="16" height="11" viewBox="0 0 16 11"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M15.0117 1.8584C14.8477 1.20215 14.3281 0.682617 13.6992 0.518555C12.5234 0.19043 7.875 0.19043 7.875 0.19043C7.875 0.19043 3.19922 0.19043 2.02344 0.518555C1.39453 0.682617 0.875 1.20215 0.710938 1.8584C0.382812 3.00684 0.382812 5.46777 0.382812 5.46777C0.382812 5.46777 0.382812 7.90137 0.710938 9.07715C0.875 9.7334 1.39453 10.2256 2.02344 10.3896C3.19922 10.6904 7.875 10.6904 7.875 10.6904C7.875 10.6904 12.5234 10.6904 13.6992 10.3896C14.3281 10.2256 14.8477 9.7334 15.0117 9.07715C15.3398 7.90137 15.3398 5.46777 15.3398 5.46777C15.3398 5.46777 15.3398 3.00684 15.0117 1.8584ZM6.34375 7.68262V3.25293L10.2266 5.46777L6.34375 7.68262Z" />
-                </svg>
-              </a>
-            </li>
-            <li>
-              <a href="https://www.pinterest.com/" class="footer__social-link d-block">
-                <svg class="svg-icon svg-icon_pinterest" width="14" height="15" viewBox="0 0 14 15"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_pinterest" />
-                </svg>
+                <svg class="svg-icon svg-icon_youtube" width="16" height="11" viewBox="0 0 16 11" xmlns="http://www.w3.org/2000/svg"><path d="M15.0117 1.8584C14.8477 1.20215 14.3281 0.682617 13.6992 0.518555C12.5234 0.19043 7.875 0.19043 7.875 0.19043C7.875 0.19043 3.19922 0.19043 2.02344 0.518555C1.39453 0.682617 0.875 1.20215 0.710938 1.8584C0.382812 3.00684 0.382812 5.46777 0.382812 5.46777C0.382812 5.46777 0.382812 7.90137 0.710938 9.07715C0.875 9.7334 1.39453 10.2256 2.02344 10.3896C3.19922 10.6904 7.875 10.6904 7.875 10.6904C7.875 10.6904 12.5234 10.6904 13.6992 10.3896C14.3281 10.2256 14.8477 9.7334 15.0117 9.07715C15.3398 7.90137 15.3398 5.46777 15.3398 5.46777C15.3398 5.46777 15.3398 3.00684 15.0117 1.8584ZM6.34375 7.68262V3.25293L10.2266 5.46777L6.34375 7.68262Z"/></svg>
               </a>
             </li>
           </ul>
       </div>
     </nav><!-- /.navigation -->
   </div><!-- /.header-mobile -->
-    <header id="header" class="header header-fullwidth header-transparent-bg">
-    <div class="header-top d-flex top-hdr color-white align-items-center">
-      <ul class="list-unstyled d-flex flex-1 gap-3 m-0">
-        <li><a href="/account" class="menu-link menu-link_us-s color-white">Shipping</a></li>
-        <li><a href="/account" class="menu-link menu-link_us-s color-white"> Orders</a></li>
-      </ul>
+        <!-- Start of Header -->
+  <header id="header" class="header header-fullwidth header-transparent-bg">
 
-      <!-- Marquee Container with more width, catchy sentence, and infinite loop -->
-      <div class="marquee-container mx-auto flex-grow-1"
-        style="min-width:0; flex-basis:50%; max-width:1100px; overflow:hidden;">
-        <div class="marquee-track" style="white-space:nowrap; animation: marqueeLoop 28s linear infinite;">
-          <div class="marquee-content d-inline-block" style="white-space:nowrap;">
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;">WELCOME TO STAY RARE</span>
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;">LOGIN FOR 10% OFF</span>
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;"> Unleash Your Style – New Arrivals Just
-              Dropped! </span>
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;">FREE SHIPPING ON ORDERS OVER ₹999</span>
-            <!-- Repeat for seamless loop -->
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;">WELCOME TO STAY RARE</span>
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;">LOGIN FOR 10% OFF</span>
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;"> Unleash Your Style – New Arrivals Just
-              Dropped!</span>
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;">FREE SHIPPING ON ORDERS OVER ₹999</span>
-          </div>
-        </div>
-        <style>
-          @keyframes marqueeLoop {
-            0% {
-              transform: translateX(0);
-            }
-
-            100% {
-              transform: translateX(-50%);
-            }
-          }
-
-          @media (max-width: 768px) {
-            .marquee-container {
-              max-width: 100vw !important;
-              flex-basis: 100% !important;
-            }
-          }
-        </style>
-      </div>
-
-      <div class="heeader-top__right flex-1 d-flex gap-1 justify-content-end">
-        <ul class="social-links list-unstyled d-flex flex-wrap mb-0">
-          <li>
-            <a href="#" class="footer__social-link d-block color-white">
-              <svg class="svg-icon svg-icon_facebook" width="9" height="15" viewBox="0 0 9 15"
-                xmlns="http://www.w3.org/2000/svg">
-                <use href="#icon_facebook" />
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="footer__social-link d-block color-white">
-              <svg class="svg-icon svg-icon_x" width="14" height="13" viewBox="0 0 1200 1227"
-                xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-                <path
-                  d="M 880 0 L 585 455 L 290 0 H 0 L 425 623 L 0 1227 H 290 L 585 772 L 880 1227 H 1170 L 745 623 L 1170 0 Z" />
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="footer__social-link d-block color-white">
-              <svg class="svg-icon svg-icon_instagram" width="14" height="13" viewBox="0 0 14 13"
-                xmlns="http://www.w3.org/2000/svg">
-                <use href="#icon_instagram" />
-              </svg>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
     <div class="header-desk header-desk_type_2">
       <nav class="navigation d-flex">
 
@@ -434,11 +730,11 @@
         <ul class="navigation__list list-unstyled d-flex">
           <li class="navigation__item">
             <a href="/" class="navigation__link">Home</a>
-
+      
           </li>
-          <li class="navigation__item">
+                  <li class="navigation__item">
             <a href="/store" class="navigation__link">Store</a>
-            <ul class="default-menu list-unstyled">
+      <ul class="default-menu list-unstyled">
               <% if (typeof categories !== 'undefined' && categories.length) { %>
                 <% categories.forEach(function(category) { %>
                   <li class="sub-menu__item position-relative">
@@ -463,15 +759,15 @@
               <% } %>
             </ul><!-- /.box-menu -->
           </li>
-          <li class="navigation__item">
+           <li class="navigation__item">
             <a href="/about" class="navigation__link">About</a>
           </li>
-
-
-
-          <li class="navigation__item">
+     
+ 
+     
+               <li class="navigation__item">
             <a href="/blogs" class="navigation__link">Blog</a>
-
+    
           </li>
           <li class="navigation__item">
             <a href="/contact" class="navigation__link">Contact</a>
@@ -481,255 +777,326 @@
 
       <div class="logo">
         <a href="/">
-          <img src="images/stayrare/logo.png" alt="Stayrare" class="logo__image d-block">
+          <img style="top: 50%;" src="images/stayrare/logo.png" alt="Stayrare" class="logo__image d-block">
         </a>
       </div><!-- /.logo -->
 
       <div class="header-tools d-flex align-items-center">
-        <div class="header-tools__item hover-container">
-          <div class="js-hover__open position-relative">
-            <a class="js-search-popup search-field__actor" href="#">
-              <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <use href="#icon_search" />
-              </svg>
-              <i class="btn-icon btn-close-lg"></i>
-            </a>
-          </div>
+     
 
-          <div class="search-popup js-hidden-content">
-            <form action="https://uomo-html.flexkitux.com/Demo2/search_result.html" method="GET"
-              class="search-field container">
-              <p class="text-uppercase text-secondary fw-medium mb-4">What are you looking for?</p>
-              <div class="position-relative">
-                <input class="search-field__input search-popup__input w-100 fw-medium" type="text" name="search-keyword"
-                  placeholder="Search products">
-                <button class="btn-icon search-popup__submit" type="submit">
-                  <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <use href="#icon_search" />
-                  </svg>
-                </button>
-                <button class="btn-icon btn-close-lg search-popup__reset" type="reset"></button>
-              </div>
-
-              <div class="search-popup__results">
-                <div class="sub-menu search-suggestion">
-                  <h6 class="sub-menu__title fs-base">Quicklinks</h6>
-                  <ul class="sub-menu__list list-unstyled">
-                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">New Arrivals</a>
-                    </li>
-                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Dresses</a></li>
-                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Accessories</a></li>
-                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Footwear</a></li>
-                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Sweatshirt</a></li>
-                  </ul>
-                </div>
-
-                <div class="search-result row row-cols-5"></div>
-              </div>
-            </form><!-- /.header-search -->
-          </div><!-- /.search-popup -->
-        </div><!-- /.header-tools__item hover-container -->
-
-        <div class="header-tools__item hover-container">
+      <div class="header-tools__item hover-container">
           <a class="" href="<%= user ? '/account' : '/auth/login' %>" data-aside="customerForms">
-            <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_user" />
+              <div class="icon">
+            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
             </svg>
+   
+        </div>
           </a>
         </div>
 
-        <a class="header-tools__item" href="wishlist.html">
-          <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <use href="#icon_heart" />
-          </svg>
+        <a class="header-tools__item" href="/wishlist">
+             <div class="icon">
+            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+         
+        </div>
         </a>
 
-        <a href="#" class="header-tools__item header-tools__cart js-open-aside" data-aside="cartDrawer">
-          <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <use href="#icon_cart" />
-          </svg>
-          <span class="cart-amount d-block position-absolute js-cart-items-count">3</span>
+        <a href="/cart" class="header-tools__item header-tools__cart " >
+     <div class="icon">
+            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <div class="badge">3</div>
+        </div>
+          
         </a>
       </div><!-- /.header__tools -->
     </div><!-- /.header-desk header-desk_type_2 -->
   </header>
-          <div class="privacy-policy-wrapper">
-        <div class="privacy-policy-title">
-            <h1 class="privacy-policy-main-heading">Privacy Policy</h1>
-      
-        </div>
+<div class="privacy-policy-wrapper">
+    <div class="privacy-policy-title">
+        <h1 class="privacy-policy-main-heading">Privacy Policy</h1>
+    </div>
 
-        <div class="privacy-policy-section">
-            <h2 class="privacy-policy-section-title">Introduction</h2>
+    <div class="privacy-policy-section">
+        <h2 class="privacy-policy-section-title">Introduction</h2>
+        <p class="privacy-policy-text">
+            At StayRare, we value your privacy and are committed to protecting your personal information. 
+            This Privacy Policy explains how we collect, use, and safeguard your data when you browse our website or purchase our T-shirts. 
+            By using our website or services, you agree to the practices described in this Privacy Policy.
+        </p>
+    </div>
+
+    <div class="privacy-policy-section">
+        <h2 class="privacy-policy-section-title">Information We Collect</h2>
+        
+        <h3 class="privacy-policy-subsection-title">Personal Information</h3>
+        <p class="privacy-policy-text">
+            We collect information you provide directly to us when placing an order or contacting us, including:
+        </p>
+        <ul class="privacy-policy-list">
+            <li class="privacy-policy-list-item">Name, email address, and phone number</li>
+            <li class="privacy-policy-list-item">Shipping and billing address</li>
+            <li class="privacy-policy-list-item">Payment details (processed securely via trusted providers)</li>
+            <li class="privacy-policy-list-item">Account information (if you create one)</li>
+            <li class="privacy-policy-list-item">Reviews, feedback, and inquiries</li>
+        </ul>
+
+        <h3 class="privacy-policy-subsection-title">Automatically Collected Information</h3>
+        <p class="privacy-policy-text">
+            When you use our website, certain information may be collected automatically, such as:
+        </p>
+        <ul class="privacy-policy-list">
+            <li class="privacy-policy-list-item">IP address and approximate location</li>
+            <li class="privacy-policy-list-item">Device type, browser, and operating system</li>
+            <li class="privacy-policy-list-item">Pages viewed, time spent, and navigation patterns</li>
+            <li class="privacy-policy-list-item">Referring website or search terms</li>
+            <li class="privacy-policy-list-item">Cookies and similar tracking tools</li>
+        </ul>
+    </div>
+
+    <div class="privacy-policy-section">
+        <h2 class="privacy-policy-section-title">How We Use Your Information</h2>
+        <p class="privacy-policy-text">
+            We use your information to provide a smooth and personalized shopping experience. This includes:
+        </p>
+        <ul class="privacy-policy-list">
+            <li class="privacy-policy-list-item">Processing and fulfilling your T-shirt orders</li>
+            <li class="privacy-policy-list-item">Communicating order updates and support responses</li>
+            <li class="privacy-policy-list-item">Improving our website, products, and shopping experience</li>
+            <li class="privacy-policy-list-item">Sending promotional offers and updates (if you opt in)</li>
+            <li class="privacy-policy-list-item">Detecting fraud and maintaining security</li>
+            <li class="privacy-policy-list-item">Complying with legal obligations</li>
+        </ul>
+    </div>
+
+    <div class="privacy-policy-section">
+        <h2 class="privacy-policy-section-title">Information Sharing</h2>
+        <p class="privacy-policy-text">
+            We respect your privacy and do not sell your data. However, we may share information in these cases:
+        </p>
+        <ul class="privacy-policy-list">
+            <li class="privacy-policy-list-item">With trusted service providers (payment gateways, shipping partners)</li>
+            <li class="privacy-policy-list-item">When required by law or regulatory authorities</li>
+            <li class="privacy-policy-list-item">To protect the rights, safety, and property of StayRare</li>
+            <li class="privacy-policy-list-item">In case of a business merger, acquisition, or restructuring</li>
+            <li class="privacy-policy-list-item">With your explicit consent</li>
+        </ul>
+    </div>
+
+    <div class="privacy-policy-section">
+        <h2 class="privacy-policy-section-title">Data Security</h2>
+        <div class="privacy-policy-highlight-box">
             <p class="privacy-policy-text">
-                We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services. By accessing or using our services, you acknowledge that you have read, understood, and agree to be bound by this Privacy Policy.
-            </p>
-        </div>
-
-        <div class="privacy-policy-section">
-            <h2 class="privacy-policy-section-title">Information We Collect</h2>
-            
-            <h3 class="privacy-policy-subsection-title">Personal Information</h3>
-            <p class="privacy-policy-text">
-                We collect information you provide directly to us, including but not limited to:
-            </p>
-            <ul class="privacy-policy-list">
-                <li class="privacy-policy-list-item">Name, email address, and contact information</li>
-                <li class="privacy-policy-list-item">Payment information and billing details</li>
-                <li class="privacy-policy-list-item">Account credentials and preferences</li>
-                <li class="privacy-policy-list-item">Communication records and support inquiries</li>
-                <li class="privacy-policy-list-item">Product reviews and feedback</li>
-            </ul>
-
-            <h3 class="privacy-policy-subsection-title">Automatically Collected Information</h3>
-            <p class="privacy-policy-text">
-                When you access our website, we automatically collect certain information about your device and usage patterns, including:
-            </p>
-            <ul class="privacy-policy-list">
-                <li class="privacy-policy-list-item">IP address and location data</li>
-                <li class="privacy-policy-list-item">Browser type and operating system</li>
-                <li class="privacy-policy-list-item">Pages visited and time spent on our site</li>
-                <li class="privacy-policy-list-item">Referring website and search terms</li>
-                <li class="privacy-policy-list-item">Cookies and similar tracking technologies</li>
-            </ul>
-        </div>
-
-        <div class="privacy-policy-section">
-            <h2 class="privacy-policy-section-title">How We Use Your Information</h2>
-            <p class="privacy-policy-text">
-                We use the collected information for various legitimate business purposes, including:
-            </p>
-            <ul class="privacy-policy-list">
-                <li class="privacy-policy-list-item">Processing transactions and managing your account</li>
-                <li class="privacy-policy-list-item">Providing customer support and responding to inquiries</li>
-                <li class="privacy-policy-list-item">Improving our products, services, and website functionality</li>
-                <li class="privacy-policy-list-item">Sending promotional communications and marketing materials</li>
-                <li class="privacy-policy-list-item">Preventing fraud and ensuring security</li>
-                <li class="privacy-policy-list-item">Complying with legal obligations and regulations</li>
-            </ul>
-        </div>
-
-        <div class="privacy-policy-section">
-            <h2 class="privacy-policy-section-title">Information Sharing and Disclosure</h2>
-            <p class="privacy-policy-text">
-                We do not sell, trade, or rent your personal information to third parties. However, we may share your information in the following circumstances:
-            </p>
-            <ul class="privacy-policy-list">
-                <li class="privacy-policy-list-item">With service providers who assist in our business operations</li>
-                <li class="privacy-policy-list-item">When required by law or legal process</li>
-                <li class="privacy-policy-list-item">To protect our rights, property, or safety</li>
-                <li class="privacy-policy-list-item">In connection with a business transaction or merger</li>
-                <li class="privacy-policy-list-item">With your explicit consent</li>
-            </ul>
-        </div>
-
-        <div class="privacy-policy-section">
-            <h2 class="privacy-policy-section-title">Data Security</h2>
-            <div class="privacy-policy-highlight-box">
-                <p class="privacy-policy-text">
-                    We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. These measures include encryption, secure servers, and regular security assessments.
-                </p>
-            </div>
-            <p class="privacy-policy-text">
-                While we strive to protect your information, no method of transmission over the internet or electronic storage is completely secure. We cannot guarantee absolute security but are committed to maintaining the highest standards of data protection.
-            </p>
-        </div>
-
-        <div class="privacy-policy-section">
-            <h2 class="privacy-policy-section-title">Your Rights and Choices</h2>
-            <p class="privacy-policy-text">
-                You have certain rights regarding your personal information, including:
-            </p>
-            <ul class="privacy-policy-list">
-                <li class="privacy-policy-list-item">Access to your personal data and information about how it's processed</li>
-                <li class="privacy-policy-list-item">Correction of inaccurate or incomplete information</li>
-                <li class="privacy-policy-list-item">Deletion of your personal data under certain circumstances</li>
-                <li class="privacy-policy-list-item">Opt-out of marketing communications</li>
-                <li class="privacy-policy-list-item">Data portability and restriction of processing</li>
-            </ul>
-        </div>
-
-        <div class="privacy-policy-section">
-            <h2 class="privacy-policy-section-title">Cookies and Tracking Technologies</h2>
-            <p class="privacy-policy-text">
-                We use cookies and similar technologies to enhance your browsing experience, analyze website traffic, and personalize content. You can control cookie settings through your browser preferences, though disabling cookies may affect website functionality.
-            </p>
-        </div>
-
-        <div class="privacy-policy-section">
-            <h2 class="privacy-policy-section-title">Third-Party Links</h2>
-            <p class="privacy-policy-text">
-                Our website may contain links to third-party websites. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies before providing any personal information.
-            </p>
-        </div>
-
-        <div class="privacy-policy-section">
-            <h2 class="privacy-policy-section-title">Children's Privacy</h2>
-            <p class="privacy-policy-text">
-                Our services are not intended for children under the age of 13. We do not knowingly collect personal information from children. If we become aware that we have collected information from a child under 13, we will take steps to delete such information promptly.
-            </p>
-        </div>
-
-        <div class="privacy-policy-section">
-            <h2 class="privacy-policy-section-title">Changes to This Policy</h2>
-            <p class="privacy-policy-text">
-                We reserve the right to update this Privacy Policy at any time. Changes will be posted on this page with an updated revision date. Your continued use of our services after any modifications constitutes acceptance of the updated policy.
-            </p>
-        </div>
-
-
-        <div class="privacy-policy-footer-note">
-            <p class="privacy-policy-footer-text">
-                This Privacy Policy is effective as of the date stated above and governs the use of this website by all visitors and users.
+                We use secure servers, encryption, and trusted third-party payment gateways to protect your personal information. 
+                While no online system is 100% secure, we are committed to maintaining strong safeguards to minimize risks.
             </p>
         </div>
     </div>
 
-     <footer class="footer-mobile container w-100 px-5 d-md-none bg-body">
+    <div class="privacy-policy-section">
+        <h2 class="privacy-policy-section-title">Your Rights</h2>
+        <p class="privacy-policy-text">
+            As a StayRare customer, you have the right to:
+        </p>
+        <ul class="privacy-policy-list">
+            <li class="privacy-policy-list-item">Request access to the personal data we hold about you</li>
+            <li class="privacy-policy-list-item">Request corrections to inaccurate or outdated information</li>
+            <li class="privacy-policy-list-item">Request deletion of your data where legally applicable</li>
+            <li class="privacy-policy-list-item">Opt-out of promotional emails</li>
+            <li class="privacy-policy-list-item">Restrict or object to certain types of data processing</li>
+        </ul>
+    </div>
+
+    <div class="privacy-policy-section">
+        <h2 class="privacy-policy-section-title">Cookies</h2>
+        <p class="privacy-policy-text">
+            We use cookies to improve your browsing experience, analyze traffic, and personalize content. 
+            You can adjust cookie preferences in your browser, but disabling them may affect some features of our website.
+        </p>
+    </div>
+
+    <div class="privacy-policy-section">
+        <h2 class="privacy-policy-section-title">Third-Party Links</h2>
+        <p class="privacy-policy-text">
+            Our website may link to third-party websites (such as payment gateways or delivery partners). 
+            We are not responsible for their privacy practices, so we encourage you to review their policies before sharing information.
+        </p>
+    </div>
+
+    <div class="privacy-policy-section">
+        <h2 class="privacy-policy-section-title">Children’s Privacy</h2>
+        <p class="privacy-policy-text">
+            StayRare does not knowingly collect information from children under 13. 
+            If we become aware that such data has been collected, we will promptly delete it.
+        </p>
+    </div>
+
+    <div class="privacy-policy-section">
+        <h2 class="privacy-policy-section-title">Changes to This Policy</h2>
+        <p class="privacy-policy-text">
+            We may update this Privacy Policy from time to time. Updates will be posted on this page with the revised date. 
+            Continued use of our services means you accept any changes.
+        </p>
+    </div>
+
+    <div class="privacy-policy-footer-note">
+        <p class="privacy-policy-footer-text">
+            This Privacy Policy is effective as of the date stated above and applies to all StayRare customers and website users.
+        </p>
+    </div>
+</div>
+
+<footer class="footer footer_type_2 dark">
+
+
+    <div class="footer-middle container">
+      <div class="row row-cols-lg-5 row-cols-2">
+        <div class="footer-column footer-store-info col-12 mb-4 mb-lg-0">
+ <div>
+  <img class="footer-logo" src="images/stayrare/footer-logo.png" alt="">
+ </div>
+          <p class="footer-address">Stay Rare ,Kochi , Kerala  India , 673641</p>
+          <p class="m-0">
+           <a style="color: white;" href="mailto:stayrareinfo@gmail.com">✉️ <strong class="fw-medium">stayrareinfo@gmail.com</strong></a>
+          </p>
+          <p>
+           <a style="color: white;" href="tel:+911234567890"> <svg width="16" height="16" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+  <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.05-.24c1.12.37 2.33.57 3.54.57a1 1 0 011 1v3.5a1 1 0 01-1 1C10.07 21 3 13.93 3 5.5a1 1 0 011-1H7.5a1 1 0 011 1c0 1.21.2 2.42.57 3.54a1 1 0 01-.24 1.05l-2.2 2.2z"/>
+</svg>
+<strong class="fw-medium">+91 1234 567 890</strong></a>
+          </p>
+         
+
+         
+    
+        </div><!-- /.footer-column -->
+
+        <div class="footer-column footer-menu mb-4 mb-lg-0">
+          <h6 class="sub-menu__title text-uppercase">Company</h6>
+          <ul class="sub-menu__list list-unstyled">
+            <li class="sub-menu__item"><a href="/" class="menu-link menu-link_us-s">Home</a></li>
+            <li class="sub-menu__item"><a href="/about" class="menu-link menu-link_us-s">About Us</a></li>
+            <li class="sub-menu__item"><a href="/wishlist" class="menu-link menu-link_us-s"></a>Wishlist</li>
+            <li class="sub-menu__item"><a href="/blogs" class="menu-link menu-link_us-s">Blogs</a></li>
+            <li class="sub-menu__item"><a href="/contact" class="menu-link menu-link_us-s">Contact Us</a></li>
+          </ul>
+        </div><!-- /.footer-column -->
+
+        <div class="footer-column footer-menu mb-4 mb-lg-0">
+          <h6 class="sub-menu__title text-uppercase">Shop</h6>
+          <ul class="sub-menu__list list-unstyled">
+            <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">New Arrivals</a></li>
+            <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Best Deals</a></li>
+            <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Best Seller</a></li>
+            <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Top Rated</a></li>
+            <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Shop All</a></li>
+          </ul>
+        </div><!-- /.footer-column -->
+
+        <div class="footer-column footer-menu mb-4 mb-lg-0">
+          <h6 class="sub-menu__title text-uppercase">Help</h6>
+          <ul class="sub-menu__list list-unstyled">
+            <li class="sub-menu__item"><a href="tel:+911234567890" class="menu-link menu-link_us-s">Customer Service</a></li>
+            <li class="sub-menu__item"><a href="/account" class="menu-link menu-link_us-s">My Account</a></li>
+            <li class="sub-menu__item"><a href="/terms_and_conditions" class="menu-link menu-link_us-s">Terms & Conditions</a></li>
+            <li class="sub-menu__item"><a href="/privacy_policy" class="menu-link menu-link_us-s">Legal & Privacy</a></li>
+            <li class="sub-menu__item"><a href="/contact" class="menu-link menu-link_us-s">Contact</a></li>
+
+          </ul>
+        </div><!-- /.footer-column -->
+        <div class="footer-column footer-newsletter col-12 mb-4 mb-lg-0">
+          <h5 class="sub-menu__title text-uppercase">Subscribe</h5>
+          <p>Don’t miss a drop  get product alerts, restock updates, and more delivered directly to you!</p>
+          <form action="https://uomo-html.flexkitux.com/Demo2//" class="footer-newsletter__form position-relative bg-body">
+            <input class="form-control border-white" type="email" name="email" placeholder="Your email address">
+            <input class="btn-link fw-medium bg-white position-absolute top-0 end-0 h-100" type="submit" value="JOIN">
+          </form>
+                 <ul class="social-links list-unstyled d-flex flex-wrap mb-0 mt-3">
+            <li>
+              <a href="https://www.facebook.com/" class="footer__social-link d-block">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+<g fill="#fffcfc" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M17.525,9h-3.525v-2c0,-1.032 0.084,-1.682 1.563,-1.682h1.868v-3.18c-0.909,-0.094 -1.823,-0.14 -2.738,-0.138c-2.713,0 -4.693,1.657 -4.693,4.699v2.301h-3v4l3,-0.001v9.001h4v-9.003l3.066,-0.001z"></path></g></g>
+</svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.twitter.com/" class="footer__social-link d-block">
+                <svg class="svg-icon svg-icon_x" width="14" height="13" viewBox="0 0 1200 1227" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <path d="M 880 0 L 585 455 L 290 0 H 0 L 425 623 L 0 1227 H 290 L 585 772 L 880 1227 H 1170 L 745 623 L 1170 0 Z"/>
+</svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.instagram.com/" class="footer__social-link d-block">
+               <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+<g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M8,3c-2.757,0 -5,2.243 -5,5v8c0,2.757 2.243,5 5,5h8c2.757,0 5,-2.243 5,-5v-8c0,-2.757 -2.243,-5 -5,-5zM8,5h8c1.654,0 3,1.346 3,3v8c0,1.654 -1.346,3 -3,3h-8c-1.654,0 -3,-1.346 -3,-3v-8c0,-1.654 1.346,-3 3,-3zM17,6c-0.55228,0 -1,0.44772 -1,1c0,0.55228 0.44772,1 1,1c0.55228,0 1,-0.44772 1,-1c0,-0.55228 -0.44772,-1 -1,-1zM12,7c-2.757,0 -5,2.243 -5,5c0,2.757 2.243,5 5,5c2.757,0 5,-2.243 5,-5c0,-2.757 -2.243,-5 -5,-5zM12,9c1.654,0 3,1.346 3,3c0,1.654 -1.346,3 -3,3c-1.654,0 -3,-1.346 -3,-3c0,-1.654 1.346,-3 3,-3z"></path></g></g>
+</svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.youtube.com/" class="footer__social-link d-block">
+                <svg class="svg-icon svg-icon_youtube" width="16" height="11" viewBox="0 0 16 11" xmlns="http://www.w3.org/2000/svg"><path d="M15.0117 1.8584C14.8477 1.20215 14.3281 0.682617 13.6992 0.518555C12.5234 0.19043 7.875 0.19043 7.875 0.19043C7.875 0.19043 3.19922 0.19043 2.02344 0.518555C1.39453 0.682617 0.875 1.20215 0.710938 1.8584C0.382812 3.00684 0.382812 5.46777 0.382812 5.46777C0.382812 5.46777 0.382812 7.90137 0.710938 9.07715C0.875 9.7334 1.39453 10.2256 2.02344 10.3896C3.19922 10.6904 7.875 10.6904 7.875 10.6904C7.875 10.6904 12.5234 10.6904 13.6992 10.3896C14.3281 10.2256 14.8477 9.7334 15.0117 9.07715C15.3398 7.90137 15.3398 5.46777 15.3398 5.46777C15.3398 5.46777 15.3398 3.00684 15.0117 1.8584ZM6.34375 7.68262V3.25293L10.2266 5.46777L6.34375 7.68262Z"/></svg>
+              </a>
+            </li>
+      
+          </ul>
+
+     
+        </div><!-- /.footer-column -->
+      </div><!-- /.row-cols-5 -->
+    </div><!-- /.footer-middle container -->
+
+    <div class="footer-bottom">
+      <div class="container d-md-flex align-items-center">
+        <span class="footer-copyright me-auto">Copyright © 2025 StayRare. All Rights Reserved.  |  developed by Trivlogic Pvt Ltd
+
+</span>
+       
+      </div><!-- /.container d-flex align-items-center -->
+    </div><!-- /.footer-bottom container -->
+  </footer>
+  <!-- End Footer Type 1 -->
+
+  <!-- Mobile Fixed Footer -->
+  <footer class="footer-mobile container w-100 px-5 d-md-none bg-body">
     <div class="row text-center">
       <div class="col-3">
         <a href="/" class="footer-mobile__link d-flex flex-column align-items-center">
-          <svg class="d-block" width="18" height="18" viewBox="0 0 18 18" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <use href="#icon_home" />
-          </svg>
+          <img style="width: 25px; height: 25px;" src="/images/home-icon.png" alt="stayrare">
           <span>Home</span>
         </a>
       </div><!-- /.col-3 -->
 
       <div class="col-3">
         <a href="/store" class="footer-mobile__link d-flex flex-column align-items-center">
-          <svg class="d-block" width="18" height="18" viewBox="0 0 18 18" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <use href="#icon_hanger" />
-          </svg>
+          <img style="width: 25px; height: 25px;" src="/images/shop-icon.png" alt="stayrare">
           <span>Shop</span>
         </a>
       </div><!-- /.col-3 -->
 
       <div class="col-3">
-        <a href="wishlist.html" class="footer-mobile__link d-flex flex-column align-items-center">
+        <a href="/wishlist" class="footer-mobile__link d-flex flex-column align-items-center">
           <div class="position-relative">
-            <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_cart" />
+                   <svg width="20" height="20": class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
             </svg>
-            <span class="wishlist-amount d-block position-absolute js-wishlist-count">3</span>
           </div>
-          <span>Cart</span>
+          <span>Wishlist</span>
         </a>
       </div><!-- /.col-3 -->
-      <div class="col-3">
-        <a href="account.html" class="footer-mobile__link d-flex flex-column align-items-center">
+            <div class="col-3">
+        <a href="<%= user ? '/account' : '/auth/login' %>" class="footer-mobile__link d-flex flex-column align-items-center">
           <div class="position-relative">
-            <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_user" />
+                            <svg width="20" height="20": class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
             </svg>
           </div>
           <span>Account</span>
@@ -753,7 +1120,38 @@
   <script src="js/theme.js"></script>
 
 
-    
+         <script>
+        // Fallback: If SVG doesn't render, this script will replace them with Unicode symbols
+        document.addEventListener('DOMContentLoaded', function() {
+            const icons = document.querySelectorAll('.icon-svg');
+            let allSvgsLoaded = true;
+            
+            icons.forEach(function(icon) {
+                if (icon.getBBox && icon.getBBox().width === 0) {
+                    allSvgsLoaded = false;
+                }
+            });
+            
+            if (!allSvgsLoaded) {
+                // Replace with Unicode fallbacks
+                const iconContainer = document.querySelector('.icon-container');
+                iconContainer.innerHTML = `
+                    <div class="icon">
+                        <div style="font-size: 24px; line-height: 32px; text-align: center;">👤</div>
+                        <div class="badge">5</div>
+                    </div>
+                    <div class="icon">
+                        <div style="font-size: 24px; line-height: 32px; text-align: center;">❤️</div>
+                        <div class="badge">2</div>
+                    </div>
+                    <div class="icon">
+                        <div style="font-size: 24px; line-height: 32px; text-align: center;">🛍️</div>
+                        <div class="badge">3</div>
+                    </div>
+                `;
+            }
+        });
+    </script>
 
     <script src="/vendor/jquery/jquery.min.js"></script>
     <script src="/vendor/jquery.count-to/jquery.count-to.min.js"></script>
