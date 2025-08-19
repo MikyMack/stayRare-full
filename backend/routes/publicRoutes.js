@@ -679,17 +679,22 @@ router.get('/cart', async (req, res) => {
         const categories = await Category.find({ isActive: true })
             .select('name imageUrl isActive subCategories')
             .lean();
+            
         res.render('user/cart', {
-            user: req.user || null, categories, cartItems: cart?.items || [],
-            cartSubtotal: cart?.subtotal || 0
+            user: req.user || null, 
+            categories, 
+            cartItems: cart?.items || [],
+            cartSubtotal: cart?.subtotal || 0,
+            // Pass a flag indicating this is the cart page
+            isCartPage: true
         });
     } catch (error) {
         res.render('user/home', {
             user: req.user || null,
-            cartItems: [], categories: []
+            cartItems: [], 
+            categories: []
         });
     }
-
 });
 router.get('/wishlist', async (req, res) => {
     try {

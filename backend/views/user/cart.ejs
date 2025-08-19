@@ -506,13 +506,6 @@
             <tbody id="cart-items-body">
             </tbody>
           </table>
-          <!-- <div class="cart-table-footer">
-            <form action="https://uomo-html.flexkitux.com/Demo2/" class="position-relative bg-body">
-              <input class="form-control" type="text" name="coupon_code" placeholder="Coupon Code">
-              <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit" value="APPLY COUPON">
-            </form>
-            <button class="btn btn-light">UPDATE CART</button>
-          </div> -->
         </div>
         <div class="shopping-cart__totals-wrapper">
           <div class="sticky-content">
@@ -537,6 +530,268 @@
         </div>
       </div>
     </section>
+    <script>
+      function formatPrice(amount) {
+        return '₹' + (amount ? Number(amount).toFixed(2) : '0.00');
+      }
+
+      function showToast(msg, type = "info") {
+        Toastify({
+          text: msg,
+          duration: 3000,
+          gravity: "top",
+          position: "right",
+          backgroundColor: type === "error" ? "#e74c3c" : (type === "success" ? "#27ae60" : "#3498db"),
+          close: true,
+          stopOnFocus: true
+        }).showToast();
+      }
+
+      let user = false;
+
+      document.addEventListener('DOMContentLoaded', function() {
+        fetchCart();
+
+        document.getElementById('clear-cart-btn').addEventListener('click', async function () {
+          if (user) {
+            try {
+              let res = await fetch('/clear-cart', { method: 'DELETE', credentials: 'include' });
+              if (!res.ok) throw new Error();
+              showToast('Cart cleared.', 'success');
+              fetchCart();
+            } catch (e) {
+              showToast('Error clearing cart. Please try again.', 'error');
+            }
+          } else {
+            clearCartGuest();
+          }
+        });
+      });
+
+      async function fetchCart() {
+        try {
+          let res = await fetch('/cartItems', { credentials: 'include' });
+          if (!res.ok) throw new Error('Not logged in');
+          localStorage.removeItem('cart');
+          let cart = await res.json();
+          if (!cart || !cart.items) cart = { items: [] };
+          user = true;
+          renderCart(cart, true);
+        } catch (e) {
+          user = false;
+          let items = [];
+          try {
+            items = JSON.parse(localStorage.getItem('cart') || '[]');
+            if (!Array.isArray(items)) items = [];
+          } catch (err) {
+            items = [];
+          }
+          items = items.filter(item => item && typeof item === 'object' && Object.keys(item).length > 0);
+          let total = 0;
+          items.forEach(item => {
+            let price = (item.price !== undefined && item.price !== null) ? Number(item.price) : 0;
+            total += price * (item.quantity || 1);
+          });
+          let cart = { items, total: total };
+          renderCart(cart, false);
+        }
+      }
+
+      function renderCart(cart, user) {
+        const tbody = document.getElementById('cart-items-body');
+        tbody.innerHTML = '';
+        if (!cart.items || cart.items.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                  <span style="font-size: 1.2rem;">Your cart is empty.</span>
+                </div>
+              </td>
+            </tr>
+          `;
+        } else {
+          cart.items.forEach((item, idx) => {
+            if (!item || typeof item !== 'object' || Object.keys(item).length === 0) return;
+            const price = (item.price !== undefined && item.price !== null) ? Number(item.price) : 0;
+            const productName = item.productName || item.name || (item.product && item.product.name) || 'Product';
+            const productImage =
+              (item.productImage && typeof item.productImage === 'string' && item.productImage) ? item.productImage
+              : (item.image && typeof item.image === 'string') ? item.image
+              : (item.product && Array.isArray(item.product.images) && item.product.images[0]) ? item.product.images[0]
+              : '/images/placeholder.png';
+            const productId = item.productId || (item.product && item.product._id) || '';
+            const itemId = user ? item._id : idx;
+            tbody.innerHTML += `
+              <tr data-item-id="${itemId}" data-is-user="${user}">
+                <td>
+                  <div class="shopping-cart__product-item">
+                    <a href="/product/${productId}">
+                      <img style="height: 140px; object-fit: cover;" loading="lazy" src="${productImage}" width="120" height="120" alt="${productName}">
+                    </a>
+                  </div>
+                </td>
+                <td>
+                  <div class="shopping-cart__product-item__detail">
+                    <h4><a href="/product/${productId}">${productName}</a></h4>
+                    <ul class="shopping-cart__product-item__options">
+                      ${(item.selectedColor || item.productColor) ? `<li>Color: ${item.selectedColor || item.productColor}</li>` : ''}
+                      ${(item.selectedSize || item.productSize) ? `<li>Size: ${item.selectedSize || item.productSize}</li>` : ''}
+                    </ul>
+                  </div>
+                </td>
+                <td>
+                  <span class="shopping-cart__product-price">${formatPrice(price)}</span>
+                </td>
+                <td>
+                  <div class="qty-control position-relative">
+                    <input type="number" name="quantity" value="${item.quantity || 1}" min="1" class="qty-control__number text-center" onchange="onQtyInputChange('${itemId}', this, ${user})">
+                    <div class="qty-control__reduce" onclick="changeQty('${itemId}', -1, ${user})">-</div>
+                    <div class="qty-control__increase" onclick="changeQty('${itemId}', 1, ${user})">+</div>
+                  </div>
+                </td>
+                <td>
+                  <span class="shopping-cart__subtotal">${formatPrice(price * (item.quantity || 1))}</span>
+                </td>
+                <td>
+                  <a href="#" class="remove-cart" onclick="removeCartItem('${itemId}', ${user})">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="#767676" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0.259435 8.85506L9.11449 0L10 0.885506L1.14494 9.74056L0.259435 8.85506Z"/>
+                      <path d="M0.885506 0.0889838L9.74057 8.94404L8.85506 9.82955L0 0.97449L0.885506 0.0889838Z"/>
+                    </svg>                  
+                  </a>
+                </td>
+              </tr>
+            `;
+          });
+        }
+        document.getElementById('cart-total').textContent = formatPrice(cart.total || 0);
+        const checkoutBtn = document.getElementById('checkout-btn');
+        if (!user) {
+          checkoutBtn.disabled = true;
+          checkoutBtn.textContent = 'Login to Checkout';
+        } else {
+          checkoutBtn.disabled = false;
+          checkoutBtn.textContent = 'PROCEED TO CHECKOUT';
+        }
+      }
+
+      async function removeCartItem(itemId, user) {
+        if (user) {
+          try {
+            let res = await fetch(`/remove-cart/${itemId}`, { method: 'DELETE', credentials: 'include' });
+            if (!res.ok) throw new Error();
+            showToast('Item removed from cart.', 'success');
+            fetchCart();
+          } catch (e) {
+            showToast('Error removing item. Please try again.', 'error');
+          }
+        } else {
+          removeCartItemGuest(itemId);
+        }
+      }
+
+      function removeCartItemGuest(itemId) {
+        let items = [];
+        try {
+          items = JSON.parse(localStorage.getItem('cart') || '[]');
+          if (!Array.isArray(items)) items = [];
+        } catch (err) {
+          items = [];
+        }
+        items = items.filter(item => item && typeof item === 'object' && Object.keys(item).length > 0);
+        itemId = parseInt(itemId);
+        if (!isNaN(itemId) && itemId >= 0 && itemId < items.length) {
+          items.splice(itemId, 1);
+          localStorage.setItem('cart', JSON.stringify(items));
+          showToast('Item removed from cart.', 'success');
+        }
+        fetchCart();
+      }
+
+      async function updateCartQuantity(itemId, qty, user) {
+        qty = parseInt(qty);
+        if (isNaN(qty) || qty < 1) {
+          showToast('Quantity must be at least 1', 'error');
+          fetchCart();
+          return;
+        }
+        if (user) {
+          try {
+            let res = await fetch(`/update-cart/${itemId}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ quantity: qty })
+            });
+            if (!res.ok) {
+              let msg = 'Error updating quantity. Please try again.';
+              try {
+                let data = await res.json();
+                if (data && data.error) msg = data.error;
+              } catch (err) { }
+              showToast(msg, 'error');
+              fetchCart();
+              return;
+            }
+            showToast('Quantity updated.', 'success');
+            fetchCart();
+          } catch (e) {
+            showToast('Error updating quantity. Please try again.', 'error');
+            fetchCart();
+          }
+        } else {
+          updateCartQuantityGuest(itemId, qty);
+        }
+      }
+
+      function onQtyInputChange(itemId, inputElem, user) {
+        let val = parseInt(inputElem.value);
+        if (isNaN(val) || val < 1) {
+          inputElem.value = 1;
+          val = 1;
+        }
+        updateCartQuantity(itemId, val, user);
+      }
+
+      function updateCartQuantityGuest(itemId, qty) {
+        let items = [];
+        try {
+          items = JSON.parse(localStorage.getItem('cart') || '[]');
+          if (!Array.isArray(items)) items = [];
+        } catch (err) {
+          items = [];
+        }
+        items = items.filter(item => item && typeof item === 'object' && Object.keys(item).length > 0);
+        itemId = parseInt(itemId);
+        if (!isNaN(itemId) && items[itemId]) {
+          if (qty < 1) {
+            showToast('Quantity must be at least 1', 'error');
+            qty = 1;
+          }
+          items[itemId].quantity = qty;
+          localStorage.setItem('cart', JSON.stringify(items));
+          showToast('Quantity updated.', 'success');
+          fetchCart();
+        }
+      }
+
+      function changeQty(itemId, delta, user) {
+        const row = document.querySelector(`tr[data-item-id="${itemId}"][data-is-user="${user}"]`);
+        if (!row) return;
+        const input = row.querySelector('input.quantity, input.qty-control__number');
+        let val = parseInt(input.value) || 1;
+        val = Math.max(1, val + delta);
+        input.value = val;
+        updateCartQuantity(itemId, val, user);
+      }
+
+      function clearCartGuest() {
+        localStorage.removeItem('cart');
+        showToast('Cart cleared.', 'success');
+        fetchCart();
+      }
+    </script>
   </main>
 
   <div class="mb-5 pb-xl-5"></div>
@@ -716,283 +971,7 @@
   <!-- Footer Scripts -->
   <script src="js/theme.js"></script>
 
-  <script>
-    // Helper: Format price
-    function formatPrice(amount) {
-        return '₹' + (amount ? Number(amount).toFixed(2) : '0.00');
-    }
 
-    // Toastify helper
-    function showToast(msg, type = "info") {
-        Toastify({
-            text: msg,
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-            backgroundColor: type === "error" ? "#e74c3c" : (type === "success" ? "#27ae60" : "#3498db"),
-            close: true,
-            stopOnFocus: true
-        }).showToast();
-    }
-
-    // State: is user logged in?
-    let user = false;
-
-    // Fetch cart items (user or guest)
-// Fetch cart items (user or guest)
-async function fetchCart() {
-    try {
-        let res = await fetch('/cartItems', { credentials: 'include' });
-        if (!res.ok) throw new Error('Not logged in');
-        // Always clear guest cart if user is logged in
-        localStorage.removeItem('guestCart');
-        let cart = await res.json();
-        if (!cart || !cart.items) cart = { items: [] };
-        user = true;
-        renderCart(cart, true);
-    } catch (e) {
-        // Guest cart from localStorage
-        user = false;
-        let items = [];
-        try {
-            items = JSON.parse(localStorage.getItem('guestCart') || '[]');
-            if (!Array.isArray(items)) items = [];
-        } catch (err) {
-            items = [];
-        }
-        // Calculate total for guest
-        let total = 0;
-        items.forEach(item => {
-            let price = (item.price !== undefined && item.price !== null) ? Number(item.price) : 0;
-            total += price * (item.quantity || 1);
-        });
-        let cart = { items, total: total };
-        renderCart(cart, false);
-    }
-}
-
-    // Render cart items and totals
-    function renderCart(cart, user) {
-        const tbody = document.getElementById('cart-items-body');
-        tbody.innerHTML = '';
-        if (!cart.items || cart.items.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="6">
-                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                            <span style="font-size: 1.2rem;">Your cart is empty.</span>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        } else {
-            cart.items.forEach((item, idx) => {
-                const price = (item.price !== undefined && item.price !== null) ? Number(item.price) : 0;
-                const productName = item.productName || item.name || (item.product && item.product.name) || 'Product';
-                const productImage =
-                    (item.productImage && typeof item.productImage === 'string' && item.productImage) ? item.productImage
-                    : (item.image && typeof item.image === 'string') ? item.image
-                    : (item.product && Array.isArray(item.product.images) && item.product.images[0]) ? item.product.images[0]
-                    : '/images/placeholder.png';
-                const productId = item.productId || (item.product && item.product._id) || '';
-                // For user: use item._id; for guest: use idx (array index)
-                const itemId = user ? item._id : idx;
-
-                tbody.innerHTML += `
-            <tr data-item-id="${itemId}" data-is-user="${user}">
-                <td>
-                    <div class="shopping-cart__product-item">
-                        <a href="/product/${productId}">
-                            <img style="height: 140px; object-fit: cover;" loading="lazy" src="${productImage}" width="120" height="120" alt="${productName}">
-                        </a>
-                    </div>
-                </td>
-                <td>
-                    <div class="shopping-cart__product-item__detail">
-                        <h4><a href="/product/${productId}">${item.productCategory || ''}</a></h4>
-                        <ul class="shopping-cart__product-item__options">
-                            ${item.selectedColor || item.productColor ? `<li>Color: ${item.selectedColor || item.productColor}</li>` : ''}
-                            ${item.selectedSize || item.productSize ? `<li>Size: ${item.selectedSize || item.productSize}</li>` : ''}
-                        </ul>
-                    </div>
-                </td>
-                <td>
-                    <span class="shopping-cart__product-price">${formatPrice(price)}</span>
-                </td>
-                <td>
-                    <div class="qty-control position-relative">
-                        <input type="number" name="quantity" value="${item.quantity || 1}" min="1" class="qty-control__number text-center" onchange="onQtyInputChange('${itemId}', this, ${user})">
-                        <div class="qty-control__reduce" onclick="changeQty('${itemId}', -1, ${user})">-</div>
-                        <div class="qty-control__increase" onclick="changeQty('${itemId}', 1, ${user})">+</div>
-                    </div>
-                </td>
-                <td>
-                    <span class="shopping-cart__subtotal">${formatPrice(price * (item.quantity || 1))}</span>
-                </td>
-                <td>
-                    <a href="#" class="remove-cart" onclick="removeCartItem('${itemId}', ${user})">
-                        <svg width="10" height="10" viewBox="0 0 10 10" fill="#767676" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M0.259435 8.85506L9.11449 0L10 0.885506L1.14494 9.74056L0.259435 8.85506Z"/>
-                            <path d="M0.885506 0.0889838L9.74057 8.94404L8.85506 9.82955L0 0.97449L0.885506 0.0889838Z"/>
-                        </svg>                  
-                    </a>
-                </td>
-            </tr>
-            `;
-            });
-        }
-        // Show total
-        document.getElementById('cart-total').textContent = formatPrice(cart.total || 0);
-
-        // Show correct button for user/guest
-        const checkoutBtn = document.getElementById('checkout-btn');
-        if (!user) {
-            checkoutBtn.disabled = true;
-            checkoutBtn.textContent = 'Login to Checkout';
-        } else {
-            checkoutBtn.disabled = false;
-            checkoutBtn.textContent = 'PROCEED TO CHECKOUT';
-        }
-    }
-
-    // Remove item from cart
-    async function removeCartItem(itemId, user) {
-        if (user) {
-            try {
-                let res = await fetch(`/remove-cart/${itemId}`, { method: 'DELETE', credentials: 'include' });
-                if (!res.ok) throw new Error();
-                showToast('Item removed from cart.', 'success');
-                fetchCart();
-            } catch (e) {
-                showToast('Error removing item. Please try again.', 'error');
-            }
-        } else {
-            removeCartItemGuest(itemId);
-        }
-    }
-
-    function removeCartItemGuest(itemId) {
-        let items = [];
-        try {
-            items = JSON.parse(localStorage.getItem('guestCart') || '[]');
-            if (!Array.isArray(items)) items = [];
-        } catch (err) {
-            items = [];
-        }
-        // itemId is the array index for guest cart
-        itemId = parseInt(itemId);
-        if (!isNaN(itemId) && itemId >= 0 && itemId < items.length) {
-            items.splice(itemId, 1);
-            localStorage.setItem('guestCart', JSON.stringify(items));
-            showToast('Item removed from cart.', 'success');
-        }
-        fetchCart();
-    }
-
-    // Update quantity (with fix)
-    async function updateCartQuantity(itemId, qty, user) {
-        qty = parseInt(qty);
-        if (isNaN(qty) || qty < 1) {
-            showToast('Quantity must be at least 1', 'error');
-            fetchCart();
-            return;
-        }
-        if (user) {
-            try {
-                let res = await fetch(`/update-cart/${itemId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({ quantity: qty })
-                });
-                if (!res.ok) {
-                    let msg = 'Error updating quantity. Please try again.';
-                    try {
-                        let data = await res.json();
-                        if (data && data.error) msg = data.error;
-                    } catch (err) { }
-                    showToast(msg, 'error');
-                    fetchCart();
-                    return;
-                }
-                showToast('Quantity updated.', 'success');
-                fetchCart();
-            } catch (e) {
-                showToast('Error updating quantity. Please try again.', 'error');
-                fetchCart();
-            }
-        } else {
-            updateCartQuantityGuest(itemId, qty);
-        }
-    }
-
-    // Fix: handle input change event for quantity
-    function onQtyInputChange(itemId, inputElem, user) {
-        let val = parseInt(inputElem.value);
-        if (isNaN(val) || val < 1) {
-            inputElem.value = 1;
-            val = 1;
-        }
-        updateCartQuantity(itemId, val, user);
-    }
-
-    function updateCartQuantityGuest(itemId, qty) {
-        let items = [];
-        try {
-            items = JSON.parse(localStorage.getItem('guestCart') || '[]');
-            if (!Array.isArray(items)) items = [];
-        } catch (err) {
-            items = [];
-        }
-        itemId = parseInt(itemId);
-        if (!isNaN(itemId) && items[itemId]) {
-            if (qty < 1) {
-                showToast('Quantity must be at least 1', 'error');
-                qty = 1;
-            }
-            items[itemId].quantity = qty;
-            localStorage.setItem('guestCart', JSON.stringify(items));
-            showToast('Quantity updated.', 'success');
-            fetchCart();
-        }
-    }
-
-    // Plus/minus buttons
-    function changeQty(itemId, delta, user) {
-        const row = document.querySelector(`tr[data-item-id="${itemId}"][data-is-user="${user}"]`);
-        if (!row) return;
-        const input = row.querySelector('input.quantity, input.qty-control__number');
-        let val = parseInt(input.value) || 1;
-        val = Math.max(1, val + delta);
-        input.value = val;
-        updateCartQuantity(itemId, val, user);
-    }
-
-    // Clear cart
-    document.addEventListener('DOMContentLoaded', function() {
-        fetchCart();
-        document.getElementById('clear-cart-btn').addEventListener('click', async function () {
-            if (user) {
-                try {
-                    let res = await fetch('/clear-cart', { method: 'DELETE', credentials: 'include' });
-                    if (!res.ok) throw new Error();
-                    showToast('Cart cleared.', 'success');
-                    fetchCart();
-                } catch (e) {
-                    showToast('Error clearing cart. Please try again.', 'error');
-                }
-            } else {
-                clearCartGuest();
-            }
-        });
-    });
-
-    function clearCartGuest() {
-        localStorage.removeItem('guestCart');
-        showToast('Cart cleared.', 'success');
-        fetchCart();
-    }
-  </script>
 
 </body>
 
