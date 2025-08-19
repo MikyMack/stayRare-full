@@ -4876,7 +4876,29 @@ progress {
 .text-success {
   color: #def2d7 !important;
 }
+.wish-add-btn{
+  background-color: #3B1D58!important;
+  &:hover{
+    background-color: #FFD503!important;
+    color: #3B1D58!important;
+  }
 
+}
+.remove-wishlist{
+border: 1px solid #000!important;
+background-color: #3B1D58!important;
+border-radius: 50px!important;
+}
+.remove-wishlist i{
+  color: white;
+}
+.price-color{
+  color: #3B1D58!important;
+}
+.stock-bg{
+  background-color: #3B1D58;
+}
+.cart
 .text-info {
   color: #cde9f6 !important;
 }
@@ -19434,7 +19456,7 @@ textarea.form-control.is-invalid {
 }
 
 .slideshow {
-  height: 34.5rem;
+  height: fit-content;
 }
 
 .slideshow.type3 {
@@ -19447,7 +19469,7 @@ textarea.form-control.is-invalid {
 
 @media (min-width: 992px) {
   .slideshow {
-    height: 50rem;
+    height:fit-content ;
   }
 
   .slideshow.type2 {
@@ -24914,11 +24936,11 @@ body.coming-soon-page .header {
 }
 .variant-option-btn.active,
 .variant-option-btn:focus {
-  border-color: #007bff;
-  background: #007bff;
+  border-color: #F6E208;
+  background: #F6E208;
   color: #fff;
   font-weight: 600;
-  box-shadow: 0 0 0 2px #007bff33;
+  box-shadow: 0 0 0 2px #3B1D58;
 }
 .variant-option-btn[disabled] {
   opacity: 0.5;
@@ -25147,4 +25169,22 @@ body.coming-soon-page .header {
   padding: 4px 12px;
   z-index: 13;
   box-shadow: 0 2px 8px rgba(231,76,60,0.12);
+}
+
+@media(max-width:500px){
+  .main-banner{
+
+  height:auto!important;
+}
+.main-banner-img{
+  height:200px!important;
+
+}
+
+}
+@media(max-width:400px){
+  .product-card .action-btns{
+  flex-wrap: wrap!important;
+  flex-direction: column!important;
+}
 }
