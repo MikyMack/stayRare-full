@@ -274,7 +274,7 @@
         </a>
       </div><!-- /.logo -->
 
-      <a href="#" class="header-tools__item header-tools__cart js-open-aside" data-aside="cartDrawer">
+      <a href="/cart" class="header-tools__item header-tools__cart" >
         <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <use href="#icon_cart" />
         </svg>
@@ -599,10 +599,10 @@
                   <ul class="sub-menu__list list-unstyled">
                     <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">New Arrivals</a>
                     </li>
-                    <li class="sub-menu__item"><a href="shop.html" class="menu-link menu-link_us-s">Dresses</a></li>
-                    <li class="sub-menu__item"><a href="shop.html" class="menu-link menu-link_us-s">Accessories</a></li>
-                    <li class="sub-menu__item"><a href="shop.html" class="menu-link menu-link_us-s">Footwear</a></li>
-                    <li class="sub-menu__item"><a href="shop.html" class="menu-link menu-link_us-s">Sweatshirt</a></li>
+                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Dresses</a></li>
+                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Accessories</a></li>
+                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Footwear</a></li>
+                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Sweatshirt</a></li>
                   </ul>
                 </div>
 
@@ -621,14 +621,14 @@
           </a>
         </div>
 
-        <a class="header-tools__item" href="wishlist.html">
+        <a class="header-tools__item" href="/wishlist">
           <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
             xmlns="http://www.w3.org/2000/svg">
             <use href="#icon_heart" />
           </svg>
         </a>
 
-        <a href="#" class="header-tools__item header-tools__cart js-open-aside" data-aside="cartDrawer">
+        <a href="/cart" class="header-tools__item header-tools__cart " >
           <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
             xmlns="http://www.w3.org/2000/svg">
             <use href="#icon_cart" />
@@ -641,7 +641,7 @@
   <!-- End Header Type 2 -->
 
   <main>
-    <section class="swiper-container main-bnr js-swiper-slider slideshow type2 full-width" data-settings='{
+    <section style="height: fit-content;"  class="swiper-container main-bnr js-swiper-slider slideshow type2 full-width" data-settings='{
         "autoplay": {
           "delay": 5000
         },
@@ -657,14 +657,14 @@
       <div class="swiper-wrapper">
         <% if (Array.isArray(mainBanner) && mainBanner.length) { %>
           <% mainBanner.forEach(function(banner) { %>
-            <div class="swiper-slide" style="width:100%;height:100%;">
+            <div class="swiper-slide main-banner" style="width:100%;height:37vw;  ">
               <div class="overflow-hidden position-relative w-100 h-100" style="width:100%;height:100%;">
                 <a href="<%= banner.link || '#' %>" class="d-block w-100 h-100"
                   style="width:100%;height:100%;display:block;">
                   <div class="slideshow-bg w-100 h-100" style="width:100%;height:100%;">
                     <img loading="lazy" src="<%= banner.image %>" alt="Banner"
-                      class="slideshow-bg__img object-fit-cover w-100 h-100"
-                      style="width:100%;height:100%;object-fit:cover;object-position:center;">
+                      class="slideshow-bg__img  w-100 h-100 main-banner-img"
+                      style="width:100%;height:100%;object-position:center;">
                   </div>
                 </a>
               </div>
@@ -1581,7 +1581,7 @@
           <ul class="sub-menu__list list-unstyled">
             <li class="sub-menu__item"><a href="/" class="menu-link menu-link_us-s">Home</a></li>
             <li class="sub-menu__item"><a href="/about" class="menu-link menu-link_us-s">About Us</a></li>
-            <li class="sub-menu__item"><a href="wishlist.html" class="menu-link menu-link_us-s"></a>Wishlist</li>
+            <li class="sub-menu__item"><a href="/wishlist" class="menu-link menu-link_us-s"></a>Wishlist</li>
             <li class="sub-menu__item"><a href="/blogs" class="menu-link menu-link_us-s">Blogs</a></li>
             <li class="sub-menu__item"><a href="/contact" class="menu-link menu-link_us-s">Contact Us</a></li>
           </ul>
@@ -1590,11 +1590,11 @@
         <div class="footer-column footer-menu mb-4 mb-lg-0">
           <h6 class="sub-menu__title text-uppercase">Shop</h6>
           <ul class="sub-menu__list list-unstyled">
-            <li class="sub-menu__item"><a href="shop.html" class="menu-link menu-link_us-s">New Arrivals</a></li>
-            <li class="sub-menu__item"><a href="shop.html" class="menu-link menu-link_us-s">Best Deals</a></li>
-            <li class="sub-menu__item"><a href="shop.html" class="menu-link menu-link_us-s">Best Seller</a></li>
-            <li class="sub-menu__item"><a href="shop.html" class="menu-link menu-link_us-s">Top Rated</a></li>
-            <li class="sub-menu__item"><a href="shop.html" class="menu-link menu-link_us-s">Shop All</a></li>
+            <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">New Arrivals</a></li>
+            <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Best Deals</a></li>
+            <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Best Seller</a></li>
+            <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Top Rated</a></li>
+            <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Shop All</a></li>
           </ul>
         </div><!-- /.footer-column -->
 
@@ -1603,9 +1603,9 @@
           <ul class="sub-menu__list list-unstyled">
             <li class="sub-menu__item"><a href="tel:+911234567890" class="menu-link menu-link_us-s">Customer Service</a>
             </li>
-            <li class="sub-menu__item"><a href="account.html" class="menu-link menu-link_us-s">My Account</a></li>
-            <li class="sub-menu__item"><a href="terms.html" class="menu-link menu-link_us-s">Terms & Conditions</a></li>
-            <li class="sub-menu__item"><a href="privacy.html" class="menu-link menu-link_us-s">Legal & Privacy</a></li>
+            <li class="sub-menu__item"><a href="/account" class="menu-link menu-link_us-s">My Account</a></li>
+            <li class="sub-menu__item"><a href="/terms_and_conditions" class="menu-link menu-link_us-s">Terms & Conditions</a></li>
+            <li class="sub-menu__item"><a href="/privacy_policy" class="menu-link menu-link_us-s">Legal & Privacy</a></li>
             <li class="sub-menu__item"><a href="/contact" class="menu-link menu-link_us-s">Contact</a></li>
 
           </ul>
@@ -1686,7 +1686,7 @@
       </div><!-- /.col-3 -->
 
       <div class="col-3">
-        <a href="shop.html" class="footer-mobile__link d-flex flex-column align-items-center">
+        <a href="/store" class="footer-mobile__link d-flex flex-column align-items-center">
           <svg class="d-block" width="18" height="18" viewBox="0 0 18 18" fill="none"
             xmlns="http://www.w3.org/2000/svg">
             <use href="#icon_hanger" />
@@ -1696,19 +1696,19 @@
       </div><!-- /.col-3 -->
 
       <div class="col-3">
-        <a href="wishlist.html" class="footer-mobile__link d-flex flex-column align-items-center">
+        <a href="/wishlist" class="footer-mobile__link d-flex flex-column align-items-center">
           <div class="position-relative">
-            <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_cart" />
-            </svg>
-            <span class="wishlist-amount d-block position-absolute js-wishlist-count">3</span>
+               <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <use href="#icon_heart" />
+          </svg>
+            <span class="wishlist-amount d-block position-absolute ">3</span>
           </div>
-          <span>Cart</span>
+          <span>Wishlist</span>
         </a>
       </div><!-- /.col-3 -->
       <div class="col-3">
-        <a href="account.html" class="footer-mobile__link d-flex flex-column align-items-center">
+        <a href="/account" class="footer-mobile__link d-flex flex-column align-items-center">
           <div class="position-relative">
             <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
               xmlns="http://www.w3.org/2000/svg">
