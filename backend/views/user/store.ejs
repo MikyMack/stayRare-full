@@ -962,383 +962,66 @@
 
       <div class="products-grid row row-cols-2 row-cols-md-3 row-cols-lg-4" id="products-grid">
         <% if (Array.isArray(products) && products.length > 0) { %>
-          <% products.forEach(function(product) {
-            var discount = 0;
-            if (product.basePrice && product.salePrice && product.salePrice < product.basePrice) {
-              discount = Math.round(((product.basePrice - product.salePrice) / product.basePrice) * 100);
-            }
-            var hasColorVariants = product.hasColorVariants && Array.isArray(product.colorVariants) && product.colorVariants.length > 0;
-            var hasSizeVariants = product.hasSizeVariants && Array.isArray(product.sizeVariants) && product.sizeVariants.length > 0;
-            var isOutOfStock = false;
-            if (!hasColorVariants && !hasSizeVariants) {
-              isOutOfStock = (typeof product.stock === 'number' && product.stock === 0);
-            } else if (hasColorVariants && !hasSizeVariants) {
-              isOutOfStock = product.colorVariants.every(function(variant) { return variant.stock === 0; });
-            } else if (!hasColorVariants && hasSizeVariants) {
-              isOutOfStock = product.sizeVariants.every(function(variant) { return variant.stock === 0; });
-            } else if (hasColorVariants && hasSizeVariants) {
-              isOutOfStock = product.colorVariants.every(function(variant) { return variant.stock === 0; }) &&
-                             product.sizeVariants.every(function(variant) { return variant.stock === 0; });
-            }
-            var mainImg = (Array.isArray(product.images) && product.images.length > 0) ? product.images[0] : 'images/placeholder.png';
+          <% products.forEach(function(product) { 
+            var basePrice = product.basePrice || product.price || 0;
+            var offerPrice = product.offerPrice || product.salePrice || basePrice;
+            var hasDiscount = (offerPrice > 0 && offerPrice < basePrice);
+            var discount = hasDiscount ? Math.round(((basePrice - offerPrice) / basePrice) * 100) : 0;
+            var saveAmount = hasDiscount ? (basePrice - offerPrice) : 0;
+            var categoryName = (product.category && product.category.name) ? product.category.name : (product.categoryName || product.category || '');
+            var mainImg = (Array.isArray(product.images) && product.images.length > 0) ? product.images[0] : '/images/placeholder.png';
             var secondImg = (Array.isArray(product.images) && product.images.length > 1) ? product.images[1] : mainImg;
           %>
-            <div class="product-card-wrapper mb-3 mb-md-4 mb-xxl-5">
-              <div class="catchy-product-card">
-                <div class="catchy-img-hover" style="height: 340px; min-height: 320px;">
-                  <a href="/product/<%= product._id %>" style="display:block; width:100%; height:100%; position:relative;">
-                    <img loading="lazy" src="<%= mainImg %>" alt="<%= product.name %>" class="catchy-img-main" style="width:100%;height:100%;object-fit:cover;">
-                    <img loading="lazy" src="<%= secondImg %>" alt="<%= product.name %> second" class="catchy-img-second" style="width:100%;height:100%;object-fit:cover;">
-                  </a>
-                  <% if (discount > 0) { %>
-                    <span class="catchy-discount-badge">
-                      <i class="bi bi-lightning-charge-fill me-1"></i>
-                      <%= discount %>% OFF
-                    </span>
+            <div class="swiper-slide product-card" data-product-id="<%= product._id %>" style="cursor:pointer;">
+              <div class="pc__img-wrapper position-relative">
+                <a href="/product/<%= product.slug || product._id %>" style="display:block;">
+                  <% if (product.images && product.images.length > 0) { %>
+                    <img loading="lazy"
+                      src="<%= product.images[0] %>"
+                      width="330" height="400" alt="<%= product.name %>" class="pc__img">
+                    <% if (product.images.length > 1) { %>
+                      <img loading="lazy" src="<%= product.images[1] %>" width="330" height="400"
+                        alt="<%= product.name %>" class="pc__img pc__img-second">
+                    <% } %>
+                  <% } else { %>
+                    <img loading="lazy"
+                      src="/images/placeholder.png"
+                      width="330" height="400" alt="<%= product.name %>" class="pc__img">
                   <% } %>
-                  <button type="button"
-                    class="catchy-wishlist-btn js-add-to-wishlist-grid"
-                    data-product-id="<%= product._id %>"
-                    title="Add to Wishlist">
-                          <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <use href="#icon_heart" />
-          </svg>
-                  </button>
-                  <% if (isOutOfStock) { %>
-                    <span class="catchy-outofstock-badge">
-                      <i class="bi bi-x-octagon me-1"></i> Out of Stock
-                    </span>
+                  <% if (hasDiscount) { %>
+                    <span class="discount-label"><%= discount %>% off</span>
                   <% } %>
-                  <div class="catchy-bottom-overlay">
-                    <span class="catchy-category">
-                      <i class="bi bi-tag-fill me-1"></i>
-                      <%= product.category && product.category.name ? product.category.name : (product.category || 'Category') %>
-                    </span>
-                    <a href="/product/<%= product._id %>" class="catchy-title text-decoration-none">
+                  <div class="pc__img-overlay-bottom">
+                    <div class="pc__title" style="color:#fff;text-align:center;">
                       <%= product.name %>
-                    </a>
-                  </div>
-                </div>
-                <div class="pc__info position-relative pt-3 px-2 pb-2">
-                  <div class="product-card__price d-flex align-items-center mb-2 ">
-                    <% if (product.basePrice && product.salePrice && product.salePrice < product.basePrice) { %>
-                      <span class="money price-old" style="color:#888;text-decoration:line-through;">₹<%= product.basePrice %></span>
-                      <span class="money price ms-2" style="color:#3B1D58;font-weight:700;">₹<%= product.salePrice %></span>
-                    <% } else { %>
-                      <span class="money price" style="color:#222;font-weight:700;">₹<%= product.basePrice %></span>
-                    <% } %>
-                  </div>
-                  <div>
-                    <% if (hasColorVariants) { %>
-                      <div class="variant-group mb-1" data-variant-name="Color">
-                        <div class="variant-label fw-bold" style="font-size:0.95em;">Color:</div>
-                        <div class="variant-options d-flex flex-wrap">
-                          <% product.colorVariants.forEach(function(variant) { %>
-                            <button type="button"
-                              class="variant-option-btn btn btn-sm border me-1 mb-1 px-2 py-1"
-                              data-variant-name="Color"
-                              data-variant-value="<%= variant.color %>"
-                              <%= variant.stock <= 0 ? 'disabled' : '' %>
-                              title="<%= variant.color %>">
-                              <span class="variant-color-dot d-inline-block me-1" style="width:16px;height:16px;border-radius:50%;background:<%= variant.color %>;border:1px solid #ccc;vertical-align:middle;"></span>
-                              <%= variant.color %>
-                              <% if (variant.stock <= 0) { %>
-                                <span style="font-size:0.8em;color:#c00;"> (Out of stock)</span>
-                              <% } %>
-                            </button>
-                          <% }) %>
-                        </div>
-                      </div>
-                    <% } %>
-                    <% if (hasSizeVariants) { %>
-                      <div class="variant-group mb-1" data-variant-name="Size">
-                        <div class="variant-label fw-bold" style="font-size:0.95em;">Size:</div>
-                        <div class="variant-options d-flex flex-wrap">
-                          <% product.sizeVariants.forEach(function(variant) { %>
-                            <button type="button"
-                              class="variant-option-btn btn btn-sm border me-1 mb-1 px-2 py-1"
-                              data-variant-name="Size"
-                              data-variant-value="<%= variant.size %>"
-                              <%= variant.stock <= 0 ? 'disabled' : '' %>
-                              title="<%= variant.size %>">
-                              <%= variant.size %>
-                              <% if (variant.stock <= 0) { %>
-                                <span style="font-size:0.8em;color:#c00;"> (Out of stock)</span>
-                              <% } %>
-                            </button>
-                          <% }) %>
-                        </div>
-                      </div>
-                    <% } %>
-                    <div class="d-flex align-items-center mt-2">
-                      <button type="button"
-                        class="btn btn-primary btn-sm flex-grow-1 me-2 js-add-to-cart-grid"
-                        data-product-id="<%= product._id %>"
-                        <%= isOutOfStock ? 'disabled' : '' %>
-                        >
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                      </button>
                     </div>
+                    <% if (categoryName) { %>
+                      <span class="pc__category" style="display:block;text-align:center;"><%= categoryName %></span>
+                    <% } %>
+                  </div>
+                </a>
+              </div>
+              <a href="/product/<%= product.slug || product._id %>" style="text-decoration:none;">
+                <div class="pc__info position-relative" style="padding:4px 0;">
+                  <div class="product-card__price d-flex align-items-center" style="gap:8px;">
+                    <% if (hasDiscount) { %>
+                      <span class="money price-old" style="text-decoration:line-through;color:#888;">₹<%= basePrice %></span>
+                    <% } %>
+                    <span class="money price" style="font-weight:bold;color:#222;">₹<%= hasDiscount ? offerPrice : basePrice %></span>
+                    <% if (hasDiscount) { %>
+                      <span class="save-amount" style="color:#27ae60;font-size:0.95em;margin-left:6px;">You save ₹<%= saveAmount %></span>
+                    <% } %>
                   </div>
                 </div>
-              </div>
+              </a>
             </div>
-          <% }) %>
+          <% }); %>
         <% } else { %>
           <div class="col-12">
             <div class="alert alert-info text-center">No products found. Try searching for something else!</div>
           </div>
         <% } %>
       </div>
-
-      <script>
-        // Helper: show toast
-        function showToast(message, type = "success") {
-          if (window.Toastify) {
-            Toastify({
-              text: message,
-              duration: 3000,
-              gravity: "top",
-              position: "right",
-              backgroundColor: type === "error" ? "#e74c3c" : "#27ae60",
-              stopOnFocus: true
-            }).showToast();
-          } else {
-            console[type === "error" ? "error" : "log"](message);
-          }
-        }
-      
-        // Track selected variants for each product card
-        const selectedVariants = {};
-      
-        // Check if user is authenticated
-        function isUserAuthenticated() {
-          // Use server-rendered user variable for reliability
-          return <%= user ? 'true' : 'false' %>;
-        }
-      
-        // Update cart count in header
-        function updateCartCount(count) {
-          const cartCountElements = document.querySelectorAll('.js-cart-items-count, .cart-count');
-          cartCountElements.forEach(el => {
-            el.textContent = count;
-          });
-        }
-      
-        document.addEventListener('DOMContentLoaded', function () {
-          // Variant button click handling
-          document.querySelectorAll('.products-grid').forEach(function(grid) {
-            grid.addEventListener('click', function(e) {
-              if (e.target.closest('.variant-option-btn')) {
-                const btn = e.target.closest('.variant-option-btn');
-                const card = btn.closest('.catchy-product-card');
-                const productId = card.querySelector('.js-add-to-cart-grid').getAttribute('data-product-id');
-                const variantName = btn.getAttribute('data-variant-name');
-                const variantValue = btn.getAttribute('data-variant-value');
-                
-                // Store selection
-                if (!selectedVariants[productId]) selectedVariants[productId] = {};
-                selectedVariants[productId][variantName] = variantValue;
-                
-                // Remove active from siblings
-                btn.parentElement.querySelectorAll('.variant-option-btn').forEach(function(sib) {
-                  if (sib.getAttribute('data-variant-name') === variantName) {
-                    sib.classList.remove('active');
-                  }
-                });
-                btn.classList.add('active');
-              }
-            });
-          });
-      
-          // Add to cart functionality
-          document.querySelectorAll('.js-add-to-cart-grid').forEach(function(btn) {
-            btn.addEventListener('click', async function() {
-              const productId = btn.getAttribute('data-product-id');
-              const card = btn.closest('.catchy-product-card');
-              const productData = window.productsData && window.productsData[productId];
-              
-              // Get selected variants
-              const selected = selectedVariants[productId] || {};
-              let color = null, size = null;
-              
-              if (card.querySelector('[data-variant-name="Color"]')) {
-                color = selected['Color'] || null;
-                if (!color) {
-                  showToast("Please select a color.", "error");
-                  return;
-                }
-              }
-              
-              if (card.querySelector('[data-variant-name="Size"]')) {
-                size = selected['Size'] || null;
-                if (!size) {
-                  showToast("Please select a size.", "error");
-                  return;
-                }
-              }
-              
-              // Check if selected variant is out of stock
-              let outOfStock = false;
-              if (color && productData && productData.colorVariants) {
-                const variant = productData.colorVariants.find(v => v.color === color);
-                if (variant && variant.stock <= 0) outOfStock = true;
-              }
-              if (size && productData && productData.sizeVariants) {
-                const variant = productData.sizeVariants.find(v => v.size === size);
-                if (variant && variant.stock <= 0) outOfStock = true;
-              }
-              if (outOfStock) {
-                showToast("Selected variant is out of stock.", "error");
-                return;
-              }
-              
-              // If user: API call, else: guest cart
-              if (isUserAuthenticated()) {
-                // Authenticated user: send to server
-                try {
-                  const response = await fetch('/add-cart', {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
-                      productId: productId,
-                      selectedColor: color,
-                      selectedSize: size,
-                      quantity: 1
-                    })
-                  });
-                  
-                  const data = await response.json();
-                  
-                  if (response.ok) {
-                    showToast("Product added to cart", "success");
-                    // Update cart count in header
-                    updateCartCount(data.cartCount || 1);
-                  } else {
-                    showToast(data.message || "Could not add to cart.", "error");
-                  }
-                } catch (error) {
-                  console.error('Error adding to cart:', error);
-                  showToast("Error adding to cart.", "error");
-                }
-              } else {
-                // Guest: use localStorage
-                try {
-                  let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                  
-                  // Check if already in cart (same product, color, size)
-                  const exists = cart.find(item => 
-                    item.productId === productId &&
-                    item.selectedColor === color &&
-                    item.selectedSize === size
-                  );
-                  
-                  if (exists) {
-                    showToast("Already in cart.", "error");
-                    return;
-                  }
-                  
-                  // Get product details for guest cart
-                  const productName = productData?.name || 'Product';
-                  const productImage = productData?.images?.[0] || '/images/placeholder.png';
-                  const price = productData?.salePrice || productData?.basePrice || 0;
-                  
-                  cart.push({
-                    productId: productId,
-                    selectedColor: color,
-                    selectedSize: size,
-                    quantity: 1,
-                    price: price,
-                    productName: productName,
-                    productImage: productImage
-                  });
-                  
-                  localStorage.setItem('cart', JSON.stringify(cart));
-                  showToast("Product added to cart", "success");
-                  
-                  // Update cart count in header
-                  updateCartCount(cart.reduce((total, item) => total + item.quantity, 0));
-                } catch (error) {
-                  console.error('Error adding to guest cart:', error);
-                  showToast("Error adding to cart.", "error");
-                }
-              }
-            });
-          });
-      
-          // Add to wishlist functionality
-          document.querySelectorAll('.js-add-to-wishlist-grid').forEach(function(btn) {
-            btn.addEventListener('click', async function() {
-              const productId = btn.getAttribute('data-product-id');
-              const card = btn.closest('.catchy-product-card');
-              
-              // Get selected variants
-              const selected = selectedVariants[productId] || {};
-              let color = null, size = null;
-              
-              if (card.querySelector('[data-variant-name="Color"]')) {
-                color = selected['Color'] || null;
-              }
-              
-              if (card.querySelector('[data-variant-name="Size"]')) {
-                size = selected['Size'] || null;
-              }
-              
-              // Only allow wishlist for authenticated users
-              if (!isUserAuthenticated()) {
-                showToast("Please login to add to wishlist.", "error");
-                return;
-              }
-              
-              // Toggle active state for love icon
-              btn.classList.toggle('active');
-              
-              // Authenticated user: send to server
-              try {
-                const response = await fetch('/create-wishlist', {
-                  method: 'POST',
-                  credentials: 'same-origin',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                  },
-                  body: JSON.stringify({
-                    productId: productId,
-                    selectedColor: color,
-                    selectedSize: size
-                  })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                  showToast("Added to your wishlist! 💖", "success");
-                } else {
-                  showToast(data.message || "Could not add to wishlist.", "error");
-                  // Revert the active state if failed
-                  btn.classList.toggle('active');
-                }
-              } catch (error) {
-                console.error('Error adding to wishlist:', error);
-                showToast("Error adding to wishlist.", "error");
-                // Revert the active state if failed
-                btn.classList.toggle('active');
-              }
-            });
-          });
-      
-          // Initialize products data for variant stock checks
-          if (!window.productsData) window.productsData = {};
-          <% products.forEach(function(product) { %>
-            window.productsData["<%= product._id %>"] = <%- JSON.stringify(product) %>;
-          <% }); %>
-        });
-      </script>
       <nav class="shop-pages d-flex justify-content-between mt-3" aria-label="Page navigation">
         <% if (typeof pagination !== 'undefined' && pagination) { %>
           <a href="<%= pagination.prevPageUrl %>"

@@ -24795,24 +24795,21 @@ body.coming-soon-page .header {
 .product-card:hover .pc__img-wrapper img.pc__img-second {
   opacity: 1;
 }
-/* Discount label: top left, always visible if discount, red background, white text */
 .discount-label {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 9px;
+  left: 9px;
   z-index: 10;
-  background: linear-gradient(135deg, #ff1744 60%, #d32f2f 100%);
+  background-color: #3B1D58;
   color: #fff;
   font-size: 1.08rem;
-  font-weight: 800;
+  font-weight: 500;
   padding: 0.18rem 0.95rem;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px #0004, 0 2px 8px #d32f2f55;
+  border-radius: 5px;
   border: 2.5px solid #fff;
   letter-spacing: 0.04em;
   text-shadow: 0 2px 8px #0008, 0 1px 2px #d32f2f88;
   opacity: 0.98;
-  filter: drop-shadow(0 2px 8px #d32f2f88);
   transition: transform 0.12s, box-shadow 0.12s;
   display: flex;
   align-items: center;
@@ -24823,7 +24820,6 @@ body.coming-soon-page .header {
 }
 .product-card:hover .discount-label {
   transform: scale(1.08) rotate(-2deg);
-  box-shadow: 0 8px 24px #d32f2f66, 0 2px 8px #0004;
   opacity: 1;
 }
 /* Bottom overlay for name and category, centered horizontally */
@@ -24896,6 +24892,12 @@ body.coming-soon-page .header {
   align-items: center;
   justify-content: center;
   /* min-height: 100px; */
+}
+
+@media (max-width: 600px) {
+  .product-card .pc__info {
+    flex-wrap: wrap;
+  }
 }
 .product-card .product-card__price {
   font-size: 1.05rem;
@@ -25014,18 +25016,21 @@ body.coming-soon-page .header {
   }
   .product-card .pc__info {
     padding: 0.6rem 0.5rem 0.4rem 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
   }
   .discount-label {
-    font-size: 0.92rem;
-    padding: 0.11rem 0.5rem;
-    top: 6px;
-    left: 6px;
+    font-size: 0.65rem;
+    padding: 0.08rem 0.32rem;
+    top: 4px;
+    left: 4px;
+    opacity: 0.5;
   }
   .pc__img-overlay-bottom {
     padding: 0.4rem 0.4rem 0.3rem 0.4rem;
   }
   .pc__img-overlay-bottom .pc__title {
-    font-size: 0.93rem;
+    font-size: 0.9rem;
   }
 }
 /** Breadcrumbs padding top, responsive for all devices */
