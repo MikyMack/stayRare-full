@@ -19144,7 +19144,7 @@ textarea.form-control.is-invalid {
 }
 
 .footer-logo {
-  height: 60px;
+  height: 40px;
 }
 
 .top-hdr {
@@ -20772,7 +20772,7 @@ textarea.form-control.is-invalid {
 
 .product-single__media.vertical-thumbnail .product-single__image img {
   width: 100%;
-  height: 600px !important;
+  /* height: 600px !important; */
   object-fit: cover;
 
 

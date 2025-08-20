@@ -439,16 +439,21 @@
         <div class="marquee-track" style="white-space:nowrap; animation: marqueeLoop 28s linear infinite;">
           <div class="marquee-content d-inline-block" style="white-space:nowrap;">
             <span class="fw-bold text-warning" style="margin-right:2.5rem;">WELCOME TO STAY RARE</span>
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;">LOGIN FOR 10% OFF</span>
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;"> Unleash Your Style – New Arrivals Just
-              Dropped! </span>
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;">FREE SHIPPING ON ORDERS OVER ₹999</span>
-            <!-- Repeat for seamless loop -->
+            <span class="fw-bold text-warning" style="margin-right:2.5rem;">Unleash Your Style – New Arrivals Just Dropped!</span>
+            <span class="fw-bold text-warning" style="margin-right:2.5rem;">FREE SHIPPING FOR ALL ORDERS</span>
+            <% if (Array.isArray(activeCoupons) && activeCoupons.length) { %>
+              <% activeCoupons.forEach(function(coupon) { %>
+                <% if (coupon.description) { %>
+                  <span class="fw-bold text-warning" style="margin-right:2.5rem;"><%= coupon.description %></span>
+                <% } %>
+              <% }); %>
+              <!-- Repeat coupon descriptions for seamless loop -->
+          
+            <% } %>
+            <!-- Repeat static messages for seamless loop -->
             <span class="fw-bold text-warning" style="margin-right:2.5rem;">WELCOME TO STAY RARE</span>
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;">LOGIN FOR 10% OFF</span>
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;"> Unleash Your Style – New Arrivals Just
-              Dropped!</span>
-            <span class="fw-bold text-warning" style="margin-right:2.5rem;">FREE SHIPPING ON ORDERS OVER ₹999</span>
+            <span class="fw-bold text-warning" style="margin-right:2.5rem;">Unleash Your Style – New Arrivals Just Dropped!</span>
+            <span class="fw-bold text-warning" style="margin-right:2.5rem;">FREE SHIPPING ON </span>
           </div>
         </div>
         <style>
@@ -456,12 +461,10 @@
             0% {
               transform: translateX(0);
             }
-
             100% {
               transform: translateX(-50%);
             }
           }
-
           @media (max-width: 768px) {
             .marquee-container {
               max-width: 100vw !important;
@@ -1023,7 +1026,7 @@
     <section class="grid-banner container mb-3" id="section-grid-banner">
       <div class="row">
         <% if (Array.isArray(bannerTwo) && bannerTwo.length) { %>
-          <% bannerTwo.slice(0,2).forEach(function(banner, idx) { %>
+          <% bannerTwo.slice(0,4).forEach(function(banner, idx) { %>
             <div class="col-lg-6">
               <div class="grid-banner__item position-relative mb-3">
                 <a href="<%= banner.link || '#' %>">
@@ -1550,59 +1553,60 @@
               <section class="category-carousel container">
                 <div class="position-relative">
                   <div class="swiper-container js-swiper-slider" data-settings='{
-              "autoplay": {
-                "delay": 5000
-              },
-              "slidesPerView": 4,
-              "slidesPerGroup": 4,
-              "effect": "none",
-              "loop": true,
-              "breakpoints": {
-                "320": {
-                  "slidesPerView": 2,
-                  "slidesPerGroup": 2,
-                  "spaceBetween": 14,
-                  "loop": false  
-                },
-                "768": {
-                  "slidesPerView": 3,
-                  "slidesPerGroup": 3,
-                  "spaceBetween": 24,
-                  "loop": false  
-                },
-                "992": {
-                  "slidesPerView": 4,
-                  "slidesPerGroup": 1,
-                  "spaceBetween": 30,
-                  "pagination": false,
-                  "loop": false  
-                },
-                "993": {
-                  "slidesPerView": 3,
-                  "slidesPerGroup": 3, 
-                  "spaceBetween": 30,
-                  "allowTouchMove": false,
-                  "simulateTouch": false,  
-                  "pagination": false,
-                  "navigation": false,   
-                  "freeMode": false,      
-                  "loop": false  
-                }
-              }
-            }'>
-                    <div class="swiper-wrapper">
+                    "autoplay": {
+                      "delay": 3000
+                    },
+                    "slidesPerView": 4,
+                    "slidesPerGroup": 4,
+                    "effect": "slide",
+                    "speed": 600,
+                    "loop": true,
+                    "breakpoints": {
+                      "320": {
+                        "slidesPerView": 2,
+                        "slidesPerGroup": 2,
+                        "spaceBetween": 14,
+                        "loop": false
+                      },
+                      "768": {
+                        "slidesPerView": 3,
+                        "slidesPerGroup": 3,
+                        "spaceBetween": 24,
+                        "loop": false
+                      },
+                      "992": {
+                        "slidesPerView": 4,
+                        "slidesPerGroup": 1,
+                        "spaceBetween": 30,
+                        "pagination": false,
+                        "loop": false
+                      },
+                      "993": {
+                        "slidesPerView": 3,
+                        "slidesPerGroup": 3,
+                        "spaceBetween": 30,
+                        "allowTouchMove": false,
+                        "simulateTouch": false,
+                        "pagination": false,
+                        "navigation": false,
+                        "freeMode": false,
+                        "loop": false
+                      }
+                    }
+                  }'>
+                    <div class="swiper-wrapper" style="transition-timing-function: ease-in-out;">
                       <% if (Array.isArray(mobileBanner) && mobileBanner.length) { %>
                         <% mobileBanner.forEach(function(banner) { %>
-                          <div class="swiper-slide">
+                          <div class="swiper-slide" style="transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);">
                             <a href="<%= banner.link || '#' %>">
                               <img loading="lazy" class="w-100 h-auto mb-3 poster-img" src="<%= banner.image %>"
-                                width="258" height="278" alt="">
+                                width="258" height="278" alt="" style="transition: opacity 0.5s;">
                             </a>
                           </div>
-                          <% }); %>
-                            <% } else { %>
-                              <!-- No mobile banners available -->
-                              <% } %>
+                        <% }); %>
+                      <% } else { %>
+                        <!-- No mobile banners available -->
+                      <% } %>
                     </div><!-- /.swiper-wrapper -->
                   </div><!-- /.swiper-container js-swiper-slider -->
                 </div>
@@ -2063,34 +2067,53 @@
 
 
 
-  <div class="modal fade" id="newsletterPopup" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog newsletter-popup modal-dialog-centered">
-      <div class="modal-content">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        <div class="row p-0 m-0">
-          <div class="col-md-6 p-0 d-none d-md-block">
-            <div class="newsletter-popup__bg h-100 w-100">
-              <img loading="lazy" src="images/newsletter-popup.jpg" class="h-100 w-100 object-fit-cover d-block" alt="">
+  <% if (!user) { %>
+    <div class="modal fade" id="newsletterPopup" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog newsletter-popup modal-dialog-centered">
+        <div class="modal-content">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="row p-0 m-0">
+            <div class="col-md-6 p-0 d-none d-md-block">
+              <div class="newsletter-popup__bg h-100 w-100">
+                <% 
+                  // Use the first mobileBanner image if available, else fallback
+                  var popupBannerImg = (Array.isArray(mobileBanner) && mobileBanner.length && mobileBanner[0].image) 
+                    ? mobileBanner[0].image 
+                    : 'images/newsletter-popup.jpg';
+                %>
+                <img loading="lazy" src="<%= popupBannerImg %>" class="h-100 w-100 object-fit-cover d-block" alt="">
+              </div>
             </div>
-          </div>
-          <div class="col-md-6 p-0 d-flex align-items-center">
-            <div class="block-newsletter w-100 text-center">
-              <h3 class="block__title">Sign in for Exclusive Offers!</h3>
-              <p class="mb-4" style="font-size:1.15rem;">
-                Unlock special deals, early access to sales, and more surprises—just by signing in.
-              </p>
-              <a href="/auth/login" class="btn btn-primary px-4 py-2 fw-bold mb-2" style="font-size:1.08rem;">Sign
-                In</a>
-              <div class="text-muted mt-3" style="font-size:0.97rem;">
-                Not a member yet? <a href="/auth/login" class="fw-bold text-success">Create your account now</a> and
-                start enjoying the perks!
+            <div class="col-md-6 p-0 d-flex align-items-center">
+              <div class="block-newsletter w-100 text-center">
+                <h3 class="block__title">Sign in for Exclusive Offers!</h3>
+                <p class="mb-4" style="font-size:1.15rem;">
+                  Unlock special deals, early access to sales, and more surprises—just by signing in.
+                </p>
+                <a href="/auth/login" class="btn btn-primary px-4 py-2 fw-bold mb-2" style="font-size:1.08rem;">Sign
+                  In</a>
+                <div class="text-muted mt-3" style="font-size:0.97rem;">
+                  Not a member yet? <a href="/auth/login" class="fw-bold text-success">Create your account now</a> and
+                  start enjoying the perks!
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div><!-- /.newsletter-popup position-fixed -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var newsletterModal = document.getElementById('newsletterPopup');
+        if (newsletterModal) {
+          var modal = new bootstrap.Modal(newsletterModal);
+          setTimeout(function() {
+            modal.show();
+          }, 1000); // Show after 1 second, adjust as needed
+        }
+      });
+    </script>
+  <% } %>
 
   <!-- Go To Top -->
   <div id="scrollTop" class="visually-hidden end-0"></div>
