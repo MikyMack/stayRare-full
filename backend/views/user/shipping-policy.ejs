@@ -209,26 +209,439 @@
             }
         }
     </style>
+        <style>
+                .icon-container {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .icon {
+            position: relative;
+            width: 20px;
+            height:20px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .icon:hover {
+            transform: scale(1.1);
+        }
+
+        .icon-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #3B1D58;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            border: 2px solid #f5f5f5;
+        }
+
+        .icon:nth-child(2) .badge {
+            background: #ef4444;
+        }
+
+        .icon:nth-child(3) .badge {
+            background: #3B1D58;
+        }
+
+        :root {
+            --primary-color: #001F3F;
+            --primary-hover: #001F3F;
+            --text-color: #1f2937;
+            --light-text: #6b7280;
+            --border-color: #e5e7eb;
+            --bg-color: #f9fafb;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --radius: 0.5rem;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Main Content */
+        .page-content {
+            padding: 2rem 0;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .title-sub {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* Layout */
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 992px) {
+            .checkout-layout {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        /* Address Selection */
+        .address-selection {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .address-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .address-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .address-card:hover {
+            border-color: var(--primary-color);
+        }
+
+        .address-card.selected {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        .address-card h5 {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .address-card p {
+            margin-bottom: 0.25rem;
+            color: var(--light-text);
+            font-size: 0.875rem;
+        }
+
+        .address-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+
+        .use-address-btn {
+            margin-top: 0.75rem;
+            background: none;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .use-address-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .checkbox-input {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 1rem;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        .order-table th,
+        .order-table td {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .order-table th {
+            font-weight: 600;
+        }
+
+        .order-table tfoot th {
+            font-weight: 700;
+        }
+
+        .order-table tfoot tr:last-child th,
+        .order-table tfoot tr:last-child td {
+            border-bottom: none;
+            font-size: 1.125rem;
+        }
+
+        .product-name {
+            font-weight: 500;
+        }
+
+        .product-name small {
+            color: var(--light-text);
+            font-size: 0.875rem;
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            margin-top: 1.5rem;
+        }
+
+        .payment-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+
+        .payment-header {
+            padding: 1rem;
+            background-color: var(--bg-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payment-header:hover {
+            background-color: #f3f4f6;
+        }
+
+        .payment-body {
+            padding: 1rem;
+            display: none;
+        }
+
+        .payment-body.expanded {
+            display: block;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 10px 5px;
+            border-radius: var(--radius);
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        /* Coupon Section */
+        .coupon-toggle {
+            margin-bottom: 1rem;
+        }
+
+        .coupon-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .input-wrapper-inline {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background-color: #ecfdf5;
+            color: var(--success-color);
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background-color: #fef2f2;
+            color: var(--error-color);
+            border: 1px solid #fecaca;
+        }
+
+        /* Utility Classes */
+        .mt-1 {
+            margin-top: 0.25rem;
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-3 {
+            margin-top: 0.75rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .mt-5 {
+            margin-top: 1.5rem;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.25rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 0.75rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-5 {
+            margin-bottom: 1.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
     <div class="page-wrapper">
   <div class="header-mobile header_sticky">
     <div class="container d-flex align-items-center h-100">
-      <a class="mobile-nav-activator d-block position-relative" href="#">
-        <svg class="nav-icon" width="25" height="18" viewBox="0 0 25 18" xmlns="http://www.w3.org/2000/svg"><use href="#icon_nav" /></svg>
-        <span class="btn-close-lg position-absolute top-0 start-0 w-100"></span>
+      <a class="mobile-nav-activator d-block position-relative"  href="#">
+        <img style="height: 30px; width: 30px;" class="menu-icn nav-icon" src="/images/menu.png" alt="">
+        <div class="btn-close-lg position-absolute top-0 start-0 w-100 cls-btn"></div>
       </a>
 
       <div class="logo">
         <a href="/">
-          <img src="images/stayrare/logo.png" alt="Uomo" class="logo__image d-block">
+          <img src="images/stayrare/logo.png" alt="stayrare" class="logo__image d-block">
         </a>
       </div><!-- /.logo -->
 
       <a href="/cart" class="header-tools__item header-tools__cart " >
-        <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_cart" /></svg>
-        <span class="cart-amount d-block position-absolute js-cart-items-count">3</span>
+           <div class="icon">
+            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <div class="badge">3</div>
+        </div>
       </a>
     </div><!-- /.container -->
 
@@ -243,9 +656,9 @@
        
             </li>
             <li class="navigation__item">
-              <a href="#" class="navigation__link js-nav-right d-flex align-items-center">Store<svg class="ms-auto" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_next_sm" /></svg></a>
+              <a style="display: flex; justify-content: space-between!important;" href="#" class="navigation__link js-nav-right d-flex align-items-center justify-between">Store <span><i class="ri-arrow-right-s-line"></i></span></a>
               <div class="sub-menu position-absolute top-0 start-100 w-100 d-none">
-                <a href="#" class="navigation__link js-nav-left d-flex align-items-center border-bottom mb-3"><svg class="me-2" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_prev_sm" /></svg>Store</a>
+                <a href="#" class="navigation__link js-nav-left d-flex align-items-center border-bottom mb-3"><i class="ri-arrow-left-s-line"></i>Store</a>
               <div class="sub-menu__wrapper">
                   <% if (typeof categories !== 'undefined' && categories.length) { %>
                     <% categories.forEach(function(category) { %>
@@ -323,55 +736,37 @@
 
 
           <ul class="container social-links d-flex justify-content-around list-unstyled d-flex flex-wrap mb-0">
-            <li>
-              <a href="https://www.facebook.com/" class="footer__social-link d-block ps-0">
-                <svg class="svg-icon svg-icon_facebook" width="9" height="15" viewBox="0 0 9 15"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_facebook" />
-                </svg>
+               <li>
+              <a href="https://www.facebook.com/" class="footer__social-link d-block">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+<g fill="black" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M17.525,9h-3.525v-2c0,-1.032 0.084,-1.682 1.563,-1.682h1.868v-3.18c-0.909,-0.094 -1.823,-0.14 -2.738,-0.138c-2.713,0 -4.693,1.657 -4.693,4.699v2.301h-3v4l3,-0.001v9.001h4v-9.003l3.066,-0.001z"></path></g></g>
+</svg>
               </a>
             </li>
             <li>
-              <a href="https://twitter.com/" class="footer__social-link d-block">
-                <svg class="svg-icon svg-icon_x" width="14" height="13" viewBox="0 0 1200 1227"
-                  xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-                  <path
-                    d="M 880 0 L 585 455 L 290 0 H 0 L 425 623 L 0 1227 H 290 L 585 772 L 880 1227 H 1170 L 745 623 L 1170 0 Z" />
-                </svg>
-
+              <a href="https://www.twitter.com/" class="footer__social-link d-block">
+                <svg class="svg-icon svg-icon_x" width="14" height="13" viewBox="0 0 1200 1227" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <path d="M 880 0 L 585 455 L 290 0 H 0 L 425 623 L 0 1227 H 290 L 585 772 L 880 1227 H 1170 L 745 623 L 1170 0 Z"/>
+</svg>
               </a>
             </li>
             <li>
               <a href="https://www.instagram.com/" class="footer__social-link d-block">
-                <svg class="svg-icon svg-icon_instagram" width="14" height="13" viewBox="0 0 14 13"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_instagram" />
-                </svg>
+               <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+<g fill="black" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M8,3c-2.757,0 -5,2.243 -5,5v8c0,2.757 2.243,5 5,5h8c2.757,0 5,-2.243 5,-5v-8c0,-2.757 -2.243,-5 -5,-5zM8,5h8c1.654,0 3,1.346 3,3v8c0,1.654 -1.346,3 -3,3h-8c-1.654,0 -3,-1.346 -3,-3v-8c0,-1.654 1.346,-3 3,-3zM17,6c-0.55228,0 -1,0.44772 -1,1c0,0.55228 0.44772,1 1,1c0.55228,0 1,-0.44772 1,-1c0,-0.55228 -0.44772,-1 -1,-1zM12,7c-2.757,0 -5,2.243 -5,5c0,2.757 2.243,5 5,5c2.757,0 5,-2.243 5,-5c0,-2.757 -2.243,-5 -5,-5zM12,9c1.654,0 3,1.346 3,3c0,1.654 -1.346,3 -3,3c-1.654,0 -3,-1.346 -3,-3c0,-1.654 1.346,-3 3,-3z"></path></g></g>
+</svg>
               </a>
             </li>
             <li>
               <a href="https://www.youtube.com/" class="footer__social-link d-block">
-                <svg class="svg-icon svg-icon_youtube" width="16" height="11" viewBox="0 0 16 11"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M15.0117 1.8584C14.8477 1.20215 14.3281 0.682617 13.6992 0.518555C12.5234 0.19043 7.875 0.19043 7.875 0.19043C7.875 0.19043 3.19922 0.19043 2.02344 0.518555C1.39453 0.682617 0.875 1.20215 0.710938 1.8584C0.382812 3.00684 0.382812 5.46777 0.382812 5.46777C0.382812 5.46777 0.382812 7.90137 0.710938 9.07715C0.875 9.7334 1.39453 10.2256 2.02344 10.3896C3.19922 10.6904 7.875 10.6904 7.875 10.6904C7.875 10.6904 12.5234 10.6904 13.6992 10.3896C14.3281 10.2256 14.8477 9.7334 15.0117 9.07715C15.3398 7.90137 15.3398 5.46777 15.3398 5.46777C15.3398 5.46777 15.3398 3.00684 15.0117 1.8584ZM6.34375 7.68262V3.25293L10.2266 5.46777L6.34375 7.68262Z" />
-                </svg>
-              </a>
-            </li>
-            <li>
-              <a href="https://www.pinterest.com/" class="footer__social-link d-block">
-                <svg class="svg-icon svg-icon_pinterest" width="14" height="15" viewBox="0 0 14 15"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <use href="#icon_pinterest" />
-                </svg>
+                <svg class="svg-icon svg-icon_youtube" width="16" height="11" viewBox="0 0 16 11" xmlns="http://www.w3.org/2000/svg"><path d="M15.0117 1.8584C14.8477 1.20215 14.3281 0.682617 13.6992 0.518555C12.5234 0.19043 7.875 0.19043 7.875 0.19043C7.875 0.19043 3.19922 0.19043 2.02344 0.518555C1.39453 0.682617 0.875 1.20215 0.710938 1.8584C0.382812 3.00684 0.382812 5.46777 0.382812 5.46777C0.382812 5.46777 0.382812 7.90137 0.710938 9.07715C0.875 9.7334 1.39453 10.2256 2.02344 10.3896C3.19922 10.6904 7.875 10.6904 7.875 10.6904C7.875 10.6904 12.5234 10.6904 13.6992 10.3896C14.3281 10.2256 14.8477 9.7334 15.0117 9.07715C15.3398 7.90137 15.3398 5.46777 15.3398 5.46777C15.3398 5.46777 15.3398 3.00684 15.0117 1.8584ZM6.34375 7.68262V3.25293L10.2266 5.46777L6.34375 7.68262Z"/></svg>
               </a>
             </li>
           </ul>
       </div>
     </nav><!-- /.navigation -->
   </div><!-- /.header-mobile -->
-
-  <!-- Header Type 1 -->
+        <!-- Start of Header -->
   <header id="header" class="header header-fullwidth header-transparent-bg">
 
     <div class="header-desk header-desk_type_2">
@@ -433,59 +828,39 @@
       </div><!-- /.logo -->
 
       <div class="header-tools d-flex align-items-center">
-        <div class="header-tools__item hover-container">
-          <div class="js-hover__open position-relative">
-            <a class="js-search-popup search-field__actor" href="#">
-              <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_search" /></svg>
-              <i class="btn-icon btn-close-lg"></i>
-            </a>
-          </div>
-
-          <div class="search-popup js-hidden-content">
-            <form action="https://uomo-html.flexkitux.com/Demo2/search_result.html" method="GET" class="search-field container">
-              <p class="text-uppercase text-secondary fw-medium mb-4">What are you looking for?</p>
-              <div class="position-relative">
-                <input class="search-field__input search-popup__input w-100 fw-medium" type="text" name="search-keyword" placeholder="Search products">
-                <button class="btn-icon search-popup__submit" type="submit">
-                  <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_search" /></svg>
-                </button>
-                <button class="btn-icon btn-close-lg search-popup__reset" type="reset"></button>
-              </div>
-
-              <div class="search-popup__results">
-                <div class="sub-menu search-suggestion">
-                  <h6 class="sub-menu__title fs-base">Quicklinks</h6>
-                  <ul class="sub-menu__list list-unstyled">
-                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">New Arrivals</a></li>
-                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Dresses</a></li>
-                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Accessories</a></li>
-                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Footwear</a></li>
-                    <li class="sub-menu__item"><a href="/store" class="menu-link menu-link_us-s">Sweatshirt</a></li>
-                  </ul>
-                </div>
-
-                <div class="search-result row row-cols-5"></div>
-              </div>
-            </form><!-- /.header-search -->
-          </div><!-- /.search-popup -->
-        </div><!-- /.header-tools__item hover-container -->
+     
 
       <div class="header-tools__item hover-container">
           <a class="" href="<%= user ? '/account' : '/auth/login' %>" data-aside="customerForms">
-            <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_user" />
+              <div class="icon">
+            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
             </svg>
+   
+        </div>
           </a>
         </div>
 
         <a class="header-tools__item" href="/wishlist">
-          <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
+             <div class="icon">
+            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+         
+        </div>
         </a>
 
         <a href="/cart" class="header-tools__item header-tools__cart " >
-          <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_cart" /></svg>
-          <span class="cart-amount d-block position-absolute js-cart-items-count">3</span>
+     <div class="icon">
+            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <div class="badge">3</div>
+        </div>
+          
         </a>
       </div><!-- /.header__tools -->
     </div><!-- /.header-desk header-desk_type_2 -->
@@ -747,7 +1122,9 @@
                  <ul class="social-links list-unstyled d-flex flex-wrap mb-0 mt-3">
             <li>
               <a href="https://www.facebook.com/" class="footer__social-link d-block">
-                <svg class="svg-icon svg-icon_facebook" width="9" height="15" viewBox="0 0 9 15" xmlns="http://www.w3.org/2000/svg"><use href="#icon_facebook" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+<g fill="#fffcfc" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M17.525,9h-3.525v-2c0,-1.032 0.084,-1.682 1.563,-1.682h1.868v-3.18c-0.909,-0.094 -1.823,-0.14 -2.738,-0.138c-2.713,0 -4.693,1.657 -4.693,4.699v2.301h-3v4l3,-0.001v9.001h4v-9.003l3.066,-0.001z"></path></g></g>
+</svg>
               </a>
             </li>
             <li>
@@ -759,7 +1136,9 @@
             </li>
             <li>
               <a href="https://www.instagram.com/" class="footer__social-link d-block">
-                <svg class="svg-icon svg-icon_instagram" width="14" height="13" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><use href="#icon_instagram" /></svg>
+               <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+<g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M8,3c-2.757,0 -5,2.243 -5,5v8c0,2.757 2.243,5 5,5h8c2.757,0 5,-2.243 5,-5v-8c0,-2.757 -2.243,-5 -5,-5zM8,5h8c1.654,0 3,1.346 3,3v8c0,1.654 -1.346,3 -3,3h-8c-1.654,0 -3,-1.346 -3,-3v-8c0,-1.654 1.346,-3 3,-3zM17,6c-0.55228,0 -1,0.44772 -1,1c0,0.55228 0.44772,1 1,1c0.55228,0 1,-0.44772 1,-1c0,-0.55228 -0.44772,-1 -1,-1zM12,7c-2.757,0 -5,2.243 -5,5c0,2.757 2.243,5 5,5c2.757,0 5,-2.243 5,-5c0,-2.757 -2.243,-5 -5,-5zM12,9c1.654,0 3,1.346 3,3c0,1.654 -1.346,3 -3,3c-1.654,0 -3,-1.346 -3,-3c0,-1.654 1.346,-3 3,-3z"></path></g></g>
+</svg>
               </a>
             </li>
             <li>
@@ -791,14 +1170,14 @@
     <div class="row text-center">
       <div class="col-3">
         <a href="/" class="footer-mobile__link d-flex flex-column align-items-center">
-          <svg class="d-block" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_home" /></svg>
+          <img style="width: 25px; height: 25px;" src="/images/home-icon.png" alt="stayrare">
           <span>Home</span>
         </a>
       </div><!-- /.col-3 -->
 
       <div class="col-3">
         <a href="/store" class="footer-mobile__link d-flex flex-column align-items-center">
-          <svg class="d-block" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_hanger" /></svg>
+          <img style="width: 25px; height: 25px;" src="/images/shop-icon.png" alt="stayrare">
           <span>Shop</span>
         </a>
       </div><!-- /.col-3 -->
@@ -806,18 +1185,20 @@
       <div class="col-3">
         <a href="/wishlist" class="footer-mobile__link d-flex flex-column align-items-center">
           <div class="position-relative">
-                    <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <use href="#icon_heart" />
-          </svg>
+                   <svg width="20" height="20": class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
           </div>
           <span>Wishlist</span>
         </a>
       </div><!-- /.col-3 -->
             <div class="col-3">
-        <a href="/account" class="footer-mobile__link d-flex flex-column align-items-center">
+        <a href="<%= user ? '/account' : '/auth/login' %>" class="footer-mobile__link d-flex flex-column align-items-center">
           <div class="position-relative">
-                  <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_user" /></svg>
+                            <svg width="20" height="20": class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
           </div>
           <span>Account</span>
         </a>
@@ -855,6 +1236,38 @@
     <script src="/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
     <script src="/js/main.min.js"></script>
     <script src="/js/script.js"></script>
+         <script>
+        // Fallback: If SVG doesn't render, this script will replace them with Unicode symbols
+        document.addEventListener('DOMContentLoaded', function() {
+            const icons = document.querySelectorAll('.icon-svg');
+            let allSvgsLoaded = true;
+            
+            icons.forEach(function(icon) {
+                if (icon.getBBox && icon.getBBox().width === 0) {
+                    allSvgsLoaded = false;
+                }
+            });
+            
+            if (!allSvgsLoaded) {
+                // Replace with Unicode fallbacks
+                const iconContainer = document.querySelector('.icon-container');
+                iconContainer.innerHTML = `
+                    <div class="icon">
+                        <div style="font-size: 24px; line-height: 32px; text-align: center;">👤</div>
+                        <div class="badge">5</div>
+                    </div>
+                    <div class="icon">
+                        <div style="font-size: 24px; line-height: 32px; text-align: center;">❤️</div>
+                        <div class="badge">2</div>
+                    </div>
+                    <div class="icon">
+                        <div style="font-size: 24px; line-height: 32px; text-align: center;">🛍️</div>
+                        <div class="badge">3</div>
+                    </div>
+                `;
+            }
+        });
+    </script>
 </body>
 
 </html>
