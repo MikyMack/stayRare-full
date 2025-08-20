@@ -308,7 +308,7 @@
 
       <div class="logo">
         <a href="/">
-          <img src="images/stayrare/logo.png" alt="Uomo" class="logo__image d-block">
+          <img src="/images/stayrare/logo.png" alt="Uomo" class="logo__image d-block">
         </a>
       </div><!-- /.logo -->
 
@@ -514,7 +514,7 @@
 
       <div class="logo">
         <a href="/">
-          <img style="top: 50%;" src="images/stayrare/logo.png" alt="Stayrare" class="logo__image d-block">
+          <img style="top: 50%;" src="/images/stayrare/logo.png" alt="Stayrare" class="logo__image d-block">
         </a>
       </div><!-- /.logo -->
 
@@ -666,39 +666,52 @@
                             <div class="product-swatch text-swatches" style="margin-bottom: 1rem;">
                                 <label style="margin-bottom: 0.5rem; display: block;">Sizes :</label>
                                 <div class="swatch-list d-flex flex-row flex-wrap gap-2" style="gap: 10px;">
-                                    <% product.sizeVariants.forEach((size, index)=> { %>
+                                    <% 
+                                    // Find if at least one size is in stock
+                                    let firstEnabledSizeIndex = -1;
+                                    product.sizeVariants.forEach((size, index) => {
+                                        if (size.stock > 0 && firstEnabledSizeIndex === -1) firstEnabledSizeIndex = index;
+                                    });
+                                    product.sizeVariants.forEach((size, index)=> { 
+                                        const isOutOfStock = !size.stock || size.stock <= 0;
+                                    %>
                                         <input type="radio" name="size" id="swatch-<%= index + 1 %>"
-                                            value="<%= size.size %>" <%=index===0 ? 'checked' : '' %>
-                                        data-measurements='{"chest":"<%= size.chest || 'N/A' %>","length":"<%=
-                                                size.length || 'N/A' %>","sleeve":"<%= size.sleeve || 'N/A' %>"}'
-                                                    class="d-none">
-                                                    <label class="swatch js-swatch size-btn"
-                                                        for="swatch-<%= index + 1 %>" aria-label="<%= size.size %>"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                                        title="<%= size.size %>"
-                                                        style="display:inline-block;min-width:38px;padding:7px 12px;border:1.5px solid #ccc;border-radius:6px;text-align:center;cursor:pointer;font-weight:600;font-size:1rem;background:#fff;color:#222;transition:all 0.15s;">
-                                                        <%= size.size %>
-                                                    </label>
-                                                    <% }); %>
-                                                        <!-- Size Chart Button (always shown) -->
-                                                        <button type="button" id="openSizeChart"
-                                                            class="btn btn-link p-0 ms-2"
-                                                            style="color:#7a797a;font-weight:600;font-size:14px;text-decoration:underline;cursor:pointer;">
-                                                            <svg width="18" height="18"
-                                                                style="vertical-align:middle;margin-right:2px;margin-bottom: 4px;"
-                                                                fill="none" stroke="#7a797a" stroke-width="2"
-                                                                viewBox="0 0 24 24">
-                                                                <circle cx="12" cy="12" r="10" />
-                                                                <line x1="12" y1="8" x2="12" y2="12" />
-                                                                <circle cx="12" cy="16" r="1.2" />
-                                                            </svg>
-                                                            SIZE CHART
-                                                        </button>
+                                            value="<%= size.size %>" 
+                                            <%= (!isOutOfStock && index === firstEnabledSizeIndex) ? 'checked' : '' %>
+                                            data-measurements='{"chest":"<%= size.chest || 'N/A' %>","length":"<%= size.length || 'N/A' %>","sleeve":"<%= size.sleeve || 'N/A' %>"}'
+                                            class="d-none"
+                                            <%= isOutOfStock ? 'disabled' : '' %>
+                                        >
+                                        <label class="swatch js-swatch size-btn <%= isOutOfStock ? 'out-of-stock' : '' %>"
+                                            for="swatch-<%= index + 1 %>" aria-label="<%= size.size %>"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="<%= size.size %>"
+                                            style="display:inline-block;min-width:38px;padding:7px 12px;border:1.5px solid #ccc;border-radius:6px;text-align:center;cursor:pointer;font-weight:600;font-size:1rem;background:#fff;color:#222;transition:all 0.15s;position:relative;opacity:<%= isOutOfStock ? '0.5' : '1' %>;">
+                                            <%= size.size %>
+                                            <% if (isOutOfStock) { %>
+                                                <span class="out-of-stock-label">Out of stock</span>
+                                            <% } %>
+                                        </label>
+                                    <% }); %>
+                                    <!-- Size Chart Button (always shown) -->
+                                    <button type="button" id="openSizeChart"
+                                        class="btn btn-link p-0 ms-2"
+                                        style="color:#7a797a;font-weight:600;font-size:14px;text-decoration:underline;cursor:pointer;">
+                                        <svg width="18" height="18"
+                                            style="vertical-align:middle;margin-right:2px;margin-bottom: 4px;"
+                                            fill="none" stroke="#7a797a" stroke-width="2"
+                                            viewBox="0 0 24 24">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <line x1="12" y1="8" x2="12" y2="12" />
+                                            <circle cx="12" cy="16" r="1.2" />
+                                        </svg>
+                                        SIZE CHART
+                                    </button>
                                 </div>
                             </div>
-
+                             <br>
                             <!-- Measurement display section -->
-                            <div class="size-measurements" style="display: none;">
+                            <div class="size-measurements" style="display: none; ">
                                 <h5>Measurements (in inches):</h5>
                                 <ul class="measurement-list"
                                     style="list-style: none; padding-left: 0; display: flex; gap: 10px;">
@@ -707,47 +720,61 @@
                                     <li>Sleeve: <span class="sleeve-value">-</span></li>
                                 </ul>
                             </div>
-                            <% } %>
+                        <% } %>
 
-                                <% if (product.hasColorVariants && product.colorVariants &&
-                                    product.colorVariants.length> 0) { %>
-                                    <div class="product-swatch color-swatches" style="margin-bottom: 1rem;">
-                                        <label style="margin-bottom: 0.5rem; display: block;">Color</label>
-                                        <div class="swatch-list d-flex flex-row flex-wrap gap-2" style="gap: 10px;">
-                                            <% product.colorVariants.forEach((color, index) => { %>
-                                                <input type="radio" name="color" id="swatch-color-<%= index + 1 %>"
-                                                  value="<%= color.color %>" <% // Send color name as value %>
-                                                  data-color-id="<%= color._id %>" <% // Store ID in data attribute if needed %>
-                                                  <%= index === 0 ? 'checked' : '' %>
-                                                  class="d-none">
-                                                <label class="swatch swatch-color js-swatch color-btn"
-                                                  for="swatch-color-<%= index + 1 %>" 
-                                                  aria-label="<%= color.color %>"
-                                                  data-bs-toggle="tooltip" 
-                                                  data-bs-placement="top"
-                                                  title="<%= color.color %>"
-                                                  style="display:inline-block;width:32px;height:32px;border-radius:50%;border:2px solid #ccc;cursor:pointer;vertical-align:middle;background-color: <%= getColorCode(color.color) %>;transition:box-shadow 0.15s;">
-                                                </label>
-                                              <% }); %>
-                                        </div>
-                                    </div>
-                                    <% } %>
+                        <% if (product.hasColorVariants && product.colorVariants &&
+                            product.colorVariants.length> 0) { %>
+                            <div class="product-swatch color-swatches" style="margin-bottom: 1rem;">
+                                <label style="margin-bottom: 0.5rem; display: block;">Color</label>
+                                <div class="swatch-list d-flex flex-row flex-wrap gap-2" style="gap: 10px;">
+                                    <% 
+                                    // Find if at least one color is in stock
+                                    let firstEnabledColorIndex = -1;
+                                    product.colorVariants.forEach((color, index) => {
+                                        if ((color.stock === undefined || color.stock > 0) && firstEnabledColorIndex === -1) firstEnabledColorIndex = index;
+                                    });
+                                    product.colorVariants.forEach((color, index) => { 
+                                        // If color.stock is undefined, treat as in stock for backward compatibility
+                                        const isOutOfStock = (typeof color.stock !== 'undefined') ? (color.stock <= 0) : false;
+                                    %>
+                                        <input type="radio" name="color" id="swatch-color-<%= index + 1 %>"
+                                            value="<%= color.color %>" 
+                                            data-color-id="<%= color._id %>" 
+                                            <%= (!isOutOfStock && index === firstEnabledColorIndex) ? 'checked' : '' %>
+                                            class="d-none"
+                                            <%= isOutOfStock ? 'disabled' : '' %>
+                                        >
+                                        <label class="swatch swatch-color js-swatch color-btn <%= isOutOfStock ? 'out-of-stock' : '' %>"
+                                            for="swatch-color-<%= index + 1 %>" 
+                                            aria-label="<%= color.color %>"
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top"
+                                            title="<%= color.color %>"
+                                            style="display:inline-block;width:32px;height:32px;border-radius:50%;border:2px solid #ccc;cursor:pointer;vertical-align:middle;background-color: <%= getColorCode(color.color) %>;transition:box-shadow 0.15s;position:relative;opacity:<%= isOutOfStock ? '0.5' : '1' %>;">
+                                            <% if (isOutOfStock) { %>
+                                                <span class="out-of-stock-label">Out of stock</span>
+                                            <% } %>
+                                        </label>
+                                    <% }); %>
+                                </div>
+                            </div>
+                        <% } %>
 
-                                        <div class="product-single__addtocart">
-                                            <div class="qty-control position-relative">
-                                                <input type="number" name="quantity" value="1" min="1"
-                                                    class="qty-control__number text-center">
-                                                <div class="qty-control__reduce">-</div>
-                                                <div class="qty-control__increase">+</div>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary btn-addtocart">
-                                                <svg width="20" height="20" fill="#ffff"
-                                                    style="vertical-align:middle;margin-right:6px;" viewBox="0 0 20 20">
-                                                    <path
-                                                        d="M6 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 2a2 2 0 1 1 4 0 2 2 0 0 1-4 0zM2 2h2l3.6 7.59-1.35 2.44A1 1 0 0 0 7 14h9v-2H7.42a.25.25 0 0 1-.23-.14l.03-.06L8.1 11h7.45a1 1 0 0 0 .95-.68l3.24-7.59A1 1 0 0 0 19 2H5.21l-.94-2H0v2h2z" />
-                                                </svg>Add To Cart
-                                            </button>
-                                        </div>
+                        <div class="product-single__addtocart">
+                            <div class="qty-control position-relative">
+                                <input type="number" name="quantity" value="1" min="1"
+                                    class="qty-control__number text-center">
+                                <div class="qty-control__reduce">-</div>
+                                <div class="qty-control__increase">+</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-addtocart">
+                                <svg width="20" height="20" fill="#ffff"
+                                    style="vertical-align:middle;margin-right:6px;" viewBox="0 0 20 20">
+                                    <path
+                                        d="M6 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 2a2 2 0 1 1 4 0 2 2 0 0 1-4 0zM2 2h2l3.6 7.59-1.35 2.44A1 1 0 0 0 7 14h9v-2H7.42a.25.25 0 0 1-.23-.14l.03-.06L8.1 11h7.45a1 1 0 0 0 .95-.68l3.24-7.59A1 1 0 0 0 19 2H5.21l-.94-2H0v2h2z" />
+                                </svg>Add To Cart
+                            </button>
+                        </div>
                     </form>
 
                     <!-- Wishlist and Share -->
@@ -788,7 +815,7 @@
                                 <span><%= product.productDetails.articleNo %></span>
                             </div>
                         <% } %>
-                        <!-- <% if (product.productDetails.brand) { %>
+                        <% if (product.productDetails.brand) { %>
                             <div class="meta-item">
                                 <label>Brand:</label>
                                 <span><%= product.productDetails.brand %></span>
@@ -802,11 +829,11 @@
                         <% } %>
                         <% if (product.productDetails.soleMaterial) { %>
                             <div class="meta-item">
-                                <label>Sole Material:</label>
+                                <label> Material:</label>
                                 <span><%= product.productDetails.soleMaterial %></span>
                             </div>
                         <% } %>
-                        <% if (product.productDetails.productCollection) { %>
+                        <!-- <% if (product.productDetails.productCollection) { %>
                             <div class="meta-item">
                                 <label>Collection:</label>
                                 <span><%= product.productDetails.productCollection %></span>
@@ -817,25 +844,25 @@
 
                     <!-- Return Policy Section (static) -->
                     <div class="return-policy-banner mt-4"
-                        style="background: linear-gradient(90deg, #582a77 0%, #bf74d8 100%); border-radius: 8px; padding: 1.1rem 1.2rem; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 2px 8px rgba(112, 10, 133, 0.08);">
-                        <svg width="28" height="28" fill="none" stroke="#e2e2e2" stroke-width="2" viewBox="0 0 24 24"
+                        style="background: linear-gradient(90deg, #fcf0ff 0%, #fcf0ff 100%); border-radius: 8px; padding: 1.1rem 1.2rem; display: flex; align-items: flex-start; gap: 14px; box-shadow: 0 2px 8px rgba(112, 10, 133, 0.08);">
+                        <svg width="28" height="28" fill="none" stroke="#434343" stroke-width="2" viewBox="0 0 24 24"
                             style="flex-shrink:0; margin-top:2px;">
                             <circle cx="12" cy="12" r="10" />
-                            <polyline points="8 12 11 15 16 10" stroke="#e2e2e2" stroke-width="2" fill="none" />
+                            <polyline points="8 12 11 15 16 10" stroke="#434343" stroke-width="2" fill="none" />
                         </svg>
-                        <div style="font-size:1.05rem; color:#e2e2e2; font-weight:600;">
+                        <div style="font-size:1.05rem; color:#434343; font-weight:600;">
                             Free Exchange/Return of products within <span style="color:#434343;font-weight:700;">7
                                 days</span> of delivery.<br>
-                            <span style="font-size:0.97rem; color:#d9d9d9; font-weight:400;">Refer to <a href="/terms"
-                                    style="color:#3f3f3f;text-decoration:underline;">Terms & Conditions</a> for more
+                            <span style="font-size:0.97rem; color:#434343; font-weight:400;">Refer to <a href="/terms"
+                                    style="color:#000000;text-decoration:underline;">Terms & Conditions</a> for more
                                 details.</span>
-                            <div style="font-size:0.93rem; color:#d9d9d9; font-weight:500; margin-top:2px;">
+                            <div style="font-size:0.93rem; color:#434343; font-weight:500; margin-top:2px;">
                                 <em>PS: Exchange/Returns will not be applicable if the Brand Tag is broken or
                                     missing.</em>
                             </div>
                             <div style="font-size:0.93rem; color:#3a3a3a; font-weight:500; margin-top:4px;">
                                 <strong>Note:</strong> Only first delivery is free. <span
-                                    style="color:#d9d9d9;">Shipping charges apply for return or exchange items.</span>
+                                    style="color:#434343;">Shipping charges apply for return or exchange items.</span>
                             </div>
                         </div>
                     </div>
@@ -867,35 +894,137 @@
                     <div class="tab-pane fade show active" id="tab-description" role="tabpanel"
                         aria-labelledby="tab-description-tab">
                         <div class="product-single__description">
-                            <h3 class="block-title mb-4">From Fabric to Fit</h3>
-                            <p class="content">
-                                <%= product.moreDetails || 'No additional details provided for this product.' %>
-                            </p>
+                            <% 
+                                const catName = product.category && product.category.name ? product.category.name.trim().toLowerCase() : '';
+                                const gsm = (product.productDetails && product.productDetails.gsm) ? product.productDetails.gsm : '';
+                            %>
+                            <% if (catName === "oversized t-shirts" || catName === "regular fit") { %>
+                                <% if (gsm == 240 || (catName === "oversized t-shirts")) { %>
+                                    <h3 class="block-title mb-3">PRODUCT DESCRIPTION – Oversized Fit</h3>
+                                    <ul class="mb-3" style="list-style:none;padding-left:0;">
+                                        <li style="font-size:1.1rem;">🔸 240 GSM – Oversized Fit T-Shirt (Premium Feel)</li>
+                                    </ul>
+                                    <h4 class="h6 mb-2 mt-3" style="font-weight:700;">From Fabric to Fit: Designed for Comfort, Made to Last</h4>
+                                    <div class="mb-2">
+                                        <strong>Fabric:</strong>
+                                        <p>
+                                            Made from 100% combed cotton with a 240 GSM thickness, this T-shirt offers a structured, premium feel while staying soft and breathable. It's bio-washed and pre-shrunk, so it holds its shape and color over time.
+                                        </p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Fit:</strong>
+                                        <p>
+                                            Designed with a modern oversized fit — featuring dropped shoulders, wider sleeves, and extra room for all-day ease and a streetwear look.
+                                        </p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Why You’ll Love It:</strong>
+                                        <ul>
+                                            <li>240 GSM for premium feel</li>
+                                            <li>Oversized comfort fit</li>
+                                            <li>Long-lasting softness</li>
+                                            <li>Minimal shrinkage and fade-resistant</li>
+                                            <li>Made to move with you, every day.</li>
+                                        </ul>
+                                    </div>
+                                <% } else { %>
+                                    <h3 class="block-title mb-3">180 GSM – Regular Fit T-Shirt (Light &amp; Easy)</h3>
+                                    <h4 class="h6 mb-2 mt-3" style="font-weight:700;">From Fabric to Fit</h4>
+                                    <div class="mb-2">
+                                        <strong>Fabric:</strong>
+                                        <p>
+                                            Made from 100% combed cotton, this 180 GSM T-shirt offers the ideal blend of softness and breathability. Light enough for all-day wear, yet strong enough to last — it’s bio-washed and pre-shrunk, so it keeps its color and shape even after multiple washes.
+                                        </p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Fit:</strong>
+                                        <p>
+                                            Designed in a relaxed regular fit, this tee follows your natural shape while giving you enough room to move comfortably. It’s your go-to for effortless, everyday style — from morning errands to weekend hangouts.
+                                        </p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Finish:</strong>
+                                        <p>
+                                            Fine stitching, a ribbed neckline, and smooth fabric surface make this tee clean and minimal — built for versatility and easy layering.
+                                        </p>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Why You’ll Love It:</strong>
+                                        <ul>
+                                            <li>180 GSM lightweight comfort</li>
+                                            <li>100% combed cotton</li>
+                                            <li>Pre-shrunk &amp; bio-washed</li>
+                                            <li>Classic fit, everyday wear</li>
+                                            <li>Breathable, soft on skin</li>
+                                        </ul>
+                                    </div>
+                                <% } %>
+                            <% } else { %>
+                                <h3 class="block-title mb-4">From Fabric to Fit</h3>
+                                <p class="content">
+                                    <%= product.moreDetails || 'No additional details provided for this product.' %>
+                                </p>
+                            <% } %>
                         </div>
                     </div>
 
-                    <!-- Wash Care Tab (static content) -->
+                    <!-- Wash Care Tab (custom content for t-shirts, else fallback) -->
                     <div class="tab-pane fade" id="tab-additional-info" role="tabpanel"
                         aria-labelledby="tab-additional-info-tab">
                         <div class="product-single__addtional-info">
-                            <div class="item">
-                                <label class="h6">Washing</label>
-                                <span>Machine wash in cold or lukewarm water with mild detergent. Turn inside out before
-                                    washing. Wash similar colors together and avoid bleach.</span>
-                            </div>
-                            <div class="item">
-                                <label class="h6">Drying </label>
-                                <span>Do not wring. Avoid excessive rubbing or wringing to prevent stretching. Tumble
-                                    dry on low or air dry in the shade.</span>
-                            </div>
-                            <div class="item">
-                                <label class="h6">Ironing </label>
-                                <span>Use medium heat while slightly damp for best results.</span>
-                            </div>
-                            <div class="item">
-                                <label class="h6">Storage </label>
-                                <span>Hang or fold neatly in a cool, dry place.</span>
-                            </div>
+                            <% if (catName === "oversized t-shirts" || catName === "regular fit") { %>
+                                <div class="item">
+                                    <label class="h6">Washing</label>
+                                    <span>
+                                        Machine wash in cold or lukewarm water using mild detergent.<br>
+                                        Turn inside out before washing to protect the print.<br>
+                                        Wash with similar colors.<br>
+                                        Avoid bleach, harsh chemicals, and fabric softeners.
+                                    </span>
+                                </div>
+                                <div class="item">
+                                    <label class="h6">Drying</label>
+                                    <span>
+                                        Do not wring or twist.<br>
+                                        Avoid excessive rubbing to protect the print.<br>
+                                        Tumble dry on low or air dry in the shade for best longevity.
+                                    </span>
+                                </div>
+                                <div class="item">
+                                    <label class="h6">Ironing</label>
+                                    <span>
+                                        Do not iron directly on the print.<br>
+                                        Turn inside out and iron on medium heat while slightly damp.<br>
+                                        Place a cloth over the print if ironing on the front side.
+                                    </span>
+                                </div>
+                                <div class="item">
+                                    <label class="h6">Storage</label>
+                                    <span>
+                                        Fold neatly or hang in a cool, dry place.<br>
+                                        Keep away from direct sunlight to preserve color and print quality.
+                                    </span>
+                                </div>
+                            <% } else { %>
+                                <div class="item">
+                                    <label class="h6">Washing</label>
+                                    <span>Machine wash in cold or lukewarm water with mild detergent. Turn inside out before
+                                        washing. Wash similar colors together and avoid bleach.</span>
+                                </div>
+                                <div class="item">
+                                    <label class="h6">Drying </label>
+                                    <span>Do not wring. Avoid excessive rubbing or wringing to prevent stretching. Tumble
+                                        dry on low or air dry in the shade.</span>
+                                </div>
+                                <div class="item">
+                                    <label class="h6">Ironing </label>
+                                    <span>Use medium heat while slightly damp for best results.</span>
+                                </div>
+                                <div class="item">
+                                    <label class="h6">Storage </label>
+                                    <span>Hang or fold neatly in a cool, dry place.</span>
+                                </div>
+                            <% } %>
                         </div>
                     </div>
 
@@ -922,13 +1051,13 @@
                                                                 xmlns="http://www.w3.org/2000/svg">
                                                                 <use href="#icon_star" />
                                                             </svg>
-                                                            <% } else { %>
-                                                                <svg class="review-star" viewBox="0 0 9 9"
-                                                                    xmlns="http://www.w3.org/2000/svg">
-                                                                    <use href="#icon_empty_star" />
-                                                                </svg>
-                                                                <% } %>
-                                                                    <% } %>
+                                                        <% } else { %>
+                                                            <svg class="review-star" viewBox="0 0 9 9"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <use href="#icon_empty_star" />
+                                                            </svg>
+                                                        <% } %>
+                                                    <% } %>
                                                 </div>
                                             </div>
                                             <div class="review-date">
@@ -942,11 +1071,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <% }); %>
-                                        <% } else { %>
-                                            <div class="alert alert-info">No reviews yet. Be the first to review this
-                                                product!</div>
-                                            <% } %>
+                                <% }); %>
+                            <% } else { %>
+                                <div class="alert alert-info">No reviews yet. Be the first to review this
+                                    product!</div>
+                            <% } %>
                         </div>
 
                         <!-- Review Form -->
@@ -963,7 +1092,7 @@
                                                 <path
                                                     d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z" />
                                             </svg>
-                                            <% } %>
+                                        <% } %>
                                     </span>
                                     <input type="hidden" id="form-input-rating" name="rating" value="">
                                 </div>
@@ -1132,6 +1261,32 @@
                             return;
                         }
 
+                        // Check if selected size or color is out of stock (extra safety)
+                        if (sizeInput && sizeInput.disabled) {
+                            Toastify({
+                                text: "Selected size is out of stock.",
+                                className: "toastify-warning",
+                                duration: 3000,
+                                close: true,
+                                gravity: "top",
+                                position: "right",
+                                stopOnFocus: true
+                            }).showToast();
+                            return;
+                        }
+                        if (colorInput && colorInput.disabled) {
+                            Toastify({
+                                text: "Selected color is out of stock.",
+                                className: "toastify-warning",
+                                duration: 3000,
+                                close: true,
+                                gravity: "top",
+                                position: "right",
+                                stopOnFocus: true
+                            }).showToast();
+                            return;
+                        }
+
                         if (isUserLoggedIn) {
                             // Normal cart (server-side)
                             try {
@@ -1196,7 +1351,7 @@
                                 const CART_KEY = 'cart';
 
                                 // Get product name and image from EJS variables as fallback
-                                let productName = "<%= product.name ? product.name.replace(/"/g, '&quot;') : '' %>";
+                                let productName = "<%= product.name ? product.name.replace(/\"/g, '&quot;') : '' %>";
                                 let productImage = "<%= (product.images && product.images.length > 0) ? product.images[0] : '/images/stayrare/prd-3.webp' %>";
 
                                 // Try to get from DOM if available (for future-proofing, but EJS fallback is always set)
@@ -1345,6 +1500,32 @@
                     // Get color name (not ID) from the value attribute
                     const selectedColor = colorInput ? colorInput.value : null;
                     
+                    // Prevent adding out of stock variant to wishlist
+                    if (sizeInput && sizeInput.disabled) {
+                        Toastify({
+                            text: "Selected size is out of stock.",
+                            className: "toastify-warning",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "right",
+                            stopOnFocus: true
+                        }).showToast();
+                        return;
+                    }
+                    if (colorInput && colorInput.disabled) {
+                        Toastify({
+                            text: "Selected color is out of stock.",
+                            className: "toastify-warning",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "right",
+                            stopOnFocus: true
+                        }).showToast();
+                        return;
+                    }
+                    
                     try {
                       const response = await fetch('/create-wishlist', {
                         method: 'POST',
@@ -1415,6 +1596,12 @@
                         } else {
                             label.classList.remove('active');
                         }
+                        // Add out-of-stock class if disabled
+                        if (radio.disabled) {
+                            label.classList.add('out-of-stock');
+                        } else {
+                            label.classList.remove('out-of-stock');
+                        }
                     }
                 });
             }
@@ -1478,6 +1665,7 @@
                 font-size: 1rem;
                 background: #fff;
                 color: #222;
+                position: relative;
             }
 
             .color-btn {
@@ -1488,6 +1676,53 @@
                 cursor: pointer;
                 vertical-align: middle;
                 background-clip: padding-box;
+                position: relative;
+            }
+
+            .size-btn.out-of-stock,
+            .color-btn.out-of-stock {
+                opacity: 0.5;
+                cursor: not-allowed !important;
+                border-color: #e0e0e0 !important;
+                background: #f8f8f8 !important;
+                color: #aaa !important;
+            }
+
+            .out-of-stock-label {
+                display: block;
+                font-size: 0.75rem;
+                color: #d32f2f;
+                font-weight: 700;
+                position: absolute;
+                left: 50%;
+                top: 100%;
+                transform: translateX(-50%);
+                margin-top: 2px;
+                white-space: nowrap;
+                background: #fff;
+                border-radius: 3px;
+                padding: 1px 4px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+                z-index: 2;
+            }
+
+            @media (max-width: 576px) {
+                .swatch-list {
+                    gap: 6px;
+                }
+                .size-btn {
+                    min-width: 30px;
+                    padding: 5px 7px;
+                    font-size: 0.95rem;
+                }
+                .color-btn {
+                    width: 26px;
+                    height: 26px;
+                }
+                .out-of-stock-label {
+                    font-size: 0.68rem;
+                    margin-top: 1px;
+                }
             }
 
             #sizeChartModal {
@@ -1619,7 +1854,23 @@
             </button>
             <div class="text-center mb-2">
                 <h4 class="fw-bold mb-2" style="color:#fed304;letter-spacing:1px;">Size Chart</h4>
-                <img src="/images/size-guide.jpg" alt="Size Chart"
+                <%
+                  // Determine which size chart image to show based on category
+                  let chartImg = "/images/size-guide.jpg";
+                  if (
+                    product.category && product.category.name
+                  ) {
+                    const cat = product.category.name.trim().toLowerCase();
+                    if (cat === "oversized t-shirts") {
+                      chartImg = "/images/stayrare/1.png";
+                    } else if (cat === "regular fit") {
+                      chartImg = "/images/stayrare/2.png";
+                    } else if (cat === "another-category-name") {
+                      chartImg = "/images/stayrare/2.png";
+                    }
+                  }
+                %>
+                <img src="<%= chartImg %>" alt="Size Chart"
                     style="max-width:100%;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
             </div>
         </div>
@@ -1632,7 +1883,7 @@
       <div class="row row-cols-lg-5 row-cols-2">
         <div class="footer-column footer-store-info col-12 mb-4 mb-lg-0">
  <div>
-  <img class="footer-logo" src="images/stayrare/footer-logo.png" alt="">
+  <img class="footer-logo" src="/images/stayrare/footer-logo.png" alt="">
  </div>
           <p class="footer-address">Stay Rare ,Kochi , Kerala  India , 673641</p>
           <p class="m-0">
