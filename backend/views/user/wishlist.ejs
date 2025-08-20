@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="css/style.css" type="text/css">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
   <!-- Document Title -->
   <title>WISHLIST | STAY RARE</title>
@@ -956,7 +956,7 @@
                 <thead class="table-light">
                   <tr>
                     <th scope="col" class="text-center">Product</th>
-                    <th scope="col">Name</th>
+                    <th scope="col">Name &amp; Variants</th>
                     <th scope="col" class="text-center">Price</th>
                     <th scope="col" class="text-center">Stock Status</th>
                     <th scope="col" class="text-center">Actions</th>
@@ -964,24 +964,31 @@
                 </thead>
                 <tbody>
                   <% wishlist.forEach((item, index) => { %>
-                    <tr data-item-id="<%= item.product._id %>">
+                    <tr 
+                      data-item-id="<%= item.product._id %>" 
+                      data-wishlist-item-id="<%= item._id %>"
+                    >
                       <td class="text-center" style="width:120px;">
                         <a href="/product/<%= item.product._id %>">
                           <img src="<%= item.product.images && item.product.images[0] ? item.product.images[0] : '/images/placeholder.png' %>" alt="product" class="img-fluid rounded" style="max-width: 100px;">
                         </a>
-               <button type="button" class="btn btn-sm btn-outline-danger mt-2 remove-wishlist" title="Remove from wishlist">
-    <i class="bi bi-x-lg"></i>
-</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger mt-2 remove-wishlist" title="Remove from wishlist">
+                          <i class="bi bi-x-lg"></i>
+                        </button>
                       </td>
                       <td>
                         <a class="fw-semibold text-decoration-none text-dark text-uppercase" href="/product/<%= item.product._id %>">
                           <%= item.product.name %>
                         </a>
-                        <% if (item.selectedColor) { %>
-                          <div class="small text-muted mt-1">Color: <%= item.selectedColor %></div>
-                        <% } %>
-                        <% if (item.selectedSize) { %>
-                          <div class="small text-muted">Size: <%= item.selectedSize %></div>
+                        <% if (item.selectedColor || item.selectedSize) { %>
+                          <div class="mt-2">
+                            <% if (item.selectedColor) { %>
+                              <span class="badge bg-light text-dark border me-1">Color: <%= item.selectedColor %></span>
+                            <% } %>
+                            <% if (item.selectedSize) { %>
+                              <span class="badge bg-light text-dark border">Size: <%= item.selectedSize %></span>
+                            <% } %>
+                          </div>
                         <% } %>
                       </td>
                       <td class="text-center">
@@ -1006,56 +1013,69 @@
           <% } %>
         </div>
       </div>
-      </section>
-      <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-      <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    </section>
 
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          // Remove from Wishlist
-          document.querySelectorAll('.remove-wishlist').forEach(button => {
-            button.addEventListener('click', async function () {
-              const row = this.closest('tr');
-              const itemId = row.dataset.itemId;
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Remove from Wishlist
+        document.querySelectorAll('.remove-wishlist').forEach(button => {
+          button.addEventListener('click', async function () {
+            const row = this.closest('tr');
+            // Use the wishlist item _id for removal
+            const wishlistItemId = row.dataset.wishlistItemId;
 
-              const response = await fetch(`/wishlist/${itemId}`, {
-                method: 'DELETE'
-              });
-
-              if (response.ok) {
-                row.remove();
-                Toastify({
-                  text: "Item removed from wishlist",
-                  backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                  duration: 3000
-                }).showToast();
-              }
+            const response = await fetch(`/wishlist/${wishlistItemId}`, {
+              method: 'DELETE'
             });
-          });
 
-          // Move to Cart
-          document.querySelectorAll('.btn-cart').forEach(button => {
-            button.addEventListener('click', async function () {
-              const row = this.closest('tr');
-              const itemId = row.dataset.itemId;
-
-              const response = await fetch(`/wishlist/${itemId}/move-to-cart`, {
-                method: 'POST'
-              });
-
-              if (response.ok) {
-                row.remove();
-                Toastify({
-                  text: "Item moved to cart",
-                  backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                  duration: 3000
-                }).showToast();
-              }
-            });
+            if (response.ok) {
+              row.remove();
+              Toastify({
+                text: "Item removed from wishlist",
+                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                duration: 3000
+              }).showToast();
+            }
           });
         });
-      </script>
 
+        // Move to Cart
+        document.querySelectorAll('.btn-cart').forEach(button => {
+          button.addEventListener('click', async function () {
+            const row = this.closest('tr');
+            // Use the wishlist item _id for move-to-cart
+            const wishlistItemId = row.dataset.wishlistItemId;
+
+            // The backend expects :itemId to be the PRODUCT _id, not the wishlist item _id!
+            // So we use data-item-id (product._id) for the move-to-cart endpoint.
+            const productId = row.dataset.itemId;
+
+            const response = await fetch(`/wishlist/${productId}/move-to-cart`, {
+              method: 'POST'
+            });
+
+            if (response.ok) {
+              row.remove();
+              Toastify({
+                text: "Item moved to cart",
+                backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                duration: 3000
+              }).showToast();
+            } else {
+              let msg = "Failed to move item to cart";
+              try {
+                msg = await response.text();
+              } catch (e) {}
+              Toastify({
+                text: msg,
+                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                duration: 3000
+              }).showToast();
+            }
+          });
+        });
+      });
+    </script>
   <div class="mb-5 pb-xl-5"></div>
 
   <!-- Footer Type 1 -->
@@ -1221,10 +1241,10 @@
   <script src="js/plugins/swiper.min.js"></script>
   <script src="js/plugins/countdown.js"></script>
   <script src="js/plugins/jquery.fancybox.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <!-- Footer Scripts -->
   <script src="js/theme.js"></script>
-
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 </body>
 
 </html>

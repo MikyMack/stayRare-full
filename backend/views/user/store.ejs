@@ -758,18 +758,29 @@
               stopOnFocus: true
             }).showToast();
           } else {
-            // fallback
-            // (do not use alert, just log)
             console[type === "error" ? "error" : "log"](message);
           }
         }
-
+      
         // Track selected variants for each product card
         const selectedVariants = {};
-
-        // Variant selection logic
+      
+        // Check if user is authenticated
+        function isUserAuthenticated() {
+          // Use server-rendered user variable for reliability
+          return <%= user ? 'true' : 'false' %>;
+        }
+      
+        // Update cart count in header
+        function updateCartCount(count) {
+          const cartCountElements = document.querySelectorAll('.js-cart-items-count, .cart-count');
+          cartCountElements.forEach(el => {
+            el.textContent = count;
+          });
+        }
+      
         document.addEventListener('DOMContentLoaded', function () {
-          // Variant button click
+          // Variant button click handling
           document.querySelectorAll('.products-grid').forEach(function(grid) {
             grid.addEventListener('click', function(e) {
               if (e.target.closest('.variant-option-btn')) {
@@ -778,9 +789,11 @@
                 const productId = card.querySelector('.js-add-to-cart-grid').getAttribute('data-product-id');
                 const variantName = btn.getAttribute('data-variant-name');
                 const variantValue = btn.getAttribute('data-variant-value');
+                
                 // Store selection
                 if (!selectedVariants[productId]) selectedVariants[productId] = {};
                 selectedVariants[productId][variantName] = variantValue;
+                
                 // Remove active from siblings
                 btn.parentElement.querySelectorAll('.variant-option-btn').forEach(function(sib) {
                   if (sib.getAttribute('data-variant-name') === variantName) {
@@ -791,17 +804,18 @@
               }
             });
           });
-
-          // Add to cart
+      
+          // Add to cart functionality
           document.querySelectorAll('.js-add-to-cart-grid').forEach(function(btn) {
             btn.addEventListener('click', async function() {
               const productId = btn.getAttribute('data-product-id');
               const card = btn.closest('.catchy-product-card');
               const productData = window.productsData && window.productsData[productId];
+              
               // Get selected variants
               const selected = selectedVariants[productId] || {};
-              // Check if variants required and selected
               let color = null, size = null;
+              
               if (card.querySelector('[data-variant-name="Color"]')) {
                 color = selected['Color'] || null;
                 if (!color) {
@@ -809,6 +823,7 @@
                   return;
                 }
               }
+              
               if (card.querySelector('[data-variant-name="Size"]')) {
                 size = selected['Size'] || null;
                 if (!size) {
@@ -816,6 +831,7 @@
                   return;
                 }
               }
+              
               // Check if selected variant is out of stock
               let outOfStock = false;
               if (color && productData && productData.colorVariants) {
@@ -830,130 +846,146 @@
                 showToast("Selected variant is out of stock.", "error");
                 return;
               }
-              // Auth check
-              var metaAuth = document.querySelector('meta[name="sr-auth"]');
-              if (metaAuth && metaAuth.getAttribute('content') === '1') {
+              
+              // If user: API call, else: guest cart
+              if (isUserAuthenticated()) {
                 // Authenticated user: send to server
-                fetch('/cart/add', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                  },
-                  body: JSON.stringify({
-                    productId: productId,
-                    color: color,
-                    size: size,
-                    quantity: 1
-                  })
-                })
-                  .then(function(res) { return res.json(); })
-                  .then(function(data) {
-                    if (data.success) {
-                      showToast("Product added to cart", "success");
-                    } else {
-                      showToast(data.message || "Could not add to cart.", "error");
-                    }
-                  })
-                  .catch(function() { showToast("Error adding to cart.", "error"); });
+                try {
+                  const response = await fetch('/add-cart', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                      productId: productId,
+                      selectedColor: color,
+                      selectedSize: size,
+                      quantity: 1
+                    })
+                  });
+                  
+                  const data = await response.json();
+                  
+                  if (response.ok) {
+                    showToast("Product added to cart", "success");
+                    // Update cart count in header
+                    updateCartCount(data.cartCount || 1);
+                  } else {
+                    showToast(data.message || "Could not add to cart.", "error");
+                  }
+                } catch (error) {
+                  console.error('Error adding to cart:', error);
+                  showToast("Error adding to cart.", "error");
+                }
               } else {
                 // Guest: use localStorage
-                var cart = [];
                 try {
-                  cart = JSON.parse(localStorage.getItem('cart')) || [];
-                } catch (e) { cart = []; }
-                // Check if already in cart (same product, color, size)
-                var exists = cart.find(function(item) {
-                  return item.productId === productId &&
-                    (!color || item.color === color) &&
-                    (!size || item.size === size);
-                });
-                if (exists) {
-                  showToast("Already in cart.", "error");
-                  return;
+                  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                  
+                  // Check if already in cart (same product, color, size)
+                  const exists = cart.find(item => 
+                    item.productId === productId &&
+                    item.selectedColor === color &&
+                    item.selectedSize === size
+                  );
+                  
+                  if (exists) {
+                    showToast("Already in cart.", "error");
+                    return;
+                  }
+                  
+                  // Get product details for guest cart
+                  const productName = productData?.name || 'Product';
+                  const productImage = productData?.images?.[0] || '/images/placeholder.png';
+                  const price = productData?.salePrice || productData?.basePrice || 0;
+                  
+                  cart.push({
+                    productId: productId,
+                    selectedColor: color,
+                    selectedSize: size,
+                    quantity: 1,
+                    price: price,
+                    productName: productName,
+                    productImage: productImage
+                  });
+                  
+                  localStorage.setItem('cart', JSON.stringify(cart));
+                  showToast("Product added to cart", "success");
+                  
+                  // Update cart count in header
+                  updateCartCount(cart.reduce((total, item) => total + item.quantity, 0));
+                } catch (error) {
+                  console.error('Error adding to guest cart:', error);
+                  showToast("Error adding to cart.", "error");
                 }
-                cart.push({
-                  productId: productId,
-                  color: color,
-                  size: size,
-                  quantity: 1
-                });
-                localStorage.setItem('cart', JSON.stringify(cart));
-                showToast("Product added to cart", "success");
               }
             });
           });
-
-          // Add to wishlist
+      
+          // Add to wishlist functionality
           document.querySelectorAll('.js-add-to-wishlist-grid').forEach(function(btn) {
             btn.addEventListener('click', async function() {
               const productId = btn.getAttribute('data-product-id');
               const card = btn.closest('.catchy-product-card');
-              const productData = window.productsData && window.productsData[productId];
+              
               // Get selected variants
               const selected = selectedVariants[productId] || {};
               let color = null, size = null;
+              
               if (card.querySelector('[data-variant-name="Color"]')) {
                 color = selected['Color'] || null;
               }
+              
               if (card.querySelector('[data-variant-name="Size"]')) {
                 size = selected['Size'] || null;
               }
+              
+              // Only allow wishlist for authenticated users
+              if (!isUserAuthenticated()) {
+                showToast("Please login to add to wishlist.", "error");
+                return;
+              }
+              
               // Toggle active state for love icon
               btn.classList.toggle('active');
-              // Auth check
-              var metaAuth = document.querySelector('meta[name="sr-auth"]');
-              if (metaAuth && metaAuth.getAttribute('content') === '1') {
-                // Authenticated user: send to server
-                fetch('/create-wishlist', {
+              
+              // Authenticated user: send to server
+              try {
+                const response = await fetch('/create-wishlist', {
                   method: 'POST',
+                  credentials: 'same-origin',
                   headers: {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                   },
                   body: JSON.stringify({
                     productId: productId,
-                    color: color,
-                    size: size
+                    selectedColor: color,
+                    selectedSize: size
                   })
-                })
-                  .then(function(res) { return res.json(); })
-                  .then(function(data) {
-                    if (data.success) {
-                      showToast("Added to your wishlist! 💖", "success");
-                    } else {
-                      showToast(data.message || "Could not add to wishlist.", "error");
-                    }
-                  })
-                  .catch(function() { showToast("Error adding to wishlist.", "error"); });
-              } else {
-                // Guest: use localStorage
-                var wishlist = [];
-                try {
-                  wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-                } catch (e) { wishlist = []; }
-                // Check if already in wishlist (same product, color, size)
-                var exists = wishlist.find(function(item) {
-                  return item.productId === productId &&
-                    (!color || item.color === color) &&
-                    (!size || item.size === size);
                 });
-                if (exists) {
-                  showToast("Already in wishlist.", "error");
-                  return;
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                  showToast("Added to your wishlist! 💖", "success");
+                } else {
+                  showToast(data.message || "Could not add to wishlist.", "error");
+                  // Revert the active state if failed
+                  btn.classList.toggle('active');
                 }
-                wishlist.push({
-                  productId: productId,
-                  color: color,
-                  size: size
-                });
-                localStorage.setItem('wishlist', JSON.stringify(wishlist));
-                showToast("Added to your wishlist! 💖", "success");
+              } catch (error) {
+                console.error('Error adding to wishlist:', error);
+                showToast("Error adding to wishlist.", "error");
+                // Revert the active state if failed
+                btn.classList.toggle('active');
               }
             });
           });
-
-          // Optionally, expose products data for variant stock checks
+      
+          // Initialize products data for variant stock checks
           if (!window.productsData) window.productsData = {};
           <% products.forEach(function(product) { %>
             window.productsData["<%= product._id %>"] = <%- JSON.stringify(product) %>;
