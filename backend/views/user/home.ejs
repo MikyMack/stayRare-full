@@ -1452,7 +1452,7 @@
         function addToGuestCart(product, quantity = 1, selectedColor = null, selectedSize = null) {
           let guestCart = [];
           try {
-            guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
+            guestCart = JSON.parse(localStorage.getItem('cart') || '[]');
           } catch (e) { guestCart = []; }
           // Check if product with same variants exists
           let found = false;
@@ -1463,22 +1463,28 @@
               item.selectedSize === selectedSize
             ) {
               item.quantity += quantity;
+              // Update total and price in case price has changed
+              item.price = product.salePrice > 0 ? product.salePrice : product.basePrice;
+              item.total = item.price * item.quantity;
               found = true;
               break;
             }
           }
           if (!found) {
+            const price = product.salePrice > 0 ? product.salePrice : product.basePrice;
+            const total = price * quantity;
             guestCart.push({
               productId: product._id,
-              name: product.name,
-              image: product.images && product.images[0],
-              price: product.salePrice > 0 ? product.salePrice : product.basePrice,
-              quantity,
-              selectedColor,
-              selectedSize
+              productName: product.name,
+              productImage: product.images && product.images[0],
+              price: price,
+              quantity: quantity,
+              selectedColor: selectedColor,
+              selectedSize: selectedSize,
+              total: total
             });
           }
-          localStorage.setItem('guestCart', JSON.stringify(guestCart));
+          localStorage.setItem('cart', JSON.stringify(guestCart));
           updateCartCount(guestCart.reduce((sum, item) => sum + item.quantity, 0));
           showToast('Product added to cart', 'success');
         }
@@ -1501,8 +1507,8 @@
           }
           guestWishlist.push({
             productId: product._id,
-            name: product.name,
-            image: product.images && product.images[0],
+            productName: product.name,
+            productImage: product.images && product.images[0],
             selectedColor,
             selectedSize
           });
@@ -1537,8 +1543,6 @@
         }
       });
     </script>
-
-
 
     <section class="rare-hero">
       <% if (Array.isArray(bannerThree) && bannerThree.length) { %>
