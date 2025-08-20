@@ -34,7 +34,413 @@
   <link rel="stylesheet" href="css/style.css" type="text/css">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+        <style>
+                .icon-container {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .icon {
+            position: relative;
+            width: 20px;
+            height:20px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .icon:hover {
+            transform: scale(1.1);
+        }
+
+        .icon-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #3B1D58;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            border: 2px solid #f5f5f5;
+        }
+
+        .icon:nth-child(2) .badge {
+            background: #ef4444;
+        }
+
+        .icon:nth-child(3) .badge {
+            background: #3B1D58;
+        }
+
+        :root {
+            --primary-color: #001F3F;
+            --primary-hover: #001F3F;
+            --text-color: #1f2937;
+            --light-text: #6b7280;
+            --border-color: #e5e7eb;
+            --bg-color: #f9fafb;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --radius: 0.5rem;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Main Content */
+        .page-content {
+            padding: 2rem 0;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .title-sub {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* Layout */
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 992px) {
+            .checkout-layout {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        /* Address Selection */
+        .address-selection {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .address-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .address-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .address-card:hover {
+            border-color: var(--primary-color);
+        }
+
+        .address-card.selected {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        .address-card h5 {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .address-card p {
+            margin-bottom: 0.25rem;
+            color: var(--light-text);
+            font-size: 0.875rem;
+        }
+
+        .address-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+
+        .use-address-btn {
+            margin-top: 0.75rem;
+            background: none;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .use-address-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .checkbox-input {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 1rem;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        .order-table th,
+        .order-table td {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .order-table th {
+            font-weight: 600;
+        }
+
+        .order-table tfoot th {
+            font-weight: 700;
+        }
+
+        .order-table tfoot tr:last-child th,
+        .order-table tfoot tr:last-child td {
+            border-bottom: none;
+            font-size: 1.125rem;
+        }
+
+        .product-name {
+            font-weight: 500;
+        }
+
+        .product-name small {
+            color: var(--light-text);
+            font-size: 0.875rem;
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            margin-top: 1.5rem;
+        }
+
+        .payment-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+
+        .payment-header {
+            padding: 1rem;
+            background-color: var(--bg-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payment-header:hover {
+            background-color: #f3f4f6;
+        }
+
+        .payment-body {
+            padding: 1rem;
+            display: none;
+        }
+
+        .payment-body.expanded {
+            display: block;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 10px 5px;
+            border-radius: var(--radius);
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        /* Coupon Section */
+        .coupon-toggle {
+            margin-bottom: 1rem;
+        }
+
+        .coupon-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .input-wrapper-inline {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background-color: #ecfdf5;
+            color: var(--success-color);
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background-color: #fef2f2;
+            color: var(--error-color);
+            border: 1px solid #fecaca;
+        }
+
+        /* Utility Classes */
+        .mt-1 {
+            margin-top: 0.25rem;
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-3 {
+            margin-top: 0.75rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .mt-5 {
+            margin-top: 1.5rem;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.25rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 0.75rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-5 {
+            margin-bottom: 1.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
  <style>
         :root {
             --theme-color: #001F3F;
@@ -212,219 +618,363 @@
     </style>
 </head>
 <body>
-    <div class="page-wrapper">
-        <header class="header">
-            <div class="header-top">
-                <div class="container">
-                    <div class="header-left">
-                        <p class="welcome-msg">Welcome to Hofmaan Store! Offers Available</p>
-                    </div>
-                    <div class="header-right">
-                        <span class="divider d-lg-show"></span>
-                        <a href="/store" class="d-lg-show">Store</a>
-                        <a href="/about" class="d-lg-show">About Us</a>
-                        <a href="/contact" class="d-lg-show">Contact Us</a>
-                        <% if (user) { %>
-                            <a href="/profile" class="d-lg-show"><i class="w-icon-account"></i>Profile</a>
-                            <span class="delimiter d-lg-show">/</span>
-                            <a href="/orders" class="ml-0 d-lg-show">My Orders</a>
-                        <% } else { %>
-                            <a href="/auth/login" class="d-lg-show"><i class="w-icon-account"></i>Sign In</a>
-                            <span class="delimiter d-lg-show">/</span>
-                            <a href="/auth/login" class="ml-0 d-lg-show">Register</a>
+
+   <div class="header-mobile header_sticky">
+    <div class="container d-flex align-items-center h-100">
+      <a class="mobile-nav-activator d-block position-relative"  href="#">
+        <img style="height: 30px; width: 30px;" class="menu-icn nav-icon" src="/images/menu.png" alt="">
+        <div class="btn-close-lg position-absolute top-0 start-0 w-100 cls-btn"></div>
+      </a>
+
+      <div class="logo">
+        <a href="/">
+          <img src="images/stayrare/logo.png" alt="stayrare" class="logo__image d-block">
+        </a>
+      </div><!-- /.logo -->
+
+      <a href="/cart" class="header-tools__item header-tools__cart " >
+           <div class="icon">
+            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <div class="badge">3</div>
+        </div>
+      </a>
+    </div><!-- /.container -->
+
+    <nav class="header-mobile__navigation navigation d-flex flex-column w-100 position-absolute top-100 bg-body overflow-auto">
+ 
+
+      <div class="container">
+        <div class="overflow-hidden">
+          <ul class="navigation__list list-unstyled position-relative">
+            <li class="navigation__item">
+              <a href="/" class="navigation__link js-nav-right d-flex align-items-center">Home</a>
+       
+            </li>
+            <li class="navigation__item">
+              <a style="display: flex; justify-content: space-between!important;" href="#" class="navigation__link js-nav-right d-flex align-items-center justify-between">Store <span><i class="ri-arrow-right-s-line"></i></span></a>
+              <div class="sub-menu position-absolute top-0 start-100 w-100 d-none">
+                <a href="#" class="navigation__link js-nav-left d-flex align-items-center border-bottom mb-3"><i class="ri-arrow-left-s-line"></i>Store</a>
+              <div class="sub-menu__wrapper">
+                  <% if (typeof categories !== 'undefined' && categories.length) { %>
+                    <% categories.forEach(function(category) { %>
+                      <a href="/store?category=<%= category._id %>" class="navigation__link js-nav-right d-flex align-items-center">
+                        <%= category.name %>
+                        <% if (category.activeSubCategories && category.activeSubCategories.length) { %>
+                          <svg class="ms-auto" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
+                            <use href="#icon_next_sm" />
+                          </svg>
                         <% } %>
-                    </div>
-                </div>
-            </div>
-            <!-- End of Header Top -->
-            <div class="header-middle sticky-content fix-top sticky-header border-no">
-                <div class="container">
-                    <div class="header-left mr-md-4">
-                        <a href="#" class="mobile-menu-toggle  w-icon-hamburger"></a>
-                        <a href="/" class="logo">
-                            <img src="/images/logo.png" alt="logo" width="200">
-                        </a>                      
-                    </div>
-                    <div class="header-right ml-4">
-                        <div class="header-call d-xs-show d-lg-flex align-items-center">
-                            <a href="tel:+919400947122" class="w-icon-call"></a>
-                            <div class="call-info d-lg-show">
-                                <h4 class="chat font-size-md text-normal ls-normal text-white mb-0">
-                                    <a href="tel:+919400947122"
-                                        class="text-capitalize text-primary font-weight-normal">Customer care</a>
-                                </h4>
-                                <a href="tel:+919400947122" class="phone-number font-weight-bolder ls-50">+91 9400947122</a>
-                            </div>
+                      </a>
+                      <% if (category.activeSubCategories && category.activeSubCategories.length) { %>
+                        <div class="sub-menu__wrapper position-absolute top-0 start-100 w-100 d-none">
+                          <a href="/store?category=<%= category._id %>" class="navigation__link js-nav-left d-flex align-items-center border-bottom mb-2">
+                            <svg class="me-2" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
+                              <use href="#icon_prev_sm" />
+                            </svg>
+                            <%= category.name %>
+                          </a>
+                          <ul class="sub-menu__list list-unstyled">
+                            <% category.activeSubCategories.forEach(function(subcat) { %>
+                              <li class="sub-menu__item">
+                                <a href="/store?category=<%= category._id %>&subcategory=<%= subcat._id %>" class="menu-link menu-link_us-s">
+                                  <%= subcat.name %>
+                                </a>
+                              </li>
+                            <% }); %>
+                          </ul>
                         </div>
-                        <a class="wishlist label-down link d-xs-show" href="/wishlist">
-                            <i class="w-icon-heart"></i>
-                            <span class="wishlist-label d-lg-show">Wishlist</span>
-                        </a>                     
-                        <div class="dropdown cart-dropdown cart-offcanvas mr-0 mr-lg-2">
-                            <div class="cart-overlay"></div>
-                            <a href="/cart" class=" label-down link">
-                                <i class="w-icon-cart">
-                                    <span class="cart-count text-white">+</span>
-                                </i>
-                                <span class="cart-label">Cart</span>
-                            </a>
-                         
-                            <!-- End of Dropdown Box -->
-                        </div>
-                    </div>
+                      <% } %>
+                    <% }); %>
+                  <% } else { %>
+                    <span class="menu-link menu-link_us-s text-muted">No categories</span>
+                  <% } %>
                 </div>
-            </div>
-            <!-- End of Header Middle -->
-        </header>
-<div class="terms-conditions-wrapper">
-        <div class="terms-conditions-title">
-            <h1 class="terms-conditions-main-heading">Cancellation and Refund</h1>
-           
-         
-        </div>
+              </div>
+            </li>
+      
+                     <li class="navigation__item">
+              <a href="/about" class="navigation__link">About</a>
+            </li>
+                </li>
+                     <li class="navigation__item">
+              <a href="/blogs" class="navigation__link">blogs</a>
+            </li>
 
-        <div class="terms-conditions-section">
-
-            <p class="terms-conditions-text">
-                At Hofmaan, we understand that circumstances may change after placing an order. We have established clear cancellation and refund policies to ensure fair treatment for all customers while maintaining the quality and integrity of our premium leather goods business.
-            </p>
-            <div class="terms-conditions-highlight-box">
-                <p class="terms-conditions-text">
-                    These cancellation and refund terms constitute a legally binding agreement between you and Hofmaan. Your purchase from us indicates your acceptance of these policies and any future modifications to our refund procedures.
-                </p>
-            </div>
-        </div>
-
-        <div class="terms-conditions-section">
-            <h2 class="terms-conditions-section-title">Order Cancellation Policy</h2>
-            <h3 class="terms-conditions-subsection-title">Cancellation Timeframe</h3>
-            <p class="terms-conditions-text">
-                Orders can be cancelled free of charge within specific timeframes depending on the order status and product type. Once an order enters production or has been shipped, cancellation options become limited and may incur fees.
-            </p>
-            <ul class="terms-conditions-list">
-                <li class="terms-conditions-list-item">Standard orders: Cancel within 2 hours of purchase</li>
-                <li class="terms-conditions-list-item">Express orders: Cancel within 1 hour of purchase</li>
-                <li class="terms-conditions-list-item">Bulk orders: Cancel within 4 hours of purchase</li>
-            </ul>
-
-            <h3 class="terms-conditions-subsection-title">Cancellation Process</h3>
-            <p class="terms-conditions-text">
-                To cancel an order, contact our customer service team immediately with your order number and cancellation reason. Cancellations must be requested through official channels and confirmed in writing via email.
-            </p>
-        </div>
-
-        <div class="terms-conditions-section">
-            <h2 class="terms-conditions-section-title">Refund Eligibility and Conditions</h2>
-            <h3 class="terms-conditions-subsection-title">Refund Qualification</h3>
-            <p class="terms-conditions-text">
-                Refunds are available for eligible items returned within the specified timeframe and meeting our refund conditions. All refund requests are subject to inspection and approval by our quality control team.
-            </p>
-
-            <h3 class="terms-conditions-subsection-title">Refund Processing Time</h3>
-            <p class="terms-conditions-text">
-                Once your refund request is approved, processing times vary by payment method. Refunds are issued to the original payment method used for the purchase unless otherwise specified and agreed upon.
-            </p>
-
-            <h3 class="terms-conditions-subsection-title">Refund Amount Calculation</h3>
-            <p class="terms-conditions-text">
-                Refund amounts may vary based on the condition of returned items, time elapsed since purchase, and applicable restocking fees. Original shipping costs are generally non-refundable unless the return is due to our error.
-            </p>
-        </div>
-
-        <div class="terms-conditions-section">
-            <h2 class="terms-conditions-section-title">Return and Refund Process</h2>
-            <p class="terms-conditions-text">
-                Our return and refund process is designed to be straightforward while ensuring product quality standards. All returns must be authorized in advance and follow our specified procedures to qualify for refunds.
-            </p>
-            <ul class="terms-conditions-list">
-                <li class="terms-conditions-list-item">7-day return window for all items</li>
-                <li class="terms-conditions-list-item">Items must be in original, unused condition</li>
-            </ul>
-        </div>
-
-        <div class="terms-conditions-section">
-            <h2 class="terms-conditions-section-title">Non-Refundable Items and Exceptions</h2>
-            <div class="terms-conditions-warning-box">
-                <p class="terms-conditions-text">
-                    <strong>Important:</strong> Certain items are non-refundable due to hygiene, customization, or quality reasons. Please review this list carefully before making your purchase to avoid disappointment.
-                </p>
-            </div>
-
-            <h3 class="terms-conditions-subsection-title">Excluded Items</h3>
-            <p class="terms-conditions-text">
-                The following items cannot be returned or refunded under normal circumstances. Exceptions may be made for manufacturing defects or shipping damage reported within 48 hours of delivery.
-            </p>
-            <ul class="terms-conditions-list">
-                <li class="terms-conditions-list-item">Items showing signs of wear or use</li>
-                <li class="terms-conditions-list-item">Products without original tags or packaging</li>
-                <li class="terms-conditions-list-item">Final sale or clearance items</li>
-            </ul>
-
-            <h3 class="terms-conditions-subsection-title">Defective Item Policy</h3>
-            <p class="terms-conditions-text">
-                If you receive a defective or damaged item, we offer full refunds or exchanges within 7 days of delivery. Manufacturing defects are covered under our quality guarantee and do not require return shipping fees.
-            </p>
-        </div>
-
-        <div class="terms-conditions-section">
-            <h2 class="terms-conditions-section-title">Refund Methods and Processing</h2>
-            <h3 class="terms-conditions-subsection-title">Payment Method Refunds</h3>
-            <p class="terms-conditions-text">
-                Refunds are processed back to the original payment method whenever possible. Credit card refunds typically appear within 3-5 business days, while bank transfers may take 5-10 business days depending on your financial institution.
-            </p>
-
-            <h3 class="terms-conditions-subsection-title">Alternative Refund Options</h3>
-            <p class="terms-conditions-text">
-                In cases where the original payment method is no longer available, we may offer alternative refund methods such as store credit, gift cards, or bank transfers after proper verification of ownership.
-            </p>
-        </div>
+       
 
 
-        <div class="terms-conditions-section">
-            <h2 class="terms-conditions-section-title">Refund Request Procedures</h2>
-            <p class="terms-conditions-text">
-                To ensure smooth processing of your refund request, please follow these steps carefully. Failure to follow proper procedures may result in delays or denial of your refund request.
-            </p>
-            <ol class="terms-conditions-numbered-list">
-                <li class="terms-conditions-numbered-item">Contact customer service within the eligible return window</li>
-                <li class="terms-conditions-numbered-item">Provide order number and reason for return</li>
-                <li class="terms-conditions-numbered-item">Receive return authorization and shipping instructions</li>
-                <li class="terms-conditions-numbered-item">Package items securely in original packaging</li>
-                <li class="terms-conditions-numbered-item">Ship items using provided return label</li>
-            </ol>
-        </div>
-
-        <div class="terms-conditions-section">
-            <h2 class="terms-conditions-section-title">Refund Policy Updates</h2>
-            <p class="terms-conditions-text">
-                We reserve the right to modify our cancellation and refund policies at any time. Changes will be effective immediately upon posting on our website. Your continued purchases after modifications constitute acceptance of updated refund terms.
-            </p>
-        </div>
-
-        <div class="terms-conditions-section">
-            <h2 class="terms-conditions-section-title">Dispute Resolution</h2>
-            <p class="terms-conditions-text">
-                These cancellation and refund terms are governed by applicable consumer protection laws. Any disputes related to cancellations or refunds shall be resolved through our customer service team or binding arbitration as outlined in our main terms.
-            </p>
-        </div>
-
-        <div class="terms-conditions-section">
-            <h2 class="terms-conditions-section-title">Customer Support for Refunds</h2>
-            <p class="terms-conditions-text">
-                Our dedicated refund support team is available to assist with cancellation requests, return procedures, and refund status inquiries. We strive to process all refund requests fairly and efficiently while maintaining clear communication throughout the process.
-            </p>
-        </div>
 
    
 
-        <div class="terms-conditions-footer-note">
-            <p class="terms-conditions-footer-text">
-                These Cancellation and Refund Terms are effective as of the date stated above and govern all cancellation and refund procedures for Hofmaan products and services.
+            <li class="navigation__item">
+              <a href="/contact" class="navigation__link">Contact</a>
+            </li>
+      
+          </ul><!-- /.navigation__list -->
+        </div><!-- /.overflow-hidden -->
+      </div><!-- /.container -->
+
+      <div class="border-top mt-auto pb-2">
+        <a href="">
+          <a href="<%= user ? '/account' : '/auth/login' %>">
+            <div class="customer-links container  mt-4 mb-2 pb-1">
+              <svg class="d-inline-block align-middle" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <use href="#icon_user" />
+              </svg>
+              <span class="d-inline-block ms-2 text-uppercase align-middle fw-medium">My Account</span>
+            </div>
+          </a>
+
+
+
+
+
+          <ul class="container social-links d-flex justify-content-around list-unstyled d-flex flex-wrap mb-0">
+               <li>
+              <a href="https://www.facebook.com/" class="footer__social-link d-block">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+<g fill="black" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M17.525,9h-3.525v-2c0,-1.032 0.084,-1.682 1.563,-1.682h1.868v-3.18c-0.909,-0.094 -1.823,-0.14 -2.738,-0.138c-2.713,0 -4.693,1.657 -4.693,4.699v2.301h-3v4l3,-0.001v9.001h4v-9.003l3.066,-0.001z"></path></g></g>
+</svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.twitter.com/" class="footer__social-link d-block">
+                <svg class="svg-icon svg-icon_x" width="14" height="13" viewBox="0 0 1200 1227" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <path d="M 880 0 L 585 455 L 290 0 H 0 L 425 623 L 0 1227 H 290 L 585 772 L 880 1227 H 1170 L 745 623 L 1170 0 Z"/>
+</svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.instagram.com/" class="footer__social-link d-block">
+               <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+<g fill="black" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M8,3c-2.757,0 -5,2.243 -5,5v8c0,2.757 2.243,5 5,5h8c2.757,0 5,-2.243 5,-5v-8c0,-2.757 -2.243,-5 -5,-5zM8,5h8c1.654,0 3,1.346 3,3v8c0,1.654 -1.346,3 -3,3h-8c-1.654,0 -3,-1.346 -3,-3v-8c0,-1.654 1.346,-3 3,-3zM17,6c-0.55228,0 -1,0.44772 -1,1c0,0.55228 0.44772,1 1,1c0.55228,0 1,-0.44772 1,-1c0,-0.55228 -0.44772,-1 -1,-1zM12,7c-2.757,0 -5,2.243 -5,5c0,2.757 2.243,5 5,5c2.757,0 5,-2.243 5,-5c0,-2.757 -2.243,-5 -5,-5zM12,9c1.654,0 3,1.346 3,3c0,1.654 -1.346,3 -3,3c-1.654,0 -3,-1.346 -3,-3c0,-1.654 1.346,-3 3,-3z"></path></g></g>
+</svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.youtube.com/" class="footer__social-link d-block">
+                <svg class="svg-icon svg-icon_youtube" width="16" height="11" viewBox="0 0 16 11" xmlns="http://www.w3.org/2000/svg"><path d="M15.0117 1.8584C14.8477 1.20215 14.3281 0.682617 13.6992 0.518555C12.5234 0.19043 7.875 0.19043 7.875 0.19043C7.875 0.19043 3.19922 0.19043 2.02344 0.518555C1.39453 0.682617 0.875 1.20215 0.710938 1.8584C0.382812 3.00684 0.382812 5.46777 0.382812 5.46777C0.382812 5.46777 0.382812 7.90137 0.710938 9.07715C0.875 9.7334 1.39453 10.2256 2.02344 10.3896C3.19922 10.6904 7.875 10.6904 7.875 10.6904C7.875 10.6904 12.5234 10.6904 13.6992 10.3896C14.3281 10.2256 14.8477 9.7334 15.0117 9.07715C15.3398 7.90137 15.3398 5.46777 15.3398 5.46777C15.3398 5.46777 15.3398 3.00684 15.0117 1.8584ZM6.34375 7.68262V3.25293L10.2266 5.46777L6.34375 7.68262Z"/></svg>
+              </a>
+            </li>
+          </ul>
+      </div>
+    </nav><!-- /.navigation -->
+  </div><!-- /.header-mobile -->
+        <!-- Start of Header -->
+  <header id="header" class="header header-fullwidth header-transparent-bg">
+
+    <div class="header-desk header-desk_type_2">
+      <nav class="navigation d-flex">
+
+
+        <ul class="navigation__list list-unstyled d-flex">
+          <li class="navigation__item">
+            <a href="/" class="navigation__link">Home</a>
+      
+          </li>
+                  <li class="navigation__item">
+            <a href="/store" class="navigation__link">Store</a>
+      <ul class="default-menu list-unstyled">
+              <% if (typeof categories !== 'undefined' && categories.length) { %>
+                <% categories.forEach(function(category) { %>
+                  <li class="sub-menu__item position-relative">
+                    <a href="/store?category=<%= category._id %>" class="menu-link menu-link_us-s">
+                      <%= category.name %>
+                    </a>
+                    <% if (category.activeSubCategories && category.activeSubCategories.length) { %>
+                      <ul class="sub-menu list-unstyled position-absolute start-100 top-0 ms-2">
+                        <% category.activeSubCategories.forEach(function(subcat) { %>
+                          <li>
+                            <a href="/store?category=<%= category._id %>&subcategory=<%= subcat._id %>" class="menu-link menu-link_us-s">
+                              <%= subcat.name %>
+                            </a>
+                          </li>
+                        <% }); %>
+                      </ul>
+                    <% } %>
+                  </li>
+                <% }); %>
+              <% } else { %>
+                <li class="sub-menu__item"><span class="menu-link menu-link_us-s text-muted">No categories</span></li>
+              <% } %>
+            </ul><!-- /.box-menu -->
+          </li>
+           <li class="navigation__item">
+            <a href="/about" class="navigation__link">About</a>
+          </li>
+     
+ 
+     
+               <li class="navigation__item">
+            <a href="/blogs" class="navigation__link">Blog</a>
+    
+          </li>
+          <li class="navigation__item">
+            <a href="/contact" class="navigation__link">Contact</a>
+          </li>
+        </ul><!-- /.navigation__list -->
+      </nav><!-- /.navigation -->
+
+      <div class="logo">
+        <a href="/">
+          <img style="top: 50%;" src="images/stayrare/logo.png" alt="Stayrare" class="logo__image d-block">
+        </a>
+      </div><!-- /.logo -->
+
+      <div class="header-tools d-flex align-items-center">
+     
+
+      <div class="header-tools__item hover-container">
+          <a class="" href="<%= user ? '/account' : '/auth/login' %>" data-aside="customerForms">
+              <div class="icon">
+            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+   
+        </div>
+          </a>
+        </div>
+
+        <a class="header-tools__item" href="/wishlist">
+             <div class="icon">
+            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+         
+        </div>
+        </a>
+
+        <a href="/cart" class="header-tools__item header-tools__cart " >
+     <div class="icon">
+            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <div class="badge">3</div>
+        </div>
+          
+        </a>
+      </div><!-- /.header__tools -->
+    </div><!-- /.header-desk header-desk_type_2 -->
+  </header>
+<div class="terms-conditions-wrapper">
+    <div class="terms-conditions-title">
+        <h1 class="terms-conditions-main-heading">Cancellation and Refund Policy</h1>
+    </div>
+
+    <div class="terms-conditions-section">
+        <p class="terms-conditions-text">
+            At Stayrare, we value our customers and strive to provide a smooth and transparent shopping experience. 
+            We understand that sometimes plans change, so we have outlined clear cancellation and refund policies to ensure fairness while protecting the integrity of our premium products.
+        </p>
+        <div class="terms-conditions-highlight-box">
+            <p class="terms-conditions-text">
+                By placing an order with Stayrare, you agree to the following cancellation and refund terms. 
+                These terms may be updated from time to time, and continued purchases indicate your acceptance of any changes.
             </p>
         </div>
     </div>
 
-  <footer class="footer footer_type_2 dark">
+    <div class="terms-conditions-section">
+        <h2 class="terms-conditions-section-title">Order Cancellation Policy</h2>
+        <h3 class="terms-conditions-subsection-title">Cancellation Timeframe</h3>
+        <p class="terms-conditions-text">
+            Orders can be cancelled within a limited timeframe after purchase. Once processing begins, cancellation may not be possible. 
+            Please review the guidelines below:
+        </p>
+        <ul class="terms-conditions-list">
+            <li class="terms-conditions-list-item">Standard orders: Cancel within 2 hours of purchase</li>
+            <li class="terms-conditions-list-item">Express orders: Cancel within 1 hour of purchase</li>
+            <li class="terms-conditions-list-item">Bulk or customized orders: Cancel within 4 hours of purchase</li>
+        </ul>
+
+        <h3 class="terms-conditions-subsection-title">Cancellation Process</h3>
+        <p class="terms-conditions-text">
+            To request a cancellation, please contact our support team immediately at <strong>support@stayrare.com</strong> 
+            with your order number and cancellation reason. Cancellations are valid only after written confirmation.
+        </p>
+    </div>
+
+    <div class="terms-conditions-section">
+        <h2 class="terms-conditions-section-title">Refund Eligibility</h2>
+        <p class="terms-conditions-text">
+            Refunds are available for eligible returns made within our return window, subject to inspection and approval. 
+            Returned items must meet the conditions listed below:
+        </p>
+        <ul class="terms-conditions-list">
+            <li class="terms-conditions-list-item">Items must be unused, unwashed, and in original condition</li>
+            <li class="terms-conditions-list-item">All tags, labels, and packaging must be intact</li>
+            <li class="terms-conditions-list-item">Return must be requested within 7 days of delivery</li>
+        </ul>
+    </div>
+
+    <div class="terms-conditions-section">
+        <h2 class="terms-conditions-section-title">Refund Process</h2>
+        <p class="terms-conditions-text">
+            Once your return is received and inspected, we will notify you of the approval or rejection of your refund. 
+            Approved refunds will be processed within 5–7 business days. The amount will be credited back to the original payment method.
+        </p>
+        <ul class="terms-conditions-list">
+            <li class="terms-conditions-list-item">Credit/Debit card refunds: 3–5 business days</li>
+            <li class="terms-conditions-list-item">Bank transfer refunds: 5–10 business days</li>
+            <li class="terms-conditions-list-item">Store credit option available upon request</li>
+        </ul>
+    </div>
+
+    <div class="terms-conditions-section">
+        <h2 class="terms-conditions-section-title">Non-Refundable Items</h2>
+        <div class="terms-conditions-warning-box">
+            <p class="terms-conditions-text">
+                <strong>Note:</strong> Certain products cannot be refunded or returned due to hygiene and customization reasons.
+            </p>
+        </div>
+        <ul class="terms-conditions-list">
+            <li class="terms-conditions-list-item">Customized or personalized items</li>
+            <li class="terms-conditions-list-item">Sale or clearance items</li>
+            <li class="terms-conditions-list-item">Accessories such as earrings, masks, or undergarments</li>
+        </ul>
+    </div>
+
+    <div class="terms-conditions-section">
+        <h2 class="terms-conditions-section-title">Defective or Damaged Products</h2>
+        <p class="terms-conditions-text">
+            If you receive a defective or damaged product, please notify us within 48 hours of delivery with photos of the issue. 
+            Stayrare will arrange for a replacement or full refund, including shipping costs, where applicable.
+        </p>
+    </div>
+
+    <div class="terms-conditions-section">
+        <h2 class="terms-conditions-section-title">Policy Updates</h2>
+        <p class="terms-conditions-text">
+            Stayrare reserves the right to modify this cancellation and refund policy at any time. 
+            Updates will be posted on this page, and continued purchases will be considered as acceptance of the revised terms.
+        </p>
+    </div>
+
+    <div class="terms-conditions-section">
+        <h2 class="terms-conditions-section-title">Customer Support</h2>
+        <p class="terms-conditions-text">
+            For questions or assistance with cancellations and refunds, please contact our support team at 
+            <strong>support@stayrare.com</strong>. We are here to help and ensure your experience with Stayrare remains exceptional.
+        </p>
+    </div>
+
+    <div class="terms-conditions-footer-note">
+        <p class="terms-conditions-footer-text">
+            This Cancellation and Refund Policy is effective as of the date stated above and applies to all Stayrare customers.
+        </p>
+    </div>
+</div>
+
+
+   <footer class="footer footer_type_2 dark">
 
 
     <div class="footer-middle container">
@@ -454,7 +1004,7 @@
           <ul class="sub-menu__list list-unstyled">
             <li class="sub-menu__item"><a href="/" class="menu-link menu-link_us-s">Home</a></li>
             <li class="sub-menu__item"><a href="/about" class="menu-link menu-link_us-s">About Us</a></li>
-            <li class="sub-menu__item"><a href="/wishlict" class="menu-link menu-link_us-s"></a>Wishlist</li>
+            <li class="sub-menu__item"><a href="/wishlist" class="menu-link menu-link_us-s"></a>Wishlist</li>
             <li class="sub-menu__item"><a href="/blogs" class="menu-link menu-link_us-s">Blogs</a></li>
             <li class="sub-menu__item"><a href="/contact" class="menu-link menu-link_us-s">Contact Us</a></li>
           </ul>
@@ -492,7 +1042,9 @@
                  <ul class="social-links list-unstyled d-flex flex-wrap mb-0 mt-3">
             <li>
               <a href="https://www.facebook.com/" class="footer__social-link d-block">
-                <svg class="svg-icon svg-icon_facebook" width="9" height="15" viewBox="0 0 9 15" xmlns="http://www.w3.org/2000/svg"><use href="#icon_facebook" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+<g fill="#fffcfc" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M17.525,9h-3.525v-2c0,-1.032 0.084,-1.682 1.563,-1.682h1.868v-3.18c-0.909,-0.094 -1.823,-0.14 -2.738,-0.138c-2.713,0 -4.693,1.657 -4.693,4.699v2.301h-3v4l3,-0.001v9.001h4v-9.003l3.066,-0.001z"></path></g></g>
+</svg>
               </a>
             </li>
             <li>
@@ -504,7 +1056,9 @@
             </li>
             <li>
               <a href="https://www.instagram.com/" class="footer__social-link d-block">
-                <svg class="svg-icon svg-icon_instagram" width="14" height="13" viewBox="0 0 14 13" xmlns="http://www.w3.org/2000/svg"><use href="#icon_instagram" /></svg>
+               <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+<g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M8,3c-2.757,0 -5,2.243 -5,5v8c0,2.757 2.243,5 5,5h8c2.757,0 5,-2.243 5,-5v-8c0,-2.757 -2.243,-5 -5,-5zM8,5h8c1.654,0 3,1.346 3,3v8c0,1.654 -1.346,3 -3,3h-8c-1.654,0 -3,-1.346 -3,-3v-8c0,-1.654 1.346,-3 3,-3zM17,6c-0.55228,0 -1,0.44772 -1,1c0,0.55228 0.44772,1 1,1c0.55228,0 1,-0.44772 1,-1c0,-0.55228 -0.44772,-1 -1,-1zM12,7c-2.757,0 -5,2.243 -5,5c0,2.757 2.243,5 5,5c2.757,0 5,-2.243 5,-5c0,-2.757 -2.243,-5 -5,-5zM12,9c1.654,0 3,1.346 3,3c0,1.654 -1.346,3 -3,3c-1.654,0 -3,-1.346 -3,-3c0,-1.654 1.346,-3 3,-3z"></path></g></g>
+</svg>
               </a>
             </li>
             <li>
@@ -529,21 +1083,21 @@
       </div><!-- /.container d-flex align-items-center -->
     </div><!-- /.footer-bottom container -->
   </footer>
+  <!-- End Footer Type 1 -->
 
-    </div>
-
+  <!-- Mobile Fixed Footer -->
   <footer class="footer-mobile container w-100 px-5 d-md-none bg-body">
     <div class="row text-center">
       <div class="col-3">
         <a href="/" class="footer-mobile__link d-flex flex-column align-items-center">
-          <svg class="d-block" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_home" /></svg>
+          <img style="width: 25px; height: 25px;" src="/images/home-icon.png" alt="stayrare">
           <span>Home</span>
         </a>
       </div><!-- /.col-3 -->
 
       <div class="col-3">
         <a href="/store" class="footer-mobile__link d-flex flex-column align-items-center">
-          <svg class="d-block" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_hanger" /></svg>
+          <img style="width: 25px; height: 25px;" src="/images/shop-icon.png" alt="stayrare">
           <span>Shop</span>
         </a>
       </div><!-- /.col-3 -->
@@ -551,18 +1105,20 @@
       <div class="col-3">
         <a href="/wishlist" class="footer-mobile__link d-flex flex-column align-items-center">
           <div class="position-relative">
-                    <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <use href="#icon_heart" />
-          </svg>
+                   <svg width="20" height="20": class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
           </div>
           <span>Wishlist</span>
         </a>
       </div><!-- /.col-3 -->
             <div class="col-3">
-        <a href="/account" class="footer-mobile__link d-flex flex-column align-items-center">
+        <a href="<%= user ? '/account' : '/auth/login' %>" class="footer-mobile__link d-flex flex-column align-items-center">
           <div class="position-relative">
-                  <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_user" /></svg>
+                            <svg width="20" height="20": class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
           </div>
           <span>Account</span>
         </a>
@@ -575,24 +1131,50 @@
 
     <!-- End of Scroll Top -->
 
-
-    
   <div id="scrollTop" class="visually-hidden end-0"></div>
-  <script src="js/plugins/jquery.min.js"></script>
-  <script src="js/plugins/bootstrap.bundle.min.js"></script>
-  <script src="js/plugins/bootstrap-slider.min.js"></script>
+    <script src="/js/main.min.js"></script>
+    <script src="/js/script.js"></script>
+     <script src="/js/plugins/jquery.min.js"></script>
+  <script src="/js/plugins/bootstrap.bundle.min.js"></script>
+  <script src="/js/plugins/bootstrap-slider.min.js"></script>
   
-  <script src="js/plugins/swiper.min.js"></script>
-  <script src="js/plugins/countdown.js"></script>
-  <script src="js/plugins/jquery.fancybox.js"></script>
+  <script src="/js/plugins/swiper.min.js"></script>
+  <script src="/js/plugins/countdown.js"></script>
+  <script src="/js/plugins/jquery.fancybox.js"></script>
 
   <!-- Footer Scripts -->
-  <script src="js/theme.js"></script>
-    <script src="/vendor/jquery/jquery.min.js"></script>
-    <script src="/vendor/jquery.count-to/jquery.count-to.min.js"></script>
-    <script src="/vendor/swiper/swiper-bundle.min.js"></script>
-    <script src="/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
-    <script src="/js/main.min.js"></script>
-          <script src="/js/script.js"></script>
+  <script src="/js/theme.js"></script>
+     <script>
+        // Fallback: If SVG doesn't render, this script will replace them with Unicode symbols
+        document.addEventListener('DOMContentLoaded', function() {
+            const icons = document.querySelectorAll('.icon-svg');
+            let allSvgsLoaded = true;
+            
+            icons.forEach(function(icon) {
+                if (icon.getBBox && icon.getBBox().width === 0) {
+                    allSvgsLoaded = false;
+                }
+            });
+            
+            if (!allSvgsLoaded) {
+                // Replace with Unicode fallbacks
+                const iconContainer = document.querySelector('.icon-container');
+                iconContainer.innerHTML = `
+                    <div class="icon">
+                        <div style="font-size: 24px; line-height: 32px; text-align: center;">👤</div>
+                        <div class="badge">5</div>
+                    </div>
+                    <div class="icon">
+                        <div style="font-size: 24px; line-height: 32px; text-align: center;">❤️</div>
+                        <div class="badge">2</div>
+                    </div>
+                    <div class="icon">
+                        <div style="font-size: 24px; line-height: 32px; text-align: center;">🛍️</div>
+                        <div class="badge">3</div>
+                    </div>
+                `;
+            }
+        });
+    </script>
 </body>
 </html>
