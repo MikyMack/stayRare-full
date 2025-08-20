@@ -19075,7 +19075,9 @@ textarea.form-control.is-invalid {
   transition: max-height .35s, height .35s;
   border-top: 1px solid #e4e4e4;
 }
-
+.mobile-sidebar-social{
+  margin-bottom: 4rem;
+}
 .mobile-menu-opened .navigation__list {
   left: 0;
   transition: all .18s ease-in;
