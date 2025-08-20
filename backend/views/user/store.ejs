@@ -960,7 +960,7 @@
         </div><!-- /.shop-acs -->
       </div><!-- /.d-flex justify-content-between -->
 
-      <div class="products-grid row row-cols-2 row-cols-md-3 row-cols-lg-4" id="products-grid">
+      <div class="products-grid row row-cols-2 row-cols-md-3 row-cols-lg-4 p-3" id="products-grid">
         <% if (Array.isArray(products) && products.length > 0) { %>
           <% products.forEach(function(product) { 
             var basePrice = product.basePrice || product.price || 0;
@@ -972,7 +972,7 @@
             var mainImg = (Array.isArray(product.images) && product.images.length > 0) ? product.images[0] : '/images/placeholder.png';
             var secondImg = (Array.isArray(product.images) && product.images.length > 1) ? product.images[1] : mainImg;
           %>
-            <div class="swiper-slide product-card" data-product-id="<%= product._id %>" style="cursor:pointer;">
+            <div class="swiper-slide product-card store-card" data-product-id="<%= product._id %>" style="cursor:pointer;">
               <div class="pc__img-wrapper position-relative">
                 <a href="/product/<%= product.slug || product._id %>" style="display:block;">
                   <% if (product.images && product.images.length > 0) { %>
@@ -995,14 +995,12 @@
                     <div class="pc__title" style="color:#fff;text-align:center;">
                       <%= product.name %>
                     </div>
-                    <% if (categoryName) { %>
-                      <span class="pc__category" style="display:block;text-align:center;"><%= categoryName %></span>
-                    <% } %>
+               
                   </div>
                 </a>
               </div>
               <a href="/product/<%= product.slug || product._id %>" style="text-decoration:none;">
-                <div class="pc__info position-relative" style="padding:4px 0;">
+                <div class="pc__info position-relative" >
                   <div class="product-card__price d-flex align-items-center" style="gap:8px;">
                     <% if (hasDiscount) { %>
                       <span class="money price-old" style="text-decoration:line-through;color:#888;">₹<%= basePrice %></span>
