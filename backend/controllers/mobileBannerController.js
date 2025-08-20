@@ -100,7 +100,7 @@ exports.toggleStatus = async (req, res) => {
     if (!banner) return res.status(404).json({ message: 'Banner not found' });
 
     const activeCount = await MainBanner.countDocuments({ isActive: true });
-    if (!banner.isActive && activeCount >= 5) {
+    if (!banner.isActive && activeCount >= 10) {
       return res.status(400).json({ message: 'Cannot activate more than 5 banners' });
     }
 

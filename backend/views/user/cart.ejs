@@ -584,10 +584,7 @@
                     renderGuestCart(getGuestCart());
                   };
                 });
-              </script>
-              <noscript>
-                <p class="text-center py-4">Please enable JavaScript to view your cart.</p>
-              </noscript>
+              </script>           
             <% } else { %>
               <p class="text-center py-4">Loading...</p>
             <% } %>
@@ -777,6 +774,8 @@
 
   <main>
     <div class="mb-4 pb-4"></div>
+    <!-- Lottie player for empty cart -->
+  
     <section class="shop-checkout container">
       <h2 class="page-title">Cart</h2>
       <div class="checkout-steps">
@@ -834,12 +833,19 @@
             </div>
             <div class="mobile_fixed-btn_wrapper">
                 <div class="button-wrapper container">
-                    <button class="btn btn-primary btn-checkout" id="checkout-btn">PROCEED TO CHECKOUT</button>
+                    <a class="btn btn-primary btn-checkout" id="checkout-btn" href="#">PROCEED TO CHECKOUT</a>
                     <button class="btn btn-secondary ml-2" id="clear-cart-btn">Clear Cart</button>
                 </div>
             </div>
           </div>
         </div>
+      </div>
+      <!-- Empty cart message and lottie, hidden by default -->
+      <div id="empty-cart-message" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding: 40px 0;">
+        <dotlottie-wc src="https://lottie.host/2b1366a9-3443-40d3-8a42-1845e01e86fe/CoOmucLNDT.lottie" style="width: 300px;height: 300px" speed="1" autoplay loop></dotlottie-wc>
+        <h4 style="margin-top: 1.5rem; font-weight: 600;">Your cart is empty!</h4>
+        <p style="color: #666; margin-bottom: 1.5rem;">Looks like you haven't added anything to your cart yet.</p>
+        <a href="/store" class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1.1rem;">Shop Now</a>
       </div>
     </section>
     <script>
@@ -882,12 +888,21 @@
           }
         });
 
-        document.getElementById('checkout-btn').addEventListener('click', function() {
-          if (!this.disabled) {
-            window.location.href = '/checkout';
-          }
-        });
+        // Set checkout button link based on user status
+        setCheckoutBtnHref();
+
+        // Also update checkout button on user status change (if needed)
       });
+
+      function setCheckoutBtnHref() {
+        const checkoutBtn = document.getElementById('checkout-btn');
+        if (!checkoutBtn) return;
+        if (user) {
+          checkoutBtn.setAttribute('href', '/checkout');
+        } else {
+          checkoutBtn.setAttribute('href', '/auth/login');
+        }
+      }
 
       async function fetchCart() {
         if (user) {
@@ -937,18 +952,24 @@
 
       function renderCart(cart, isUser) {
         const tbody = document.getElementById('cart-items-body');
+        const cartSection = document.querySelector('.shopping-cart');
+        const totalsWrapper = document.querySelector('.shopping-cart__totals-wrapper');
+        const emptyCartMsg = document.getElementById('empty-cart-message');
+        const checkoutBtn = document.getElementById('checkout-btn');
+
         tbody.innerHTML = '';
+
         if (!cart.items || cart.items.length === 0) {
-          tbody.innerHTML = `
-            <tr>
-              <td colspan="6">
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                  <span style="font-size: 1.2rem;">Your cart is empty.</span>
-                </div>
-              </td>
-            </tr>
-          `;
+          // Hide cart table and totals, show lottie and message
+          if (cartSection) cartSection.style.display = 'none';
+          if (totalsWrapper) totalsWrapper.style.display = 'none';
+          if (emptyCartMsg) emptyCartMsg.style.display = 'flex';
         } else {
+          // Show cart table and totals, hide lottie and message
+          if (cartSection) cartSection.style.display = '';
+          if (totalsWrapper) totalsWrapper.style.display = '';
+          if (emptyCartMsg) emptyCartMsg.style.display = 'none';
+
           cart.items.forEach((item, idx) => {
             if (!item || typeof item !== 'object' || Object.keys(item).length === 0) return;
             const price = (item.price !== undefined && item.price !== null) ? Number(item.price) : 0;
@@ -1004,12 +1025,14 @@
           });
         }
         document.getElementById('cart-total').textContent = formatPrice(cart.total || 0);
-        const checkoutBtn = document.getElementById('checkout-btn');
+
+        // Set checkout button link and state
+        setCheckoutBtnHref();
         if (!isUser) {
-          checkoutBtn.disabled = true;
+          checkoutBtn.classList.add('disabled');
           checkoutBtn.textContent = 'Login to Checkout';
         } else {
-          checkoutBtn.disabled = false;
+          checkoutBtn.classList.remove('disabled');
           checkoutBtn.textContent = 'PROCEED TO CHECKOUT';
         }
       }
@@ -1308,7 +1331,7 @@
 
   <!-- Footer Scripts -->
   <script src="js/theme.js"></script>
-
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
 
 
 </body>

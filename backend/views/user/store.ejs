@@ -962,383 +962,66 @@
 
       <div class="products-grid row row-cols-2 row-cols-md-3 row-cols-lg-4" id="products-grid">
         <% if (Array.isArray(products) && products.length > 0) { %>
-          <% products.forEach(function(product) {
-            var discount = 0;
-            if (product.basePrice && product.salePrice && product.salePrice < product.basePrice) {
-              discount = Math.round(((product.basePrice - product.salePrice) / product.basePrice) * 100);
-            }
-            var hasColorVariants = product.hasColorVariants && Array.isArray(product.colorVariants) && product.colorVariants.length > 0;
-            var hasSizeVariants = product.hasSizeVariants && Array.isArray(product.sizeVariants) && product.sizeVariants.length > 0;
-            var isOutOfStock = false;
-            if (!hasColorVariants && !hasSizeVariants) {
-              isOutOfStock = (typeof product.stock === 'number' && product.stock === 0);
-            } else if (hasColorVariants && !hasSizeVariants) {
-              isOutOfStock = product.colorVariants.every(function(variant) { return variant.stock === 0; });
-            } else if (!hasColorVariants && hasSizeVariants) {
-              isOutOfStock = product.sizeVariants.every(function(variant) { return variant.stock === 0; });
-            } else if (hasColorVariants && hasSizeVariants) {
-              isOutOfStock = product.colorVariants.every(function(variant) { return variant.stock === 0; }) &&
-                             product.sizeVariants.every(function(variant) { return variant.stock === 0; });
-            }
-            var mainImg = (Array.isArray(product.images) && product.images.length > 0) ? product.images[0] : 'images/placeholder.png';
+          <% products.forEach(function(product) { 
+            var basePrice = product.basePrice || product.price || 0;
+            var offerPrice = product.offerPrice || product.salePrice || basePrice;
+            var hasDiscount = (offerPrice > 0 && offerPrice < basePrice);
+            var discount = hasDiscount ? Math.round(((basePrice - offerPrice) / basePrice) * 100) : 0;
+            var saveAmount = hasDiscount ? (basePrice - offerPrice) : 0;
+            var categoryName = (product.category && product.category.name) ? product.category.name : (product.categoryName || product.category || '');
+            var mainImg = (Array.isArray(product.images) && product.images.length > 0) ? product.images[0] : '/images/placeholder.png';
             var secondImg = (Array.isArray(product.images) && product.images.length > 1) ? product.images[1] : mainImg;
           %>
-            <div class="product-card-wrapper mb-3 mb-md-4 mb-xxl-5">
-              <div class="catchy-product-card">
-                <div class="catchy-img-hover" style="height: 340px; min-height: 320px;">
-                  <a href="/product/<%= product._id %>" style="display:block; width:100%; height:100%; position:relative;">
-                    <img loading="lazy" src="<%= mainImg %>" alt="<%= product.name %>" class="catchy-img-main" style="width:100%;height:100%;object-fit:cover;">
-                    <img loading="lazy" src="<%= secondImg %>" alt="<%= product.name %> second" class="catchy-img-second" style="width:100%;height:100%;object-fit:cover;">
-                  </a>
-                  <% if (discount > 0) { %>
-                    <span class="catchy-discount-badge">
-                      <i class="bi bi-lightning-charge-fill me-1"></i>
-                      <%= discount %>% OFF
-                    </span>
+            <div class="swiper-slide product-card store-product" data-product-id="<%= product._id %>" style="cursor:pointer;">
+              <div class="pc__img-wrapper position-relative">
+                <a href="/product/<%= product.slug || product._id %>" style="display:block;">
+                  <% if (product.images && product.images.length > 0) { %>
+                    <img loading="lazy"
+                      src="<%= product.images[0] %>"
+                      width="330" height="400" alt="<%= product.name %>" class="pc__img">
+                    <% if (product.images.length > 1) { %>
+                      <img loading="lazy" src="<%= product.images[1] %>" width="330" height="400"
+                        alt="<%= product.name %>" class="pc__img pc__img-second">
+                    <% } %>
+                  <% } else { %>
+                    <img loading="lazy"
+                      src="/images/placeholder.png"
+                      width="330" height="400" alt="<%= product.name %>" class="pc__img">
                   <% } %>
-                  <button type="button"
-                    class="catchy-wishlist-btn js-add-to-wishlist-grid"
-                    data-product-id="<%= product._id %>"
-                    title="Add to Wishlist">
-                          <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <use href="#icon_heart" />
-          </svg>
-                  </button>
-                  <% if (isOutOfStock) { %>
-                    <span class="catchy-outofstock-badge">
-                      <i class="bi bi-x-octagon me-1"></i> Out of Stock
-                    </span>
+                  <% if (hasDiscount) { %>
+                    <span class="discount-label"><%= discount %>% off</span>
                   <% } %>
-                  <div class="catchy-bottom-overlay">
-                    <span class="catchy-category">
-                      <i class="bi bi-tag-fill me-1"></i>
-                      <%= product.category && product.category.name ? product.category.name : (product.category || 'Category') %>
-                    </span>
-                    <a href="/product/<%= product._id %>" class="catchy-title text-decoration-none">
+                  <div class="pc__img-overlay-bottom p-2">
+                    <div class="pc__title" style="color:#fff;text-align:center;">
                       <%= product.name %>
-                    </a>
-                  </div>
-                </div>
-                <div class="pc__info position-relative pt-3 px-2 pb-2">
-                  <div class="product-card__price d-flex align-items-center mb-2 ">
-                    <% if (product.basePrice && product.salePrice && product.salePrice < product.basePrice) { %>
-                      <span class="money price-old" style="color:#888;text-decoration:line-through;">₹<%= product.basePrice %></span>
-                      <span class="money price ms-2" style="color:#3B1D58;font-weight:700;">₹<%= product.salePrice %></span>
-                    <% } else { %>
-                      <span class="money price" style="color:#222;font-weight:700;">₹<%= product.basePrice %></span>
-                    <% } %>
-                  </div>
-                  <div>
-                    <% if (hasColorVariants) { %>
-                      <div class="variant-group mb-1" data-variant-name="Color">
-                        <div class="variant-label fw-bold" style="font-size:0.95em;">Color:</div>
-                        <div class="variant-options d-flex flex-wrap">
-                          <% product.colorVariants.forEach(function(variant) { %>
-                            <button type="button"
-                              class="variant-option-btn btn btn-sm border me-1 mb-1 px-2 py-1"
-                              data-variant-name="Color"
-                              data-variant-value="<%= variant.color %>"
-                              <%= variant.stock <= 0 ? 'disabled' : '' %>
-                              title="<%= variant.color %>">
-                              <span class="variant-color-dot d-inline-block me-1" style="width:16px;height:16px;border-radius:50%;background:<%= variant.color %>;border:1px solid #ccc;vertical-align:middle;"></span>
-                              <%= variant.color %>
-                              <% if (variant.stock <= 0) { %>
-                                <span style="font-size:0.8em;color:#c00;"> (Out of stock)</span>
-                              <% } %>
-                            </button>
-                          <% }) %>
-                        </div>
-                      </div>
-                    <% } %>
-                    <% if (hasSizeVariants) { %>
-                      <div class="variant-group mb-1" data-variant-name="Size">
-                        <div class="variant-label fw-bold" style="font-size:0.95em;">Size:</div>
-                        <div class="variant-options d-flex flex-wrap">
-                          <% product.sizeVariants.forEach(function(variant) { %>
-                            <button type="button"
-                              class="variant-option-btn btn btn-sm border me-1 mb-1 px-2 py-1"
-                              data-variant-name="Size"
-                              data-variant-value="<%= variant.size %>"
-                              <%= variant.stock <= 0 ? 'disabled' : '' %>
-                              title="<%= variant.size %>">
-                              <%= variant.size %>
-                              <% if (variant.stock <= 0) { %>
-                                <span style="font-size:0.8em;color:#c00;"> (Out of stock)</span>
-                              <% } %>
-                            </button>
-                          <% }) %>
-                        </div>
-                      </div>
-                    <% } %>
-                    <div class="d-flex align-items-center mt-2">
-                      <button type="button"
-                        class="btn btn-primary btn-sm flex-grow-1 me-2 js-add-to-cart-grid"
-                        data-product-id="<%= product._id %>"
-                        <%= isOutOfStock ? 'disabled' : '' %>
-                        >
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                      </button>
                     </div>
+                    <% if (categoryName) { %>
+                      <span class="pc__category" style="display:block;text-align:center;"><%= categoryName %></span>
+                    <% } %>
+                  </div>
+                </a>
+              </div>
+              <a href="/product/<%= product.slug || product._id %>" style="text-decoration:none; " class="store-product-details">
+                <div class="pc__info position-relative" style="padding:4px 0;">
+                  <div class="product-card__price d-flex align-items-center product-card-store" style="gap:8px;">
+                    <% if (hasDiscount) { %>
+                      <span class="money price-old" style="text-decoration:line-through;color:#888;">₹<%= basePrice %></span>
+                    <% } %>
+                    <span class="money price" style="font-weight:bold;color:#222;">₹<%= hasDiscount ? offerPrice : basePrice %></span>
+                    <% if (hasDiscount) { %>
+                      <span class="save-amount" style="color:#27ae60;font-size:0.95em;margin-left:6px;">You save ₹<%= saveAmount %></span>
+                    <% } %>
                   </div>
                 </div>
-              </div>
+              </a>
             </div>
-          <% }) %>
+          <% }); %>
         <% } else { %>
           <div class="col-12">
             <div class="alert alert-info text-center">No products found. Try searching for something else!</div>
           </div>
         <% } %>
       </div>
-
-      <script>
-        // Helper: show toast
-        function showToast(message, type = "success") {
-          if (window.Toastify) {
-            Toastify({
-              text: message,
-              duration: 3000,
-              gravity: "top",
-              position: "right",
-              backgroundColor: type === "error" ? "#e74c3c" : "#27ae60",
-              stopOnFocus: true
-            }).showToast();
-          } else {
-            console[type === "error" ? "error" : "log"](message);
-          }
-        }
-      
-        // Track selected variants for each product card
-        const selectedVariants = {};
-      
-        // Check if user is authenticated
-        function isUserAuthenticated() {
-          // Use server-rendered user variable for reliability
-          return <%= user ? 'true' : 'false' %>;
-        }
-      
-        // Update cart count in header
-        function updateCartCount(count) {
-          const cartCountElements = document.querySelectorAll('.js-cart-items-count, .cart-count');
-          cartCountElements.forEach(el => {
-            el.textContent = count;
-          });
-        }
-      
-        document.addEventListener('DOMContentLoaded', function () {
-          // Variant button click handling
-          document.querySelectorAll('.products-grid').forEach(function(grid) {
-            grid.addEventListener('click', function(e) {
-              if (e.target.closest('.variant-option-btn')) {
-                const btn = e.target.closest('.variant-option-btn');
-                const card = btn.closest('.catchy-product-card');
-                const productId = card.querySelector('.js-add-to-cart-grid').getAttribute('data-product-id');
-                const variantName = btn.getAttribute('data-variant-name');
-                const variantValue = btn.getAttribute('data-variant-value');
-                
-                // Store selection
-                if (!selectedVariants[productId]) selectedVariants[productId] = {};
-                selectedVariants[productId][variantName] = variantValue;
-                
-                // Remove active from siblings
-                btn.parentElement.querySelectorAll('.variant-option-btn').forEach(function(sib) {
-                  if (sib.getAttribute('data-variant-name') === variantName) {
-                    sib.classList.remove('active');
-                  }
-                });
-                btn.classList.add('active');
-              }
-            });
-          });
-      
-          // Add to cart functionality
-          document.querySelectorAll('.js-add-to-cart-grid').forEach(function(btn) {
-            btn.addEventListener('click', async function() {
-              const productId = btn.getAttribute('data-product-id');
-              const card = btn.closest('.catchy-product-card');
-              const productData = window.productsData && window.productsData[productId];
-              
-              // Get selected variants
-              const selected = selectedVariants[productId] || {};
-              let color = null, size = null;
-              
-              if (card.querySelector('[data-variant-name="Color"]')) {
-                color = selected['Color'] || null;
-                if (!color) {
-                  showToast("Please select a color.", "error");
-                  return;
-                }
-              }
-              
-              if (card.querySelector('[data-variant-name="Size"]')) {
-                size = selected['Size'] || null;
-                if (!size) {
-                  showToast("Please select a size.", "error");
-                  return;
-                }
-              }
-              
-              // Check if selected variant is out of stock
-              let outOfStock = false;
-              if (color && productData && productData.colorVariants) {
-                const variant = productData.colorVariants.find(v => v.color === color);
-                if (variant && variant.stock <= 0) outOfStock = true;
-              }
-              if (size && productData && productData.sizeVariants) {
-                const variant = productData.sizeVariants.find(v => v.size === size);
-                if (variant && variant.stock <= 0) outOfStock = true;
-              }
-              if (outOfStock) {
-                showToast("Selected variant is out of stock.", "error");
-                return;
-              }
-              
-              // If user: API call, else: guest cart
-              if (isUserAuthenticated()) {
-                // Authenticated user: send to server
-                try {
-                  const response = await fetch('/add-cart', {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
-                      productId: productId,
-                      selectedColor: color,
-                      selectedSize: size,
-                      quantity: 1
-                    })
-                  });
-                  
-                  const data = await response.json();
-                  
-                  if (response.ok) {
-                    showToast("Product added to cart", "success");
-                    // Update cart count in header
-                    updateCartCount(data.cartCount || 1);
-                  } else {
-                    showToast(data.message || "Could not add to cart.", "error");
-                  }
-                } catch (error) {
-                  console.error('Error adding to cart:', error);
-                  showToast("Error adding to cart.", "error");
-                }
-              } else {
-                // Guest: use localStorage
-                try {
-                  let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                  
-                  // Check if already in cart (same product, color, size)
-                  const exists = cart.find(item => 
-                    item.productId === productId &&
-                    item.selectedColor === color &&
-                    item.selectedSize === size
-                  );
-                  
-                  if (exists) {
-                    showToast("Already in cart.", "error");
-                    return;
-                  }
-                  
-                  // Get product details for guest cart
-                  const productName = productData?.name || 'Product';
-                  const productImage = productData?.images?.[0] || '/images/placeholder.png';
-                  const price = productData?.salePrice || productData?.basePrice || 0;
-                  
-                  cart.push({
-                    productId: productId,
-                    selectedColor: color,
-                    selectedSize: size,
-                    quantity: 1,
-                    price: price,
-                    productName: productName,
-                    productImage: productImage
-                  });
-                  
-                  localStorage.setItem('cart', JSON.stringify(cart));
-                  showToast("Product added to cart", "success");
-                  
-                  // Update cart count in header
-                  updateCartCount(cart.reduce((total, item) => total + item.quantity, 0));
-                } catch (error) {
-                  console.error('Error adding to guest cart:', error);
-                  showToast("Error adding to cart.", "error");
-                }
-              }
-            });
-          });
-      
-          // Add to wishlist functionality
-          document.querySelectorAll('.js-add-to-wishlist-grid').forEach(function(btn) {
-            btn.addEventListener('click', async function() {
-              const productId = btn.getAttribute('data-product-id');
-              const card = btn.closest('.catchy-product-card');
-              
-              // Get selected variants
-              const selected = selectedVariants[productId] || {};
-              let color = null, size = null;
-              
-              if (card.querySelector('[data-variant-name="Color"]')) {
-                color = selected['Color'] || null;
-              }
-              
-              if (card.querySelector('[data-variant-name="Size"]')) {
-                size = selected['Size'] || null;
-              }
-              
-              // Only allow wishlist for authenticated users
-              if (!isUserAuthenticated()) {
-                showToast("Please login to add to wishlist.", "error");
-                return;
-              }
-              
-              // Toggle active state for love icon
-              btn.classList.toggle('active');
-              
-              // Authenticated user: send to server
-              try {
-                const response = await fetch('/create-wishlist', {
-                  method: 'POST',
-                  credentials: 'same-origin',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                  },
-                  body: JSON.stringify({
-                    productId: productId,
-                    selectedColor: color,
-                    selectedSize: size
-                  })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                  showToast("Added to your wishlist! 💖", "success");
-                } else {
-                  showToast(data.message || "Could not add to wishlist.", "error");
-                  // Revert the active state if failed
-                  btn.classList.toggle('active');
-                }
-              } catch (error) {
-                console.error('Error adding to wishlist:', error);
-                showToast("Error adding to wishlist.", "error");
-                // Revert the active state if failed
-                btn.classList.toggle('active');
-              }
-            });
-          });
-      
-          // Initialize products data for variant stock checks
-          if (!window.productsData) window.productsData = {};
-          <% products.forEach(function(product) { %>
-            window.productsData["<%= product._id %>"] = <%- JSON.stringify(product) %>;
-          <% }); %>
-        });
-      </script>
       <nav class="shop-pages d-flex justify-content-between mt-3" aria-label="Page navigation">
         <% if (typeof pagination !== 'undefined' && pagination) { %>
           <a href="<%= pagination.prevPageUrl %>"
@@ -1533,6 +1216,445 @@
       </div><!-- /.col-3 -->
     </div><!-- /.row -->
   </footer><!-- /.footer-mobile container position-fixed d-md-none bottom-0 -->
+ <!-- Filters Drawer -->
+<div class="aside-filters aside aside_right" id="shopFilter">
+  <div class="aside-header d-flex align-items-center">
+    <h3 class="text-uppercase fs-6 mb-0">Filter By</h3>
+    <button class="btn-close-lg js-close-aside btn-close-aside ms-auto"></button>
+  </div><!-- /.aside-header -->
+
+  <div class="aside-content">
+    <!-- Product Categories Filter -->
+    <div class="accordion" id="categories-list">
+      <div class="accordion-item mb-4">
+        <h5 class="accordion-header" id="accordion-heading-1">
+          <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button" data-bs-toggle="collapse"
+            data-bs-target="#accordion-filter-1" aria-expanded="true" aria-controls="accordion-filter-1">
+            Product Categories
+            <svg class="accordion-button__icon type2" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
+              <g aria-hidden="true" stroke="none" fill-rule="evenodd">
+                <path
+                  d="M5.35668 0.159286C5.16235 -0.053094 4.83769 -0.0530941 4.64287 0.159286L0.147611 5.05963C-0.0492049 5.27473 -0.049205 5.62357 0.147611 5.83813C0.344427 6.05323 0.664108 6.05323 0.860924 5.83813L5 1.32706L9.13858 5.83867C9.33589 6.05378 9.65507 6.05378 9.85239 5.83867C10.0492 5.62357 10.0492 5.27473 9.85239 5.06018L5.35668 0.159286Z" />
+              </g>
+            </svg>
+          </button>
+        </h5>
+        <div id="accordion-filter-1" class="accordion-collapse collapse show border-0"
+          aria-labelledby="accordion-heading-1" data-bs-parent="#categories-list">
+          <div class="accordion-body px-0 pb-0">
+            <ul class="list list-inline row row-cols-2 mb-0">
+              <% if (typeof categories !== 'undefined' && Array.isArray(categories)) { %>
+                <% categories.forEach(function(category) { %>
+                  <li class="list-item">
+                    <a href="/store?<%= 
+                        [
+                          'category=' + encodeURIComponent(category.slug || category._id),
+                          filters && filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
+                          filters && filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
+                          filters && filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
+                          filters && filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
+                          filters && filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
+                          filters && filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
+                          filters && filters.limit ? 'limit=' + encodeURIComponent(filters.limit) : ''
+                        ].filter(Boolean).join('&')
+                      %>"
+                      class="menu-link py-1 <%= (filters && filters.category == (category.slug || category._id)) ? 'active' : '' %>">
+                      <%= category.name %>
+                    </a>
+                    <% if (category.subCategories && Array.isArray(category.subCategories) && category.subCategories.length) { %>
+                      <ul class="list list-inline row row-cols-1 ms-3 mb-2">
+                        <% category.subCategories.forEach(function(subcat) { %>
+                          <li class="list-item">
+                            <a href="/store?<%= 
+                                [
+                                  'category=' + encodeURIComponent(category.slug || category._id),
+                                  'subcategory=' + encodeURIComponent(subcat._id),
+                                  filters && filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
+                                  filters && filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
+                                  filters && filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
+                                  filters && filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
+                                  filters && filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
+                                  filters && filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
+                                  filters && filters.limit ? 'limit=' + encodeURIComponent(filters.limit) : ''
+                                ].filter(Boolean).join('&')
+                              %>"
+                              class="menu-link py-1 ms-2 <%= (filters && filters.subcategory == subcat._id) ? 'active' : '' %>">
+                              <%= subcat.name %>
+                            </a>
+                          </li>
+                        <% }) %>
+                      </ul>
+                    <% } %>
+                  </li>
+                <% }) %>
+              <% } %>
+            </ul>
+          </div>
+        </div>
+      </div><!-- /.accordion-item -->
+    </div><!-- /.accordion -->
+
+    <!-- Color Filter -->
+    <div class="accordion" id="color-filters">
+      <div class="accordion-item mb-4">
+        <h5 class="accordion-header" id="accordion-heading-11">
+          <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button" data-bs-toggle="collapse"
+            data-bs-target="#accordion-filter-2" aria-expanded="true" aria-controls="accordion-filter-2">
+            Color
+            <svg class="accordion-button__icon type2" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
+              <g aria-hidden="true" stroke="none" fill-rule="evenodd">
+                <path
+                  d="M5.35668 0.159286C5.16235 -0.053094 4.83769 -0.0530941 4.64287 0.159286L0.147611 5.05963C-0.0492049 5.27473 -0.049205 5.62357 0.147611 5.83813C0.344427 6.05323 0.664108 6.05323 0.860924 5.83813L5 1.32706L9.13858 5.83867C9.33589 6.05378 9.65507 6.05378 9.85239 5.83867C10.0492 5.62357 10.0492 5.27473 9.85239 5.06018L5.35668 0.159286Z" />
+              </g>
+            </svg>
+          </button>
+        </h5>
+        <div id="accordion-filter-2" class="accordion-collapse collapse show border-0"
+          aria-labelledby="accordion-heading-11" data-bs-parent="#color-filters">
+          <div class="accordion-body px-0 pb-0">
+            <div class="d-flex flex-wrap">
+              <% 
+                // Collect all unique colors from products
+                var colorSet = new Set();
+                if (typeof products !== 'undefined' && Array.isArray(products)) {
+                  products.forEach(function(product) {
+                    if (product.colorVariants && Array.isArray(product.colorVariants) && product.colorVariants.length) {
+                      product.colorVariants.forEach(function(variant) { 
+                        if (variant.color) colorSet.add(variant.color); 
+                      });
+                    }
+                  });
+                }
+                var colorArray = Array.from(colorSet).sort();
+                var selectedColors = (filters && filters.color ? filters.color : '').split(',').filter(Boolean);
+              %>
+              <% colorArray.forEach(function(color) { %>
+                <a href="/store?<%= 
+                  [
+                    filters && filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
+                    filters && filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
+                    filters && filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
+                    filters && filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
+                    filters && filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
+                    filters && filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
+                    'color=' + encodeURIComponent(
+                      selectedColors.includes(color) 
+                        ? selectedColors.filter(function(c) { return c !== color; }).join(',') 
+                        : (selectedColors.concat([color])).join(',')
+                    ),
+                    filters && filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
+                    filters && filters.limit ? 'limit=' + encodeURIComponent(filters.limit) : ''
+                  ].filter(Boolean).join('&')
+                %>" class="swatch-color js-filter <%= selectedColors.includes(color) ? 'swatch_active' : '' %>"
+                  data-color="<%= color %>">
+                </a>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.accordion-item -->
+    </div><!-- /.accordion -->
+
+    <!-- Size Filter -->
+    <div class="accordion" id="size-filters">
+      <div class="accordion-item mb-4">
+        <h5 class="accordion-header" id="accordion-heading-size">
+          <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button" data-bs-toggle="collapse"
+            data-bs-target="#accordion-filter-size" aria-expanded="true" aria-controls="accordion-filter-size">
+            Sizes
+            <svg class="accordion-button__icon type2" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
+              <g aria-hidden="true" stroke="none" fill-rule="evenodd">
+                <path
+                  d="M5.35668 0.159286C5.16235 -0.053094 4.83769 -0.0530941 4.64287 0.159286L0.147611 5.05963C-0.0492049 5.27473 -0.049205 5.62357 0.147611 5.83813C0.344427 6.05323 0.664108 6.05323 0.860924 5.83813L5 1.32706L9.13858 5.83867C9.33589 6.05378 9.65507 6.05378 9.85239 5.83867C10.0492 5.62357 10.0492 5.27473 9.85239 5.06018L5.35668 0.159286Z" />
+              </g>
+            </svg>
+          </button>
+        </h5>
+        <div id="accordion-filter-size" class="accordion-collapse collapse show border-0"
+          aria-labelledby="accordion-heading-size" data-bs-parent="#size-filters">
+          <div class="accordion-body px-0 pb-0">
+            <div class="d-flex flex-wrap">
+              <% 
+                // Collect all unique sizes from products
+                var sizeSet = new Set();
+                if (typeof products !== 'undefined' && Array.isArray(products)) {
+                  products.forEach(function(product) {
+                    if (product.sizeVariants && Array.isArray(product.sizeVariants) && product.sizeVariants.length) {
+                      product.sizeVariants.forEach(function(variant) { 
+                        if (variant.size) sizeSet.add(variant.size); 
+                      });
+                    }
+                  });
+                }
+                var sizeArray = Array.from(sizeSet).sort();
+                var selectedSizes = (filters && filters.size ? filters.size : '').split(',').filter(Boolean);
+              %>
+              <% sizeArray.forEach(function(size) { %>
+                <a href="/store?<%= 
+                  [
+                    filters && filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
+                    filters && filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
+                    filters && filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
+                    filters && filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
+                    filters && filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
+                    'size=' + encodeURIComponent(
+                      selectedSizes.includes(size) 
+                        ? selectedSizes.filter(function(s) { return s !== size; }).join(',') 
+                        : (selectedSizes.concat([size])).join(',')
+                    ),
+                    filters && filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
+                    filters && filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
+                    filters && filters.limit ? 'limit=' + encodeURIComponent(filters.limit) : ''
+                  ].filter(Boolean).join('&')
+                %>"
+                  class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter <%= selectedSizes.includes(size) ? 'active' : '' %>">
+                  <%= size %>
+                </a>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.accordion-item -->
+    </div><!-- /.accordion -->
+
+    <!-- Price Filter -->
+    <div class="accordion" id="price-filters">
+      <div class="accordion-item mb-4">
+        <h5 class="accordion-header mb-2" id="accordion-heading-price">
+          <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button" data-bs-toggle="collapse"
+            data-bs-target="#accordion-filter-price" aria-expanded="true" aria-controls="accordion-filter-price">
+            Price
+            <svg class="accordion-button__icon type2" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
+              <g aria-hidden="true" stroke="none" fill-rule="evenodd">
+                <path
+                  d="M5.35668 0.159286C5.16235 -0.053094 4.83769 -0.0530941 4.64287 0.159286L0.147611 5.05963C-0.0492049 5.27473 -0.049205 5.62357 0.147611 5.83813C0.344427 6.05323 0.664108 6.05323 0.860924 5.83813L5 1.32706L9.13858 5.83867C9.33589 6.05378 9.65507 6.05378 9.85239 5.83867C10.0492 5.62357 10.0492 5.27473 9.85239 5.06018L5.35668 0.159286Z" />
+              </g>
+            </svg>
+          </button>
+        </h5>
+        <div id="accordion-filter-price" class="accordion-collapse collapse show border-0"
+          aria-labelledby="accordion-heading-price" data-bs-parent="#price-filters">
+          <%
+            // Find min and max price from products
+            var minProductPrice = null, maxProductPrice = null;
+            if (typeof products !== 'undefined' && Array.isArray(products)) {
+              products.forEach(function(product) {
+                var price = (product.salePrice && product.salePrice > 0) ? product.salePrice : product.basePrice;
+                if (typeof price === 'number') {
+                  if (minProductPrice === null || price < minProductPrice) minProductPrice = price;
+                  if (maxProductPrice === null || price > maxProductPrice) maxProductPrice = price;
+                }
+              });
+            }
+            // Fallbacks
+            minProductPrice = minProductPrice !== null ? minProductPrice : 0;
+            maxProductPrice = maxProductPrice !== null ? maxProductPrice : 1000;
+            var selectedMin = (filters && filters.minPrice) ? Number(filters.minPrice) : minProductPrice;
+            var selectedMax = (filters && filters.maxPrice) ? Number(filters.maxPrice) : maxProductPrice;
+          %>
+          <form method="get" class="d-block">
+            <% 
+              // Keep all other filters in the form as hidden fields
+              if (filters && typeof filters === 'object') {
+                Object.keys(filters).forEach(function(key) {
+                  if (['minPrice', 'maxPrice'].includes(key)) return;
+                  if (filters[key]) { %>
+                    <input type="hidden" name="<%= key %>" value="<%= filters[key] %>">
+                  <% }
+                });
+              }
+            %>
+            <div class="d-flex align-items-center mb-2">
+              <label class="me-2 text-secondary" for="minPrice">Min:</label>
+              <input type="number" min="<%= minProductPrice %>" max="<%= maxProductPrice %>" step="1"
+                name="minPrice" id="minPrice" class="form-control form-control-sm w-auto"
+                value="<%= selectedMin %>">
+              <label class="mx-2 text-secondary" for="maxPrice">Max:</label>
+              <input type="number" min="<%= minProductPrice %>" max="<%= maxProductPrice %>" step="1"
+                name="maxPrice" id="maxPrice" class="form-control form-control-sm w-auto"
+                value="<%= selectedMax %>">
+              <button type="submit" class="btn btn-sm btn-primary ms-2">Apply</button>
+            </div>
+            <div class="price-range__info d-flex align-items-center mt-2">
+              <div class="me-auto">
+                <span class="text-secondary">Min Price: </span>
+                <span class="price-range__min">₹<%= selectedMin %></span>
+              </div>
+              <div>
+                <span class="text-secondary">Max Price: </span>
+                <span class="price-range__max">₹<%= selectedMax %></span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div><!-- /.accordion-item -->
+    </div><!-- /.accordion -->
+
+    <!-- Active Filter Tags -->
+    <div class="filter-active-tags pt-2">
+      <%
+        // Show active filter tags for color, size, price, category, subcategory, q
+        var hasActive = false;
+        // Color tags
+        if (typeof selectedColors !== 'undefined' && selectedColors.length) {
+          selectedColors.forEach(function(color) { hasActive = true; %>
+            <a href="/store?<%= 
+              [
+                filters && filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
+                filters && filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
+                filters && filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
+                filters && filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
+                filters && filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
+                filters && filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
+                'color=' + encodeURIComponent(selectedColors.filter(function(c) { return c !== color; }).join(',')),
+                filters && filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
+                filters && filters.limit ? 'limit=' + encodeURIComponent(filters.limit) : ''
+              ].filter(Boolean).join('&')
+            %>" class="filter-tag d-inline-flex align-items-center mb-3 me-3 text-uppercase js-filter">
+              <i class="btn-close-xs d-inline-block"></i>
+              <span class="ms-2">
+                <%= color %>
+              </span>
+            </a>
+        <% });
+        }
+        // Size tags
+        if (typeof selectedSizes !== 'undefined' && selectedSizes.length) {
+          selectedSizes.forEach(function(size) { hasActive = true; %>
+            <a href="/store?<%= 
+              [
+                filters && filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
+                filters && filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
+                filters && filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
+                filters && filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
+                filters && filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
+                'size=' + encodeURIComponent(selectedSizes.filter(function(s) { return s !== size; }).join(',')),
+                filters && filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
+                filters && filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
+                filters && filters.limit ? 'limit=' + encodeURIComponent(filters.limit) : ''
+              ].filter(Boolean).join('&')
+            %>" class="filter-tag d-inline-flex align-items-center mb-3 me-3 text-uppercase js-filter">
+              <i class="btn-close-xs d-inline-block"></i>
+              <span class="ms-2">
+                <%= size %>
+              </span>
+            </a>
+        <% });
+        }
+        // Price tags
+        if (filters && (filters.minPrice || filters.maxPrice)) { hasActive = true; %>
+          <a href="/store?<%= 
+            [
+              filters && filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
+              filters && filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
+              filters && filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
+              filters && filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
+              filters && filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
+              filters && filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
+              filters && filters.limit ? 'limit=' + encodeURIComponent(filters.limit) : ''
+            ].filter(Boolean).join('&')
+          %>" class="filter-tag d-inline-flex align-items-center mb-3 me-3 text-uppercase js-filter">
+            <i class="btn-close-xs d-inline-block"></i>
+            <span class="ms-2">
+              <% if (filters.minPrice && filters.maxPrice) { %>
+                ₹<%= filters.minPrice %> - ₹<%= filters.maxPrice %>
+              <% } else if (filters.minPrice) { %>
+                Min Price: ₹<%= filters.minPrice %>
+              <% } else { %>
+                Max Price: ₹<%= filters.maxPrice %>
+              <% } %>
+            </span>
+          </a>
+        <% }
+        // Category tag
+        if (filters && filters.category) { 
+          hasActive = true; 
+          var cat = null;
+          if (typeof categories !== 'undefined' && Array.isArray(categories)) {
+            cat = categories.find(function(c) { return (c.slug === filters.category || (c._id && c._id.toString() === filters.category)); });
+          }
+        %>
+          <a href="/store?<%= 
+            [
+              filters && filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
+              filters && filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
+              filters && filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
+              filters && filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
+              filters && filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
+              filters && filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
+              filters && filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
+              filters && filters.limit ? 'limit=' + encodeURIComponent(filters.limit) : ''
+            ].filter(Boolean).join('&')
+          %>" class="filter-tag d-inline-flex align-items-center mb-3 me-3 text-uppercase js-filter">
+            <i class="btn-close-xs d-inline-block"></i>
+            <span class="ms-2">
+              <%= cat ? cat.name : filters.category %>
+            </span>
+          </a>
+        <% }
+        // Subcategory tag
+        if (filters && filters.subcategory) { 
+          hasActive = true; 
+          var subcatName = '';
+          if (typeof categories !== 'undefined' && Array.isArray(categories)) {
+            categories.forEach(function(cat) { 
+              if (cat.subCategories && Array.isArray(cat.subCategories) && cat.subCategories.length) {
+                cat.subCategories.forEach(function(subcat) { 
+                  if (subcat._id && subcat._id.toString() === filters.subcategory) subcatName = subcat.name; 
+                }); 
+              } 
+            });
+          }
+        %>
+          <a href="/store?<%= 
+            [
+              filters && filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
+              filters && filters.q ? 'q=' + encodeURIComponent(filters.q) : '',
+              filters && filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
+              filters && filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
+              filters && filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
+              filters && filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
+              filters && filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
+              filters && filters.limit ? 'limit=' + encodeURIComponent(filters.limit) : ''
+            ].filter(Boolean).join('&')
+          %>" class="filter-tag d-inline-flex align-items-center mb-3 me-3 text-uppercase js-filter">
+            <i class="btn-close-xs d-inline-block"></i>
+            <span class="ms-2">
+              <%= subcatName || filters.subcategory %>
+            </span>
+          </a>
+        <% }
+        // Search query tag
+        if (filters && filters.q) { hasActive = true; %>
+          <a href="/store?<%= 
+            [
+              filters && filters.category ? 'category=' + encodeURIComponent(filters.category) : '',
+              filters && filters.subcategory ? 'subcategory=' + encodeURIComponent(filters.subcategory) : '',
+              filters && filters.minPrice ? 'minPrice=' + encodeURIComponent(filters.minPrice) : '',
+              filters && filters.maxPrice ? 'maxPrice=' + encodeURIComponent(filters.maxPrice) : '',
+              filters && filters.size ? 'size=' + encodeURIComponent(filters.size) : '',
+              filters && filters.color ? 'color=' + encodeURIComponent(filters.color) : '',
+              filters && filters.sort ? 'sort=' + encodeURIComponent(filters.sort) : '',
+              filters && filters.limit ? 'limit=' + encodeURIComponent(filters.limit) : ''
+            ].filter(Boolean).join('&')
+          %>" class="filter-tag d-inline-flex align-items-center mb-3 me-3 text-uppercase js-filter">
+            <i class="btn-close-xs d-inline-block"></i>
+            <span class="ms-2">Search: <%= filters.q %></span>
+          </a>
+        <% }
+        if (hasActive) { %>
+          <div>
+            <a href="/store?<%= filters && filters.limit ? 'limit=' + encodeURIComponent(filters.limit) : '' %>"
+              class="filter-tag d-flex align-items-center text-uppercase js-filter">
+              <i class="btn-close-xs d-inline-block"></i>
+              <span class="ms-2">RESET FILTER</span>
+            </a>
+          </div>
+        <% } %>
+    </div>
+  </div><!-- /.aside-content -->
+</div>
+
 
 
   <!-- Go To Top -->

@@ -1045,8 +1045,7 @@
     </section>
 
     <section class="products-carousel container">
-      <h2 class="section-title text-uppercase fw-bold text-center mb-1 mb-md-3 pb-xl-2 mb-xl-4 gradient-text">Trending
-        Now</h2>
+      <h2 class="section-title text-uppercase fw-bold text-center mb-1 mb-md-3 pb-xl-2 mb-xl-4 gradient-text">Trending Now</h2>
       <ul class="nav nav-tabs mb-3 mb-xl-5 text-uppercase justify-content-center" id="collections-tab" role="tablist">
         <li class="nav-item" role="presentation">
           <a class="nav-link nav-link_underscore active" id="collections-tab-1-trigger" data-bs-toggle="tab"
@@ -1114,13 +1113,11 @@
               </div>
             </div>
           </div>
-          <% }); %>
+        <% }); %>
       </div>
     </section>
 
     <script>
-      window.isLoggedIn = typeof window.isLoggedIn !== "undefined" ? window.isLoggedIn : false;
-
       document.addEventListener('DOMContentLoaded', function () {
         // Swiper initialization
         const swipers = {
@@ -1165,383 +1162,74 @@
           const discountPercentage = hasDiscount
             ? Math.round(((product.basePrice - product.salePrice) / product.basePrice) * 100)
             : 0;
+          const saveAmount = hasDiscount
+            ? (product.basePrice - product.salePrice)
+            : 0;
 
-          // --- Always show variants if present ---
-          let variantsHtml = '';
+          // No "NEW" label as per instruction
 
-          // Color Variants
-          if (product.hasColorVariants && Array.isArray(product.colorVariants) && product.colorVariants.length > 0) {
-            variantsHtml += `
-              <div class="variant-group mb-1" data-variant-name="Color">
-                <div class="variant-label">Color:</div>
-                <div class="variant-options">
-                  ${product.colorVariants.map(variant => `
-                    <button type="button" class="variant-option-btn" data-variant-name="Color" data-variant-value="${variant.color}" ${variant.stock <= 0 ? 'disabled' : ''} title="${variant.color}">
-                      <span class="variant-color-dot" style="background:${variant.image ? 'none' : variant.color};">
-                        ${variant.image ? `<img src="${variant.image}" alt="${variant.color}">` : ''}
-                      </span>
-                      ${variant.color}
-                      ${variant.stock <= 0 ? '<span style="font-size:0.8em;color:#c00;"> (Out of stock)</span>' : ''}
-                    </button>
-                  `).join('')}
-                </div>
-              </div>
-            `;
-          }
-
-          // Size Variants
-          if (product.hasSizeVariants && Array.isArray(product.sizeVariants) && product.sizeVariants.length > 0) {
-            variantsHtml += `
-              <div class="variant-group mb-1" data-variant-name="Size">
-                <div class="variant-label">Size:</div>
-                <div class="variant-options">
-                  ${product.sizeVariants.map(variant => `
-                    <button type="button" class="variant-option-btn" data-variant-name="Size" data-variant-value="${variant.size}" ${variant.stock <= 0 ? 'disabled' : ''} title="${variant.size}">
-                      ${variant.size}
-                      ${variant.stock <= 0 ? '<span style="font-size:0.8em;color:#c00;"> (Out of stock)</span>' : ''}
-                    </button>
-                  `).join('')}
-                </div>
-              </div>
-            `;
-          }
-
-          // Fallback for old "variants" array (if present)
-          if ((!product.hasColorVariants && !product.hasSizeVariants) && Array.isArray(product.variants) && product.variants.length > 0) {
-            product.variants.forEach(variant => {
-              if (variant.options && variant.options.length > 0) {
-                variantsHtml += `
-                  <div class="variant-group mb-1" data-variant-name="${variant.name}">
-                    <div class="variant-label">${variant.name}:</div>
-                    <div class="variant-options">
-                      ${variant.options.map(opt => `
-                        <button type="button" class="variant-option-btn" data-variant-name="${variant.name}" data-variant-value="${opt}">
-                          ${opt}
-                        </button>
-                      `).join('')}
-                    </div>
-                  </div>
-                `;
-              }
-            });
-          }
-
+          // Discount label
           let discountLabelHtml = hasDiscount
             ? `<span class="discount-label">${discountPercentage}% off</span>`
             : '';
 
-          // Bottom overlay for name and category, centered
-          let bottomOverlayHtml = `
+          // Name and category
+          let nameCategoryHtml = `
             <div class="pc__img-overlay-bottom">
-              <div class="pc__title"><a href="/product/${product._id}" style="color:#fff;text-decoration:none;pointer-events:auto;">${product.name}</a></div>
-              ${product.category?.name ? `<span class="pc__category">${product.category.name}</span>` : ''}
+              <div class="pc__title" style="color:#fff;text-align:center;">
+                ${product.name}
+              </div>
+              ${product.category?.name ? `<span class="pc__category" style="display:block;text-align:center;">${product.category.name}</span>` : ''}
             </div>
           `;
 
-          // "NEW" label (top right, if newArrivals)
-          let newLabelHtml = product.newArrivals
-            ? `<span class="product-label bg-white" style="position:absolute;top:12px;right:12px;z-index:5;">NEW</span>`
-            : '';
+          // Price and offer price in same line, no extra padding
+          let priceHtml = `
+            <div class="product-card__price d-flex align-items-center" style="gap:8px;">
+              ${hasDiscount ? `<span class="money price-old" style="text-decoration:line-through;color:#888;">₹${product.basePrice}</span>` : ''}
+              <span class="money price" style="font-weight:bold;color:#222;">₹${hasDiscount ? product.salePrice : product.basePrice}</span>
+              ${hasDiscount ? `<span class="save-amount" style="color:#27ae60;font-size:0.95em;margin-left:6px;">You save ₹${saveAmount}</span>` : ''}
+            </div>
+          `;
 
           return `
-      <div class="swiper-slide product-card" data-product-id="${product._id}" data-product='${JSON.stringify(product).replace(/'/g, "&apos;")}'>
-        <div class="pc__img-wrapper">
-          <a href="/product/${product._id}">
-            ${product.images && product.images.length > 0 ? `
-              <img loading="lazy" src="${product.images[0]}" width="330" height="400" alt="${product.name}" class="pc__img">
-              ${product.images.length > 1 ? `
-                <img loading="lazy" src="${product.images[1]}" width="330" height="400" alt="${product.name}" class="pc__img pc__img-second">
-              ` : ''}
-            ` : ''}
-            ${discountLabelHtml}
-            ${bottomOverlayHtml}
-          </a>
-       
-        </div>
-        <div class="pc__info position-relative">
-          <div class="product-card__price d-flex align-items-center">
-            ${hasDiscount ? `<span class="money price-old">₹${product.basePrice}</span>` : ''}
-            <span class="money price">₹${hasDiscount ? product.salePrice : product.basePrice}</span>
-          </div>
-          ${variantsHtml}
-          <div class="action-btns">
-            <button class="btn btn-primary js-add-cart" data-product-id="${product._id}">Add To Cart</button>
-            <button class="btn btn-outline-primary js-add-wishlist" data-product-id="${product._id}">Wishlist</button>
-          </div>
-        </div>
-      </div>
-    `;
+            <div class="swiper-slide product-card" data-product-id="${product._id}" style="cursor:pointer;">
+              <div class="pc__img-wrapper" style="position:relative;">
+                <a href="/product/${product._id}" style="display:block;">
+                  ${product.images && product.images.length > 0 ? `
+                    <img loading="lazy" src="${product.images[0]}" width="330" height="400" alt="${product.name}" class="pc__img">
+                    ${product.images.length > 1 ? `
+                      <img loading="lazy" src="${product.images[1]}" width="330" height="400" alt="${product.name}" class="pc__img pc__img-second">
+                    ` : ''}
+                  ` : ''}
+                  ${discountLabelHtml}
+                  ${nameCategoryHtml}
+                </a>
+              </div>
+              <a href="/product/${product._id}" style="text-decoration:none;">
+                <div class="pc__info position-relative" style="padding:4px 0;">
+                  ${priceHtml}
+                </div>
+              </a>
+            </div>
+          `;
         }
 
-        // Variant selection state per card
-        const cardVariantSelections = {};
-
-        // Event delegation for variant selection, add to cart, wishlist
-        document.addEventListener('click', async function (e) {
-          // Variant selection
-          if (e.target.classList.contains('variant-option-btn')) {
-            e.preventDefault();
-            const btn = e.target;
-            const card = btn.closest('.product-card');
+        // Make the whole card clickable to product details
+        document.addEventListener('click', function (e) {
+          const card = e.target.closest('.product-card');
+          if (card) {
             const productId = card.getAttribute('data-product-id');
-            const variantName = btn.getAttribute('data-variant-name');
-            const variantValue = btn.getAttribute('data-variant-value');
-
-            // Store selection
-            if (!cardVariantSelections[productId]) cardVariantSelections[productId] = {};
-            cardVariantSelections[productId][variantName] = variantValue;
-
-            // Highlight active
-            const group = btn.closest('.variant-group');
-            group.querySelectorAll('.variant-option-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-          }
-
-          // Add to cart
-          if (e.target.classList.contains('js-add-cart')) {
-            e.preventDefault();
-            const card = e.target.closest('.product-card');
-            const productId = card.getAttribute('data-product-id');
-            const product = JSON.parse(card.getAttribute('data-product').replace(/&apos;/g, "'"));
-            // Determine which variant system is used
-            let requiredVariants = [];
-            if (product.hasColorVariants && Array.isArray(product.colorVariants) && product.colorVariants.length > 0) {
-              requiredVariants.push('Color');
-            }
-            if (product.hasSizeVariants && Array.isArray(product.sizeVariants) && product.sizeVariants.length > 0) {
-              requiredVariants.push('Size');
-            }
-            // Fallback for old "variants" array
-            if ((!product.hasColorVariants && !product.hasSizeVariants) && Array.isArray(product.variants) && product.variants.length > 0) {
-              product.variants.forEach(variant => requiredVariants.push(variant.name));
-            }
-            const selected = cardVariantSelections[productId] || {};
-
-            // Check if all variants are selected
-            let missing = [];
-            requiredVariants.forEach(variantName => {
-              if (!selected[variantName]) missing.push(variantName);
-            });
-            if (missing.length > 0) {
-              showToast('Please select: ' + missing.join(', '), 'error');
-              // Optionally, scroll to first missing variant
-              const firstMissing = card.querySelector(`[data-variant-name="${missing[0]}"]`);
-              if (firstMissing) firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              return;
-            }
-
-            // Prepare selectedColor and selectedSize for backend
-            let selectedColor = null, selectedSize = null;
-            if (product.hasColorVariants) selectedColor = selected['Color'] || null;
-            if (product.hasSizeVariants) selectedSize = selected['Size'] || null;
-
-            if (window.isLoggedIn) {
-              // Logged in: call backend
-              await addToCart(productId, 1, selectedColor, selectedSize, false);
-            } else {
-              // Guest: use localStorage
-              addToGuestCart(product, 1, selectedColor, selectedSize);
-            }
-          }
-
-          // Add to wishlist
-          if (e.target.classList.contains('js-add-wishlist')) {
-            e.preventDefault();
-            const card = e.target.closest('.product-card');
-            const productId = card.getAttribute('data-product-id');
-            const product = JSON.parse(card.getAttribute('data-product').replace(/&apos;/g, "'"));
-            // Determine which variant system is used
-            let requiredVariants = [];
-            if (product.hasColorVariants && Array.isArray(product.colorVariants) && product.colorVariants.length > 0) {
-              requiredVariants.push('Color');
-            }
-            if (product.hasSizeVariants && Array.isArray(product.sizeVariants) && product.sizeVariants.length > 0) {
-              requiredVariants.push('Size');
-            }
-            // Fallback for old "variants" array
-            if ((!product.hasColorVariants && !product.hasSizeVariants) && Array.isArray(product.variants) && product.variants.length > 0) {
-              product.variants.forEach(variant => requiredVariants.push(variant.name));
-            }
-            const selected = cardVariantSelections[productId] || {};
-
-            // Check if all variants are selected
-            let missing = [];
-            requiredVariants.forEach(variantName => {
-              if (!selected[variantName]) missing.push(variantName);
-            });
-            if (missing.length > 0) {
-              showToast('Please select: ' + missing.join(', '), 'error');
-              // Optionally, scroll to first missing variant
-              const firstMissing = card.querySelector(`[data-variant-name="${missing[0]}"]`);
-              if (firstMissing) firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              return;
-            }
-
-            // Prepare selectedColor and selectedSize for backend
-            let selectedColor = null, selectedSize = null;
-            if (product.hasColorVariants) selectedColor = selected['Color'] || null;
-            if (product.hasSizeVariants) selectedSize = selected['Size'] || null;
-
-            if (window.isLoggedIn) {
-              await addToWishlist(productId, selectedColor, selectedSize);
-            } else {
-              // Guest wishlist: store in localStorage
-              addToGuestWishlist(product, selectedColor, selectedSize);
+            if (productId) {
+              window.location.href = '/product/' + productId;
             }
           }
         });
-
-        // Add to wishlist (logged in)
-        async function addToWishlist(productId, selectedColor = null, selectedSize = null) {
-          if (!window.isLoggedIn) {
-            showToast('Please login to add to wishlist', 'error');
-            return;
-          }
-          try {
-            const response = await fetch('/create-wishlist', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
-              },
-              body: JSON.stringify({ productId, selectedColor, selectedSize })
-            });
-            const data = await response.json();
-            if (data && data.success) {
-              showToast('Product added to wishlist', 'success');
-            } else {
-              showToast(data.error || data.message || 'Failed to add to wishlist', 'error');
-            }
-          } catch (error) {
-            console.error('Error adding to wishlist:', error);
-            showToast('Error adding to wishlist', 'error');
-          }
-        }
-
-        // Add to cart for logged in user
-        async function addToCart(productId, quantity = 1, selectedColor = null, selectedSize = null, updateQuantity = false) {
-          try {
-            const response = await fetch('/add-cart', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
-              },
-              body: JSON.stringify({
-                productId,
-                quantity,
-                selectedColor,
-                selectedSize,
-                updateQuantity
-              })
-            });
-            const data = await response.json();
-            // --- REWRITE: Always show toast, even if error/message is present ---
-            if (response.ok && data && !data.error && !data.message) {
-              // If response is the cart object
-              updateCartCount(data.items ? data.items.length : 0);
-              showToast('Product added to cart', 'success');
-            } else {
-              // If error or message is present, show as error toast
-              showToast(data.error || data.message || 'Failed to add to cart', 'error');
-            }
-          } catch (error) {
-            showToast('Error adding to cart', 'error');
-          }
-        }
-
-        // Add to guest cart in localStorage
-        function addToGuestCart(product, quantity = 1, selectedColor = null, selectedSize = null) {
-          let guestCart = [];
-          try {
-            guestCart = JSON.parse(localStorage.getItem('cart') || '[]');
-          } catch (e) { guestCart = []; }
-          // Check if product with same variants exists
-          let found = false;
-          for (let item of guestCart) {
-            if (
-              item.productId === product._id &&
-              item.selectedColor === selectedColor &&
-              item.selectedSize === selectedSize
-            ) {
-              item.quantity += quantity;
-              // Update total and price in case price has changed
-              item.price = product.salePrice > 0 ? product.salePrice : product.basePrice;
-              item.total = item.price * item.quantity;
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            const price = product.salePrice > 0 ? product.salePrice : product.basePrice;
-            const total = price * quantity;
-            guestCart.push({
-              productId: product._id,
-              productName: product.name,
-              productImage: product.images && product.images[0],
-              price: price,
-              quantity: quantity,
-              selectedColor: selectedColor,
-              selectedSize: selectedSize,
-              total: total
-            });
-          }
-          localStorage.setItem('cart', JSON.stringify(guestCart));
-          updateCartCount(guestCart.reduce((sum, item) => sum + item.quantity, 0));
-          showToast('Product added to cart', 'success');
-        }
-
-        // Add to guest wishlist in localStorage
-        function addToGuestWishlist(product, selectedColor = null, selectedSize = null) {
-          let guestWishlist = [];
-          try {
-            guestWishlist = JSON.parse(localStorage.getItem('guestWishlist') || '[]');
-          } catch (e) { guestWishlist = []; }
-          // Check if product with same variants exists
-          let exists = guestWishlist.some(item =>
-            item.productId === product._id &&
-            item.selectedColor === selectedColor &&
-            item.selectedSize === selectedSize
-          );
-          if (exists) {
-            showToast('Product already in wishlist', 'error');
-            return;
-          }
-          guestWishlist.push({
-            productId: product._id,
-            productName: product.name,
-            productImage: product.images && product.images[0],
-            selectedColor,
-            selectedSize
-          });
-          localStorage.setItem('guestWishlist', JSON.stringify(guestWishlist));
-          showToast('Product added to wishlist', 'success');
-        }
 
         // Helper functions
         function getSwiperConfig(selector) {
           const element = document.querySelector(selector);
           return JSON.parse(element.getAttribute('data-settings'));
-        }
-        function updateCartCount(count) {
-          const cartCountElements = document.querySelectorAll('.cart-count');
-          cartCountElements.forEach(el => el.textContent = count);
-        }
-        function showToast(message, type = 'success') {
-          if (window.Toastify) {
-            Toastify({
-              text: message,
-              duration: 3000,
-              gravity: "top",
-              position: "right",
-              backgroundColor: type === 'error' ? "#e74c3c" : "#27ae60",
-              stopOnFocus: true
-            }).showToast();
-          } else {
-            // fallback
-            // (do not use alert, just log)
-            console[type === 'error' ? 'error' : 'log'](message);
-          }
         }
       });
     </script>
@@ -1661,62 +1349,74 @@
           }'>
           <div class="swiper-wrapper">
             <% if (Array.isArray(bestSeller) && bestSeller.length) { %>
-              <% bestSeller.forEach(function(product) { var discount=0; var hasDiscount=false; var
-                basePrice=product.basePrice || product.price || 0; var offerPrice=product.offerPrice ||
-                product.salePrice || basePrice; if (basePrice && offerPrice && basePrice> offerPrice) {
-                discount = Math.round(((basePrice - offerPrice) / basePrice) * 100);
-                hasDiscount = true;
-                }
-                var categoryName = (product.category && product.category.name) ? product.category.name :
-                (product.categoryName || '');
-                %>
-                <div class="swiper-slide product-card">
+              <% bestSeller.forEach(function(product) { 
+                var basePrice = product.basePrice || product.price || 0;
+                var offerPrice = product.offerPrice || product.salePrice || basePrice;
+                var hasDiscount = (offerPrice > 0 && offerPrice < basePrice);
+                var discount = hasDiscount ? Math.round(((basePrice - offerPrice) / basePrice) * 100) : 0;
+                var saveAmount = hasDiscount ? (basePrice - offerPrice) : 0;
+                var categoryName = (product.category && product.category.name) ? product.category.name : (product.categoryName || '');
+              %>
+                <div class="swiper-slide product-card" data-product-id="<%= product._id %>" style="cursor:pointer;">
                   <div class="pc__img-wrapper position-relative">
-                    <a href="/product/<%= product.slug || product._id %>">
-                      <img loading="lazy"
-                        src="<%= product.images && product.images[0] ? product.images[0] : '/images/placeholder.png' %>"
-                        width="330" height="400" alt="<%= product.name %>" class="pc__img">
-                      <% if (product.images && product.images[1]) { %>
-                        <img loading="lazy" src="<%= product.images[1] %>" width="330" height="400"
-                          alt="<%= product.name %>" class="pc__img pc__img-second">
+                    <a href="/product/<%= product.slug || product._id %>" style="display:block;">
+                      <% if (product.images && product.images.length > 0) { %>
+                        <img loading="lazy"
+                          src="<%= product.images[0] %>"
+                          width="330" height="400" alt="<%= product.name %>" class="pc__img">
+                        <% if (product.images.length > 1) { %>
+                          <img loading="lazy" src="<%= product.images[1] %>" width="330" height="400"
+                            alt="<%= product.name %>" class="pc__img pc__img-second">
                         <% } %>
+<<<<<<< HEAD
                           <% if (hasDiscount) { %>
                             <span class="discount-label"
                               >
                               <%= discount %>% off
                             </span>
                             <% } %>
+=======
+                      <% } else { %>
+                        <img loading="lazy"
+                          src="/images/placeholder.png"
+                          width="330" height="400" alt="<%= product.name %>" class="pc__img">
+                      <% } %>
+                      <% if (hasDiscount) { %>
+                        <span class="discount-label"><%= discount %>% off</span>
+                      <% } %>
+                      <div class="pc__img-overlay-bottom">
+                        <div class="pc__title" style="color:#fff;text-align:center;">
+                          <%= product.name %>
+                        </div>
+                        <% if (categoryName) { %>
+                          <span class="pc__category" style="display:block;text-align:center;"><%= categoryName %></span>
+                        <% } %>
+                      </div>
+>>>>>>> main
                     </a>
                   </div>
-                  <div class="pc__info position-relative">
-                    <p class="pc__category third-color mb-1" style="font-size:0.98em;">
-                      <%= categoryName %>
-                    </p>
-                    <h6 class="pc__title mb-1" style="font-size:1.08em;">
-                      <a href="/product/<%= product.slug || product._id %>" style="color:inherit;text-decoration:none;">
-                        <%= product.name %>
-                      </a>
-                    </h6>
-                    <div class="product-card__price d-flex align-items-center mb-1">
-                      <% if (hasDiscount) { %>
-                        <span class="money price-old"
-                          style="color:#888;text-decoration:line-through;margin-right:8px;">₹<%= basePrice %></span>
+                  <a href="/product/<%= product.slug || product._id %>" style="text-decoration:none;">
+                    <div class="pc__info position-relative" style="padding:4px 0;">
+                      <div class="product-card__price d-flex align-items-center" style="gap:8px;">
+                        <% if (hasDiscount) { %>
+                          <span class="money price-old" style="text-decoration:line-through;color:#888;">₹<%= basePrice %></span>
                         <% } %>
-                          <span class="money price" style="font-weight:600;color:#3B1E58;">₹<%= offerPrice %></span>
-                    </div>
-                    <% if (hasDiscount) { %>
-                      <div class="text-danger small mt-1" style="font-size:0.95em;">You save <%= discount %>%</div>
-                      <% } %>
-                  </div>
-                </div>
-                <% }); %>
-                  <% } else { %>
-                    <div class="swiper-slide">
-                      <div class="text-center py-5 w-100">
-                        <span class="text-muted">No best sellers available at the moment.</span>
+                        <span class="money price" style="font-weight:bold;color:#222;">₹<%= hasDiscount ? offerPrice : basePrice %></span>
+                        <% if (hasDiscount) { %>
+                          <span class="save-amount" style="color:#27ae60;font-size:0.95em;margin-left:6px;">You save ₹<%= saveAmount %></span>
+                        <% } %>
                       </div>
                     </div>
-                    <% } %>
+                  </a>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div class="swiper-slide">
+                <div class="text-center py-5 w-100">
+                  <span class="text-muted">No best sellers available at the moment.</span>
+                </div>
+              </div>
+            <% } %>
           </div>
         </div>
 

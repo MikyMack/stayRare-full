@@ -893,7 +893,7 @@
                     const password = document.getElementById('loginPassword').value;
 
                     // Get guestCart from localStorage
-                    const guestCart = JSON.parse(localStorage.getItem('guestCart')) || [];
+                    const guestCart = JSON.parse(localStorage.getItem('cart')) || [];
 
                     try {
                         const response = await fetch('/auth/login', {
@@ -942,7 +942,7 @@
                 function handleGoogleLogin(event) {
                     event.preventDefault();
 
-                    const guestCart = JSON.parse(localStorage.getItem('guestCart')) || [];
+                    const guestCart = JSON.parse(localStorage.getItem('cart')) || [];
                     const encodedCart = encodeURIComponent(JSON.stringify(guestCart));
 
                     fetch('/auth/store-guest-cart', {
