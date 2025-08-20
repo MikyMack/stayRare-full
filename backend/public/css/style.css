@@ -15529,8 +15529,9 @@ textarea.form-control.is-invalid {
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #3B1E58 100%);
+  background: linear-gradient(135deg, #3B1E58 0%, #3B1D58 100%);
   -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; /* important for Safari/iOS */
   background-clip: text;
   color: transparent;
   font-weight: bold;
