@@ -194,4 +194,35 @@ router.get('/search', async (req, res) => {
   });
   
 
+  router.post("/review", async (req, res) => {
+    try {
+      const { productId, name, rating, review } = req.body;
+  
+      if (!productId || !name || !rating || !review) {
+        return res.status(400).json({ success: false, message: "All fields required" });
+      }
+  
+      const product = await Product.findById(productId);
+      if (!product) {
+        return res.status(404).json({ success: false, message: "Product not found" });
+      }
+  
+      const newReview = {
+        name,
+        rating: Number(rating),
+        review
+        // createdAt will be added automatically by schema
+      };
+  
+      product.reviews.push(newReview);
+      await product.save();
+  
+      res.json({ success: true, message: "Review added successfully!" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+  });
+  
+
 module.exports = router;
