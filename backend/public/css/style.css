@@ -12253,7 +12253,6 @@ img {
 
 @media (min-width: 1500px) {
   .full-width_border {
-    padding: 0.625rem;
     border-style: solid;
   }
 }

@@ -1818,6 +1818,18 @@
   <script>
     window.isLoggedIn = <%= user ? 'true' : 'false' %>;
   </script>
+    <script>
+      window.addEventListener('load', () => {
+          const urlParams = new URLSearchParams(window.location.search);
+          const googleLogin = urlParams.get('googleLogin');
+
+          if (googleLogin === 'true') {
+              localStorage.removeItem('cart');
+              const cleanUrl = window.location.origin + window.location.pathname;
+              window.history.replaceState({}, document.title, cleanUrl);
+          }
+      });
+  </script>
   <!-- External JavaScripts -->
   <script src="js/plugins/jquery.min.js"></script>
   <script src="js/plugins/bootstrap.bundle.min.js"></script>

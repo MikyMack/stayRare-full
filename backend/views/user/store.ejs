@@ -1438,22 +1438,11 @@
         <div id="accordion-filter-price" class="accordion-collapse collapse show border-0"
           aria-labelledby="accordion-heading-price" data-bs-parent="#price-filters">
           <%
-            // Find min and max price from products
-            var minProductPrice = null, maxProductPrice = null;
-            if (typeof products !== 'undefined' && Array.isArray(products)) {
-              products.forEach(function(product) {
-                var price = (product.salePrice && product.salePrice > 0) ? product.salePrice : product.basePrice;
-                if (typeof price === 'number') {
-                  if (minProductPrice === null || price < minProductPrice) minProductPrice = price;
-                  if (maxProductPrice === null || price > maxProductPrice) maxProductPrice = price;
-                }
-              });
-            }
-            // Fallbacks
-            minProductPrice = minProductPrice !== null ? minProductPrice : 0;
-            maxProductPrice = maxProductPrice !== null ? maxProductPrice : 1000;
-            var selectedMin = (filters && filters.minPrice) ? Number(filters.minPrice) : minProductPrice;
-            var selectedMax = (filters && filters.maxPrice) ? Number(filters.maxPrice) : maxProductPrice;
+            // Set price filter range to 0 - 5000
+            var minProductPrice = 0;
+            var maxProductPrice = 5000;
+            var selectedMin = (filters && filters.minPrice) ? Math.max(0, Number(filters.minPrice)) : minProductPrice;
+            var selectedMax = (filters && filters.maxPrice) ? Math.min(5000, Number(filters.maxPrice)) : maxProductPrice;
           %>
           <form method="get" class="d-block">
             <% 
@@ -1469,14 +1458,16 @@
             %>
             <div class="d-flex align-items-center mb-2">
               <label class="me-2 text-secondary" for="minPrice">Min:</label>
-              <input type="number" min="<%= minProductPrice %>" max="<%= maxProductPrice %>" step="1"
+              <input type="number" min="0" max="5000" step="1"
                 name="minPrice" id="minPrice" class="form-control form-control-sm w-auto"
                 value="<%= selectedMin %>">
               <label class="mx-2 text-secondary" for="maxPrice">Max:</label>
-              <input type="number" min="<%= minProductPrice %>" max="<%= maxProductPrice %>" step="1"
+              <input type="number" min="0" max="5000" step="1"
                 name="maxPrice" id="maxPrice" class="form-control form-control-sm w-auto"
                 value="<%= selectedMax %>">
-              <button type="submit" class="btn btn-sm btn-primary ms-2">Apply</button>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-sm btn-primary w-100">Apply</button>
             </div>
             <div class="price-range__info d-flex align-items-center mt-2">
               <div class="me-auto">
@@ -1663,8 +1654,6 @@
   <!-- Go To Top -->
   <div id="scrollTop" class="visually-hidden end-0"></div>
 
-  <!-- Page Overlay -->
-  <div class="page-overlay"></div><!-- /.page-overlay -->
 
 
   <!-- External JavaScripts -->

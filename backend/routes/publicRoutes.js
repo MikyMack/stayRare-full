@@ -1244,12 +1244,13 @@ router.get('/shipping_policy', async (req, res) => {
         .lean();
     res.render('user/shipping-policy', { user: req.user || null, categories });
 });
-router.get('/Cancellation_Refund', async (req, res) => {
+router.get('/return_policy', async (req, res) => {
     const categories = await Category.find({ isActive: true })
         .select('name imageUrl isActive subCategories')
         .lean();
-    res.render('user/cancellation-refund', { user: req.user || null, categories });
+    res.render('user/return-policy', { user: req.user || null, categories });
 });
+
 router.get('/terms_and_conditions', async (req, res) => {
     const categories = await Category.find({ isActive: true })
         .select('name imageUrl isActive subCategories')
