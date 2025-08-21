@@ -860,10 +860,7 @@
                                 <em>PS: Exchange/Returns will not be applicable if the Brand Tag is broken or
                                     missing.</em>
                             </div>
-                            <div style="font-size:0.93rem; color:#3a3a3a; font-weight:500; margin-top:4px;">
-                                <strong>Note:</strong> Only first delivery is free. <span
-                                    style="color:#434343;">Shipping charges apply for return or exchange items.</span>
-                            </div>
+                         
                         </div>
                     </div>
                 </div>
@@ -973,56 +970,74 @@
                         aria-labelledby="tab-additional-info-tab">
                         <div class="product-single__addtional-info">
                             <% if (catName === "oversized t-shirts" || catName === "regular fit") { %>
-                                <div class="item">
-                                    <label class="h6">Washing</label>
-                                    <span>
-                                        Machine wash in cold or lukewarm water using mild detergent.<br>
-                                        Turn inside out before washing to protect the print.<br>
-                                        Wash with similar colors.<br>
-                                        Avoid bleach, harsh chemicals, and fabric softeners.
-                                    </span>
+                                <div class="item mb-3">
+                                    <label class="h6" style="color:#816f16;"><i class="fa fa-tint me-1"></i> Wash & Care</label>
+                                    <ul class="ps-3 mb-2" style="list-style: disc;">
+                                        <li>Machine wash cold or lukewarm with mild detergent</li>
+                                        <li>Turn inside out to protect the print</li>
+                                        <li>Wash with similar colors</li>
+                                        <li><span style="color:#4e2424;">No bleach, harsh chemicals, or softeners</span></li>
+                                    </ul>
                                 </div>
-                                <div class="item">
-                                    <label class="h6">Drying</label>
-                                    <span>
-                                        Do not wring or twist.<br>
-                                        Avoid excessive rubbing to protect the print.<br>
-                                        Tumble dry on low or air dry in the shade for best longevity.
-                                    </span>
+                                <div class="item mb-3">
+                                    <label class="h6" style="color:#816f16;"><i class="fa fa-sun-o me-1"></i> Drying</label>
+                                    <ul class="ps-3 mb-2" style="list-style: disc;">
+                                        <li>Never wring or twist your tee</li>
+                                        <li>Handle prints gently—avoid rubbing</li>
+                                        <li>Tumble dry low or air dry in shade for lasting color</li>
+                                    </ul>
                                 </div>
-                                <div class="item">
-                                    <label class="h6">Ironing</label>
-                                    <span>
-                                        Do not iron directly on the print.<br>
-                                        Turn inside out and iron on medium heat while slightly damp.<br>
-                                        Place a cloth over the print if ironing on the front side.
-                                    </span>
+                                <div class="item mb-3">
+                                    <label class="h6" style="color:#816f16;"><i class="fa fa-iron me-1"></i> Ironing</label>
+                                    <ul class="ps-3 mb-2" style="list-style: disc;">
+                                        <li>Do <b>not</b> iron directly on the print</li>
+                                        <li>Iron inside out on medium heat while slightly damp</li>
+                                        <li>Use a cloth over the print if ironing the front</li>
+                                    </ul>
                                 </div>
-                                <div class="item">
-                                    <label class="h6">Storage</label>
-                                    <span>
-                                        Fold neatly or hang in a cool, dry place.<br>
-                                        Keep away from direct sunlight to preserve color and print quality.
-                                    </span>
+                                <div class="item mb-1">
+                                    <label class="h6" style="color:#816f16;"><i class="fa fa-archive me-1"></i> Storage</label>
+                                    <ul class="ps-3 mb-2" style="list-style: disc;">
+                                        <li>Fold neatly or hang in a cool, dry place</li>
+                                        <li>Keep away from direct sunlight to preserve those vibrant colors</li>
+                                    </ul>
+                                </div>
+                                <div class="alert alert-warning mt-3" style="font-size:0.98rem;">
+                                    <i class="fa fa-lightbulb-o me-1"></i>
+                                    <b>Pro Tip:</b> Treat your tee with care and it’ll stay rare—wash, dry, and wear with love!
                                 </div>
                             <% } else { %>
-                                <div class="item">
-                                    <label class="h6">Washing</label>
-                                    <span>Machine wash in cold or lukewarm water with mild detergent. Turn inside out before
-                                        washing. Wash similar colors together and avoid bleach.</span>
+                                <div class="item mb-3">
+                                    <label class="h6" style="color:#816f16;"><i class="fa fa-tint me-1"></i> Washing</label>
+                                    <ul class="ps-3 mb-2" style="list-style: disc;">
+                                        <li>Machine wash cold or lukewarm with mild detergent</li>
+                                        <li>Turn inside out before washing</li>
+                                        <li>Wash similar colors together</li>
+                                        <li>Avoid bleach</li>
+                                    </ul>
                                 </div>
-                                <div class="item">
-                                    <label class="h6">Drying </label>
-                                    <span>Do not wring. Avoid excessive rubbing or wringing to prevent stretching. Tumble
-                                        dry on low or air dry in the shade.</span>
+                                <div class="item mb-3">
+                                    <label class="h6" style="color:#816f16;"><i class="fa fa-sun-o me-1"></i> Drying</label>
+                                    <ul class="ps-3 mb-2" style="list-style: disc;">
+                                        <li>Do not wring or stretch</li>
+                                        <li>Tumble dry low or air dry in shade</li>
+                                    </ul>
                                 </div>
-                                <div class="item">
-                                    <label class="h6">Ironing </label>
-                                    <span>Use medium heat while slightly damp for best results.</span>
+                                <div class="item mb-3">
+                                    <label class="h6" style="color:#816f16;"><i class="fa fa-iron me-1"></i> Ironing</label>
+                                    <ul class="ps-3 mb-2" style="list-style: disc;">
+                                        <li>Iron on medium heat while slightly damp</li>
+                                    </ul>
                                 </div>
-                                <div class="item">
-                                    <label class="h6">Storage </label>
-                                    <span>Hang or fold neatly in a cool, dry place.</span>
+                                <div class="item mb-1">
+                                    <label class="h6" style="color:#816f16;"><i class="fa fa-archive me-1"></i> Storage</label>
+                                    <ul class="ps-3 mb-2" style="list-style: disc;">
+                                        <li>Hang or fold neatly in a cool, dry place</li>
+                                    </ul>
+                                </div>
+                                <div class="alert alert-info mt-3" style="font-size:0.98rem;">
+                                    <i class="fa fa-smile-o me-1"></i>
+                                    <b>Keep it fresh:</b> A little care goes a long way—your favorite will look new, wash after wash!
                                 </div>
                             <% } %>
                         </div>

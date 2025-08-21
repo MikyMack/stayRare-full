@@ -960,7 +960,7 @@
         </div><!-- /.shop-acs -->
       </div><!-- /.d-flex justify-content-between -->
 
-      <div class="products-grid row row-cols-2 row-cols-md-3 row-cols-lg-4 p-3" id="products-grid">
+      <div class="products-grid row row-cols-2 row-cols-md-3 row-cols-lg-4 p-3 gap-5" id="products-grid">
         <% if (Array.isArray(products) && products.length > 0) { %>
           <% products.forEach(function(product) { 
             var basePrice = product.basePrice || product.price || 0;
