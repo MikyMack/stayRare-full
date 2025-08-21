@@ -2,12 +2,12 @@ const nodemailer = require('nodemailer');
 
 const sendOtp = async (email, otp) => {
     try {
-        // Create transporter with your email service credentials
+  
         const transporter = nodemailer.createTransport({
-            service: 'gmail', // or your email provider
+            service: 'gmail', 
             auth: {
-                user: process.env.EMAIL_USERNAME, // your email
-                pass: process.env.EMAIL_PASSWORD   // your email password or app password
+                user: process.env.EMAIL_USERNAME, 
+                pass: process.env.EMAIL_PASSWORD   
             }
         });
 

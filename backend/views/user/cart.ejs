@@ -772,7 +772,7 @@
   </header>
   <!-- End Header Type 1 -->
 
-  <main>
+  <main class="container">
     <div class="mb-4 pb-4"></div>
     <!-- Lottie player for empty cart -->
   
@@ -793,7 +793,7 @@
             <em>Checkout Your Items List</em>
           </span>
         </a>
-        <a href="shop_order_complete.html" class="checkout-steps__item">
+        <a href="/checkout" class="checkout-steps__item">
           <span class="checkout-steps__item-number">03</span>
           <span class="checkout-steps__item-title">
             <span>Confirmation</span>
@@ -828,13 +828,23 @@
                             <th>Subtotal</th>
                             <td id="cart-total">₹0.00</td>
                         </tr>
+                        <tr>
+                            <th>Shipping</th>
+                            <td>
+                              <span id="cart-shipping" style="color: #27ae60; font-weight: 600;">FREE</span>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
+                <div style="margin-top: 0.5rem; color: #27ae60; font-weight: 500; display: flex; align-items: center;">
+                  <img src="/images/stayrare/free-shipping.png" alt="Free Shipping" style="width: 48px; height: 48px; margin-right: 8px; display: inline-block; vertical-align: middle;">
+                  Free shipping on all orders!
+                </div>
             </div>
             <div class="mobile_fixed-btn_wrapper">
                 <div class="button-wrapper container">
-                    <a class="btn btn-primary btn-checkout" id="checkout-btn" href="#">PROCEED TO CHECKOUT</a>
-                    <button class="btn btn-secondary ml-2" id="clear-cart-btn">Clear Cart</button>
+                    <a class="btn btn-primary btn-checkout mb-3" id="checkout-btn" href="#">PROCEED TO CHECKOUT</a>
+                    <button class="btn btn-secondary ml-2" id="clear-cart-btn" style="background-color: #e74c3c;">Clear Cart</button>
                 </div>
             </div>
           </div>
@@ -865,9 +875,6 @@
         }).showToast();
       }
 
-      // Use user variable from server-side render
-      // If user is present, it's a logged-in user, else guest
-      // EJS: user is available as a variable
       let user = <%- typeof user !== 'undefined' && user ? 'true' : 'false' %>;
 
       document.addEventListener('DOMContentLoaded', function() {
@@ -888,10 +895,8 @@
           }
         });
 
-        // Set checkout button link based on user status
         setCheckoutBtnHref();
 
-        // Also update checkout button on user status change (if needed)
       });
 
       function setCheckoutBtnHref() {
@@ -906,25 +911,21 @@
 
       async function fetchCart() {
         if (user) {
-          // LOG: User is logged in, fetching user cart
-          console.log('[Cart] User is logged in, fetching user cart');
+
           try {
             let res = await fetch('/cartItems', { credentials: 'include' });
             if (!res.ok) throw new Error('Not logged in');
-            // Only remove guest cart if user is logged in
-            console.log('[Cart] Removing guest cart from localStorage because user is logged in');
+     
             localStorage.removeItem('cart');
             let cart = await res.json();
             if (!cart || !cart.items) cart = { items: [] };
             renderCart(cart, true);
           } catch (e) {
-            // If error, fallback to guest cart
-            console.log('[Cart] Error fetching user cart, fallback to guest cart:', e);
+
             renderGuestCart();
           }
         } else {
-          // LOG: User is guest, showing guest cart
-          console.log('[Cart] User is guest, showing guest cart');
+
           renderGuestCart();
         }
       }
@@ -939,8 +940,7 @@
         }
         // Only keep valid items
         items = items.filter(item => item && typeof item === 'object' && Object.keys(item).length > 0);
-        // LOG: Guest cart items loaded
-        console.log('[Cart] Guest cart items:', items);
+  
         let total = 0;
         items.forEach(item => {
           let price = (item.price !== undefined && item.price !== null) ? Number(item.price) : 0;
@@ -1014,10 +1014,7 @@
                 </td>
                 <td>
                   <a href="#" class="remove-cart" onclick="removeCartItem('${itemId}', ${isUser})">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="#767676" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M0.259435 8.85506L9.11449 0L10 0.885506L1.14494 9.74056L0.259435 8.85506Z"/>
-                      <path d="M0.885506 0.0889838L9.74057 8.94404L8.85506 9.82955L0 0.97449L0.885506 0.0889838Z"/>
-                    </svg>                  
+                    <img src="/images/stayrare/delete.png" alt="Remove" width="30" height="30" style="display:inline-block;vertical-align:middle;">
                   </a>
                 </td>
               </tr>
