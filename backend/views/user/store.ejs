@@ -960,7 +960,8 @@
         </div><!-- /.shop-acs -->
       </div><!-- /.d-flex justify-content-between -->
 
-      <div class="products-grid row row-cols-2 row-cols-md-3 row-cols-lg-4 p-3 gap-5" id="products-grid">
+      <div class="products-grid store-product " id="products-grid">
+        
         <% if (Array.isArray(products) && products.length > 0) { %>
           <% products.forEach(function(product) { 
             var basePrice = product.basePrice || product.price || 0;
@@ -972,7 +973,8 @@
             var mainImg = (Array.isArray(product.images) && product.images.length > 0) ? product.images[0] : '/images/placeholder.png';
             var secondImg = (Array.isArray(product.images) && product.images.length > 1) ? product.images[1] : mainImg;
           %>
-            <div class="swiper-slide product-card store-card" data-product-id="<%= product._id %>" style="cursor:pointer;">
+    
+            <div class="swiper-slide product-card store-card " data-product-id="<%= product._id %>" style="cursor:pointer;">
               <div class="pc__img-wrapper position-relative">
                 <a href="/product/<%= product.slug || product._id %>" style="display:block;">
                   <% if (product.images && product.images.length > 0) { %>
@@ -1078,8 +1080,8 @@
  <div>
   <img class="footer-logo" src="images/stayrare/footer-logo.png" alt="">
  </div>
-          <p class="footer-address">TC 56/2042 , Manchadi, Anthivilakku, <br>
-Karumom PO, Thiruvananthapuram, <br> Kerala – 695002</p>
+   <p class="footer-address">Stayrare , Thiruvananthapuram, <br> Kerala , India - 695002
+</p>
           <p class="m-0">
            <a style="color: white;" href="mailto:stayrareofficial@gmail.com">✉️ <strong class="fw-medium">stayrareofficial@gmail.com</strong></a>
           </p>
@@ -1126,7 +1128,7 @@ Karumom PO, Thiruvananthapuram, <br> Kerala – 695002</p>
             <li class="sub-menu__item"><a href="/account" class="menu-link menu-link_us-s">My Account</a></li>
             <li class="sub-menu__item"><a href="/terms_and_conditions" class="menu-link menu-link_us-s">Terms & Conditions</a></li>
             <li class="sub-menu__item"><a href="/privacy_policy" class="menu-link menu-link_us-s">Legal & Privacy</a></li>
-            <li class="sub-menu__item"><a href="/contact" class="menu-link menu-link_us-s">Contact</a></li>
+            <li class="sub-menu__item"><a href="/shipping_policy" class="menu-link menu-link_us-s">Shipping Policy</a></li>
 
           </ul>
         </div><!-- /.footer-column -->

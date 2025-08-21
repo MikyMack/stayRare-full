@@ -15527,6 +15527,9 @@ textarea.form-control.is-invalid {
   color: #FDD202 !important;
 }
 
+.related-cards{
+  margin-top: 0!important;
+}
 .gradient-text {
   background: linear-gradient(135deg, #3B1E58 0%, #3B1D58 100%);
   -webkit-background-clip: text;
@@ -15536,7 +15539,10 @@ textarea.form-control.is-invalid {
   font-weight: bold;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
+.store-card {
+  display: flex!important;
+  gap: 10px!important;
+}
 .price {
   font-size: 1rem;
 }
@@ -20049,7 +20055,25 @@ textarea.form-control.is-invalid {
     --bs-gutter-x: 1.5rem;
   }
 }
+.store-product{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.store-card{
+  flex: 0 0 calc((100% - 30px)/4);
+}
+@media (max-width: 1217px) {
+.store-card{
+  flex: 0 0 calc((100% - 20px)/3);
+}
+}
+@media (max-width: 980px) {
 
+.store-card{
+  flex: 0 0 calc((100% - 10px)/2);
+}
+}
 @media (min-width: 992px) {
   .products-grid .row {
     --bs-gutter-x: 1.875rem;
