@@ -171,7 +171,7 @@ router.get('/store', async (req, res) => {
     try {
         let {
             page = 1,
-            limit = 16,
+            limit = 20,
             category,
             minPrice,
             maxPrice,

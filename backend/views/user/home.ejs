@@ -1082,45 +1082,8 @@
         <% ['best-deals', 'new-arrivals' , 'best-seller' , 'top-rated' ].forEach(function(type, idx) { %>
           <div class="tab-pane fade <%= idx === 0 ? 'show active' : '' %>" id="collections-tab-<%= idx+1 %>"
             role="tabpanel" aria-labelledby="collections-tab-<%= idx+1 %>-trigger">
-            <div class="position-relative">
-              <div class="swiper-container js-swiper-slider <%= type %>-swiper" data-settings='{
-                "autoplay": { "delay": 5000 },
-                "slidesPerView": 4,
-                "slidesPerGroup": 4,
-                "effect": "none",
-                "loop": false,
-                "pagination": {
-                  "el": ".products-pagination.<%= type %>-pagination",
-                  "type": "bullets",
-                  "clickable": true
-                },
-                "navigation": {
-                  "nextEl": ".products-carousel__next.<%= type %>-next",
-                  "prevEl": ".products-carousel__prev.<%= type %>-prev"
-                },
-                "breakpoints": {
-                  "320": { "slidesPerView": 2, "slidesPerGroup": 2, "spaceBetween": 10 },
-                  "768": { "slidesPerView": 3, "slidesPerGroup": 3, "spaceBetween": 18 },
-                  "992": { "slidesPerView": 4, "slidesPerGroup": 1, "spaceBetween": 24, "pagination": false }
-                }
-              }'>
-                <div class="swiper-wrapper <%= type %>-wrapper"></div>
-              </div>
-              <div
-                class="products-carousel__prev <%= type %>-prev position-absolute top-50 d-flex align-items-center justify-content-center">
-                <svg width="25" height="25" viewBox="0 0 25 25">
-                  <use href="#icon_prev_md" />
-                </svg>
-              </div>
-              <div
-                class="products-carousel__next <%= type %>-next position-absolute top-50 d-flex align-items-center justify-content-center">
-                <svg width="25" height="25" viewBox="0 0 25 25">
-                  <use href="#icon_next_md" />
-                </svg>
-              </div>
-              <div
-                class="products-pagination <%= type %>-pagination mt-4 mb-5 d-flex align-items-center justify-content-center">
-              </div>
+            <div class="row g-3 <%= type %>-row" style="min-height: 420px;">
+              <!-- Product cards will be injected here -->
             </div>
           </div>
         <% }); %>
@@ -1129,14 +1092,6 @@
 
     <script>
       document.addEventListener('DOMContentLoaded', function () {
-        // Swiper initialization
-        const swipers = {
-          'best-deals': new Swiper('.best-deals-swiper', getSwiperConfig('.best-deals-swiper')),
-          'new-arrivals': new Swiper('.new-arrivals-swiper', getSwiperConfig('.new-arrivals-swiper')),
-          'best-seller': new Swiper('.best-seller-swiper', getSwiperConfig('.best-seller-swiper')),
-          'top-rated': new Swiper('.top-rated-swiper', getSwiperConfig('.top-rated-swiper'))
-        };
-
         // Load products for first tab
         loadProducts('best-deals');
 
@@ -1148,19 +1103,23 @@
           });
         });
 
-        // Load products for a tab
+        // Load products for a tab and render in grid (multiple rows)
         async function loadProducts(type) {
           try {
-            const response = await fetch(`/product-type/${type}?limit=10`);
+            // Fetch enough products for at least 2 rows (e.g., 8 for 4 per row)
+            const response = await fetch(`/product-type/${type}?limit=12`);
             const data = await response.json();
             if (data.success) {
-              const wrapper = document.querySelector(`.${type.replace('-', '-')}-wrapper`);
-              wrapper.innerHTML = '';
+              const row = document.querySelector(`.${type}-row`);
+              row.innerHTML = '';
+              // 4 per row on desktop, 2 per row on mobile/tablet
               data.products.forEach(product => {
                 const productHtml = createProductCard(product);
-                wrapper.insertAdjacentHTML('beforeend', productHtml);
+                const colDiv = document.createElement('div');
+                colDiv.className = 'col-6 col-md-4 col-lg-3 d-flex';
+                colDiv.innerHTML = productHtml;
+                row.appendChild(colDiv);
               });
-              swipers[type].update();
             }
           } catch (error) {
             console.error('Error loading products:', error);
@@ -1176,8 +1135,6 @@
             ? (product.basePrice - product.salePrice)
             : 0;
 
-          // No "NEW" label as per instruction
-
           // Discount label
           let discountLabelHtml = hasDiscount
             ? `<span class="discount-label">${discountPercentage}% off</span>`
@@ -1189,7 +1146,6 @@
               <div class="pc__title" style="color:#fff;text-align:center;">
                 ${product.name}
               </div>
-           
             </div>
           `;
 
@@ -1203,7 +1159,7 @@
           `;
 
           return `
-            <div class="swiper-slide product-card" data-product-id="${product._id}" style="cursor:pointer;">
+            <div class="product-card w-100" data-product-id="${product._id}" style="cursor:pointer;">
               <div class="pc__img-wrapper" style="position:relative;">
                 <a href="/product/${product._id}" style="display:block;">
                   ${product.images && product.images.length > 0 ? `
@@ -1235,12 +1191,6 @@
             }
           }
         });
-
-        // Helper functions
-        function getSwiperConfig(selector) {
-          const element = document.querySelector(selector);
-          return JSON.parse(element.getAttribute('data-settings'));
-        }
       });
     </script>
 
@@ -1755,7 +1705,7 @@
           </div>
           <span>Wishlist</span>
         </a>
-      </div><!-- /.col-3 -->
+      </div>
       <div class="col-3">
         <a href="/account" class="footer-mobile__link d-flex flex-column align-items-center">
           <div class="position-relative">
@@ -1766,7 +1716,7 @@
           </div>
           <span>Account</span>
         </a>
-      </div><!-- /.col-3 -->
+      </div>
     </div>
   </footer>
 

@@ -77,6 +77,12 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    res.clearCookie('connect.sid');
+  }
+  next();
+});
 
 app.use(async (err, req, res, next) => {
   console.error(err.stack || err);

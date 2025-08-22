@@ -1041,48 +1041,58 @@
         <% } %>
       </div>
       <nav class="shop-pages d-flex justify-content-between mt-3" aria-label="Page navigation">
-        <% if (typeof pagination !== 'undefined' && pagination) { %>
-          <a href="<%= pagination.prevPageUrl %>"
-            class="btn-link d-inline-flex align-items-center <%= pagination.hasPrev ? '' : 'disabled' %>">
-            <svg class="me-1" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_prev_sm" />
-            </svg>
-            <span class="fw-medium">PREV</span>
-          </a>
-          <ul class="pagination mb-0">
-            <% for (var i = 1; i <= pagination.totalPages; i++) { %>
-              <li class="page-item">
-                <a class="btn-link px-1 mx-2 <%= i === pagination.currentPage ? 'btn-link_active' : '' %>"
-                  href="<%= pagination.pageUrl(i) %>">
-                  <%= i %>
-                </a>
-              </li>
-            <% } %>
-          </ul>
-          <a href="<%= pagination.nextPageUrl %>"
-            class="btn-link d-inline-flex align-items-center <%= pagination.hasNext ? '' : 'disabled' %>">
-            <span class="fw-medium me-1">NEXT</span>
-            <svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_next_sm" />
-            </svg>
-          </a>
-        <% } else { %>
-          <a href="#" class="btn-link d-inline-flex align-items-center disabled">
-            <svg class="me-1" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_prev_sm" />
-            </svg>
-            <span class="fw-medium">PREV</span>
-          </a>
-          <ul class="pagination mb-0">
-            <li class="page-item"><a class="btn-link px-1 mx-2 btn-link_active" href="#">1</a></li>
-          </ul>
-          <a href="#" class="btn-link d-inline-flex align-items-center disabled">
-            <span class="fw-medium me-1">NEXT</span>
-            <svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
-              <use href="#icon_next_sm" />
-            </svg>
-          </a>
-        <% } %>
+        <%
+          // Use variables passed from backend: currentPage, totalPages, filters
+          // Defensive fallback
+          var _currentPage = typeof currentPage !== 'undefined' ? currentPage : 1;
+          var _totalPages = typeof totalPages !== 'undefined' ? totalPages : 1;
+          var _filters = typeof filters !== 'undefined' ? filters : {};
+
+          function buildPageUrl(page) {
+            var params = [];
+            // Only add filters that are not empty/undefined/null
+            if (_filters.category) params.push('category=' + encodeURIComponent(_filters.category));
+            if (_filters.subcategory) params.push('subcategory=' + encodeURIComponent(_filters.subcategory));
+            if (_filters.minPrice) params.push('minPrice=' + encodeURIComponent(_filters.minPrice));
+            if (_filters.maxPrice) params.push('maxPrice=' + encodeURIComponent(_filters.maxPrice));
+            if (_filters.size) params.push('size=' + encodeURIComponent(_filters.size));
+            if (_filters.color) params.push('color=' + encodeURIComponent(_filters.color));
+            if (_filters.sort) params.push('sort=' + encodeURIComponent(_filters.sort));
+            if (_filters.limit) params.push('limit=' + encodeURIComponent(_filters.limit));
+            if (_filters.q) params.push('q=' + encodeURIComponent(_filters.q));
+            // Always set page param
+            params.push('page=' + page);
+            return '/store' + (params.length ? '?' + params.join('&') : '');
+          }
+        %>
+        <a
+          href="<%= _currentPage > 1 ? buildPageUrl(_currentPage - 1) : '#' %>"
+          class="btn-link d-inline-flex align-items-center <%= _currentPage > 1 ? '' : 'disabled' %>">
+          <svg class="me-1" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
+            <use href="#icon_prev_sm" />
+          </svg>
+          <span class="fw-medium">PREV</span>
+        </a>
+        <ul class="pagination mb-0">
+          <% for (var i = 1; i <= _totalPages; i++) { %>
+            <li class="page-item">
+              <a 
+                class="btn-link px-1 mx-2<%= i === _currentPage ? ' btn-link_active' : '' %>"
+                style="<%= i === _currentPage ? 'background:black;color:white;border-radius:4px;' : '' %>"
+                href="<%= buildPageUrl(i) %>">
+                <%= i %>
+              </a>
+            </li>
+          <% } %>
+        </ul>
+        <a
+          href="<%= _currentPage < _totalPages ? buildPageUrl(_currentPage + 1) : '#' %>"
+          class="btn-link d-inline-flex align-items-center <%= _currentPage < _totalPages ? '' : 'disabled' %>">
+          <span class="fw-medium me-1">NEXT</span>
+          <svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg">
+            <use href="#icon_next_sm" />
+          </svg>
+        </a>
       </nav>
     </section><!-- /.shop-main container -->
   </main>
