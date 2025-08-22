@@ -23851,9 +23851,9 @@ body.coming-soon-page .header {
 }
 
 .poster-btn {
-  height: 300px;
-  border-radius: 15px;
-  object-fit: cover;
+  /* height: 300px; */
+  border-radius: 5px;
+  object-fit: contain;
 
 }
 
@@ -24022,7 +24022,7 @@ body.coming-soon-page .header {
 @media(max-width:700px) {
   .poster-btn {
     height: auto;
-    border-radius: 15px;
+    border-radius: 8px;
     object-fit: contain;
 
   }
