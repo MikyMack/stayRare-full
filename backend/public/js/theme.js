@@ -679,7 +679,10 @@ function pureFadeOut(e) {
           }
         }
 
-        document.querySelector("main").style.paddingTop = headerHeight + 'px';
+        var mainEl = document.querySelector("main");
+        if (mainEl) {
+          mainEl.style.paddingTop = headerHeight + 'px';
+        }
         _this.$header.classList.add('position-absolute');
 
         document.removeEventListener('scroll', this._stickyScrollHander);
