@@ -1054,6 +1054,7 @@
                         </div>
 
                         <!-- Review Form -->
+                      
                         <div class="product-single__review-form">
                             <form id="customer-review-form" name="customer-review-form" autocomplete="off">
                                 <h5>Write your review on "<%= product.name %>"</h5>
@@ -1064,11 +1065,7 @@
                                     <label>Your rating *</label>
                                     <span class="star-rating" id="star-rating-select" style="display: flex; gap: 4px;">
                                         <% for (let i=1; i <=5; i++) { %>
-                                            <svg class="star-rating__star-icon" width="32" height="32" fill="#ccc"
-                                                viewBox="0 0 24 24" data-rating="<%= i %>" tabindex="0" style="cursor:pointer; display:inline-block; vertical-align:middle;">
-                                                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-                                                    style="stroke:#f5b301;stroke-width:1;"/>
-                                            </svg>
+                                            <span class="star-rating__star" data-rating="<%= i %>" tabindex="0" aria-label="Rate <%= i %> star">&#9733;</span>
                                         <% } %>
                                     </span>
                                     <input type="hidden" id="form-input-rating" name="rating" value="">
@@ -1099,17 +1096,21 @@
                             
                         </div>
                         <script>
-                        // Improved star rating selection
+                        // Star rating selection using Unicode stars
                         document.addEventListener('DOMContentLoaded', function () {
-                            var stars = document.querySelectorAll('#star-rating-select .star-rating__star-icon');
+                            var stars = document.querySelectorAll('#star-rating-select .star-rating__star');
                             var ratingInput = document.getElementById('form-input-rating');
                             var selectedRating = 0;
                             var hoverRating = 0;
 
                             function updateStars(rating) {
-                                for (let i = 0; i < stars.length; i++) {
-                                    stars[i].setAttribute('fill', i < rating ? '#f5b301' : '#ccc');
-                                }
+                                stars.forEach(function(star, idx) {
+                                    if (idx < rating) {
+                                        star.classList.add('filled');
+                                    } else {
+                                        star.classList.remove('filled');
+                                    }
+                                });
                             }
 
                             stars.forEach(function(star, idx) {
@@ -1122,7 +1123,10 @@
                                     hoverRating = 0;
                                     updateStars(selectedRating);
                                 });
-                                star.addEventListener('click', function() {
+                                star.addEventListener('mousedown', function(e) {
+                                    e.preventDefault();
+                                });
+                                star.addEventListener('click', function(e) {
                                     selectedRating = idx + 1;
                                     ratingInput.value = selectedRating;
                                     updateStars(selectedRating);
@@ -1141,7 +1145,6 @@
                                         ratingInput.value = selectedRating;
                                         updateStars(selectedRating);
                                     }
-                                    // Left/Right arrow navigation
                                     if (e.key === 'ArrowLeft' && idx > 0) {
                                         stars[idx - 1].focus();
                                     }
@@ -1151,9 +1154,16 @@
                                 });
                             });
 
-                            // Allow clicking anywhere on the star area to set rating
+                            // Prevent focus on mouse click for all stars
+                            document.getElementById('star-rating-select').addEventListener('mousedown', function(e) {
+                                if (e.target.classList.contains('star-rating__star')) {
+                                    e.preventDefault();
+                                }
+                            });
+
+                            // Event delegation for click (in case of future changes)
                             document.getElementById('star-rating-select').addEventListener('click', function(e) {
-                                if (e.target.classList.contains('star-rating__star-icon')) {
+                                if (e.target.classList.contains('star-rating__star')) {
                                     var rating = parseInt(e.target.getAttribute('data-rating'), 10);
                                     if (!isNaN(rating)) {
                                         selectedRating = rating;
@@ -1193,7 +1203,10 @@
                                             if (data.success) {
                                               messageDiv.textContent = 'Thank you for your review!';
                                               messageDiv.style.color = 'green';
-                                                                                        reviewForm.reset();
+                                              reviewForm.reset();
+                                              // Reset stars after submit
+                                              selectedRating = 0;
+                                              updateStars(0);
                                             } else {
                                               messageDiv.textContent = data.message || 'Failed to submit review.';
                                               messageDiv.style.color = 'red';
