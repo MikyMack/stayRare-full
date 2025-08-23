@@ -367,7 +367,8 @@ router.get('/store', async (req, res) => {
                 .lean();
         }
 
-        const categories = await Category.find({}).lean();
+        // Only send categories where isActive: true
+        const categories = await Category.find({ isActive: true }).lean();
         const cart = req.user ? await Cart.findOne({ user: req.user._id }).lean() : null;
 
         let pageTitle = 'Store';

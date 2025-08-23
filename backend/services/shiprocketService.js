@@ -39,7 +39,7 @@ async function createOrder(order, shippingAddress) {
         const payload = {
             order_id: order._id.toString(),
             order_date: new Date(order.createdAt).toISOString().split('T')[0],
-            pickup_location: 'warehouse-1',
+            pickup_location: 'Home',
             billing_customer_name: firstName,
             billing_last_name: lastName,
             billing_address: shippingAddress.addressLine1 || '',
@@ -48,7 +48,7 @@ async function createOrder(order, shippingAddress) {
             billing_pincode: shippingAddress.pincode || '',
             billing_state: shippingAddress.state || '',
             billing_country: 'India',
-            billing_email: shippingAddress.email || 'hofmaanstore@gmail.com',
+            billing_email: shippingAddress.email || 'starerareofficial@gmail.com',
             billing_phone: shippingAddress.phone || '',
             shipping_is_billing: true,
             order_items: order.items.map(item => ({

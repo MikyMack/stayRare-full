@@ -1205,52 +1205,62 @@
                                                     <% } %>
                                 </div>
 
-                                <% if (totalPages && totalPages> 1) { %>
+                                <% if (totalPages && totalPages > 1) { %>
                                     <nav aria-label="Product pagination"
                                         style="margin-top: 32px; margin-bottom: 10px; display: flex; justify-content: center;">
                                         <ul class="pagination"
                                             style="display: flex; gap: 6px; list-style: none; padding: 0;">
-                                            <% function buildPageUrl(page) { let params=[]; if (typeof searchQuery
-                                                !=='undefined' && searchQuery) { params.push('search=' + encodeURIComponent(searchQuery));
+                                            <% 
+                                                function buildPageUrl(page) {
+                                                    let params = [];
+                                                    if (typeof searchQuery !== 'undefined' && searchQuery) {
+                                                        params.push('search=' + encodeURIComponent(searchQuery));
                                                     }
-                                                    if (typeof selectedCategory !== ' undefined' && selectedCategory) {
-                                                params.push('category=' + encodeURIComponent(selectedCategory));
+                                                    if (typeof selectedCategory !== 'undefined' && selectedCategory) {
+                                                        params.push('category=' + encodeURIComponent(selectedCategory));
                                                     }
-                                                    if (typeof limit !== ' undefined' && limit) { params.push('limit=' + encodeURIComponent(limit));
+                                                    if (typeof limit !== 'undefined' && limit) {
+                                                        params.push('limit=' + encodeURIComponent(limit));
                                                     }
-                                                    params.push(' page=' + page);
-                                                    return ' /admin/products' + (params.length ? '?' + params.join('&')
-                                                : '' ); } let startPage=Math.max(1, currentPage - 2); let
-                                                endPage=Math.min(totalPages, currentPage + 2); if (endPage - startPage <
-                                                4) { if (startPage===1) { endPage=Math.min(totalPages, startPage + 4); }
-                                                else if (endPage===totalPages) { startPage=Math.max(1, endPage - 4); } }
-                                                %>
+                                                    params.push('page=' + page);
+                                                    return '/admin/products' + (params.length ? '?' + params.join('&') : '');
+                                                }
+                                                let startPage = Math.max(1, currentPage - 2);
+                                                let endPage = Math.min(totalPages, currentPage + 2);
+                                                if (endPage - startPage < 4) {
+                                                    if (startPage === 1) {
+                                                        endPage = Math.min(totalPages, startPage + 4);
+                                                    } else if (endPage === totalPages) {
+                                                        startPage = Math.max(1, endPage - 4);
+                                                    }
+                                                }
+                                            %>
+                                            <li>
+                                                <a class="page-link <%= currentPage === 1 ? 'disabled' : '' %>"
+                                                    href="<%= currentPage === 1 ? '#' : buildPageUrl(currentPage - 1) %>"
+                                                    style="padding: 6px 14px; border-radius: 5px; border: 1px solid #ddd; background: #f8f9fa; color: #333; text-decoration: none;<%= currentPage === 1 ? ' pointer-events: none; opacity: 0.5;' : '' %>">
+                                                    &laquo; Prev
+                                                </a>
+                                            </li>
+                                            <% for (let i = startPage; i <= endPage; i++) { %>
                                                 <li>
-                                                    <a class="page-link <%= currentPage === 1 ? 'disabled' : '' %>"
-                                                        href="<%= currentPage === 1 ? '#' : buildPageUrl(currentPage - 1) %>"
-                                                        style="padding: 6px 14px; border-radius: 5px; border: 1px solid #ddd; background: #f8f9fa; color: #333; text-decoration: none; <%= currentPage === 1 ? 'pointer-events: none; opacity: 0.5;' : '' %>">
-                                                        &laquo; Prev
+                                                    <a class="page-link <%= currentPage === i ? 'active' : '' %>"
+                                                        href="<%= buildPageUrl(i) %>"
+                                                        style="padding: 6px 14px; border-radius: 5px; border: 1px solid #ddd; background: <%= currentPage === i ? '#007bff' : '#f8f9fa' %>; color: <%= currentPage === i ? '#fff' : '#333' %>; text-decoration: none; font-weight: <%= currentPage === i ? 'bold' : 'normal' %>;">
+                                                        <%= i %>
                                                     </a>
                                                 </li>
-                                                <% for (let i=startPage; i <=endPage; i++) { %>
-                                                    <li>
-                                                        <a class="page-link <%= currentPage === i ? 'active' : '' %>"
-                                                            href="<%= buildPageUrl(i) %>"
-                                                            style="padding: 6px 14px; border-radius: 5px; border: 1px solid #ddd; background: <%= currentPage === i ? '#007bff' : '#f8f9fa' %>; color: <%= currentPage === i ? '#fff' : '#333' %>; text-decoration: none; font-weight: <%= currentPage === i ? 'bold' : 'normal' %>;">
-                                                            <%= i %>
-                                                        </a>
-                                                    </li>
-                                                    <% } %>
-                                                        <li>
-                                                            <a class="page-link <%= currentPage === totalPages ? 'disabled' : '' %>"
-                                                                href="<%= currentPage === totalPages ? '#' : buildPageUrl(currentPage + 1) %>"
-                                                                style="padding: 6px 14px; border-radius: 5px; border: 1px solid #ddd; background: #f8f9fa; color: #333; text-decoration: none; <%= currentPage === totalPages ? 'pointer-events: none; opacity: 0.5;' : '' %>">
-                                                                Next &raquo;
-                                                            </a>
-                                                        </li>
+                                            <% } %>
+                                            <li>
+                                                <a class="page-link <%= currentPage === totalPages ? 'disabled' : '' %>"
+                                                    href="<%= currentPage === totalPages ? '#' : buildPageUrl(currentPage + 1) %>"
+                                                    style="padding: 6px 14px; border-radius: 5px; border: 1px solid #ddd; background: #f8f9fa; color: #333; text-decoration: none;<%= currentPage === totalPages ? ' pointer-events: none; opacity: 0.5;' : '' %>">
+                                                    Next &raquo;
+                                                </a>
+                                            </li>
                                         </ul>
                                     </nav>
-                                    <% } %>
+                                <% } %>
 
                                         <!-- Product Modal for Create/Edit -->
                                         <div id="productModal" class="modal" style="display:none;">
