@@ -1054,7 +1054,26 @@
                         </div>
 
                         <!-- Review Form -->
-                      
+                        <style>
+                            /* Remove default focus outline for SVG stars, add custom focus style */
+                            .star-rating__star {
+                                font-size: 2rem;
+                                color: #ccc;
+                                cursor: pointer;
+                                transition: color 0.15s;
+                                user-select: none;
+                                outline: none;
+                                display: inline-block;
+                            }
+                            .star-rating__star.filled {
+                                color: #f5b301;
+                            }
+                            .star-rating__star:focus {
+                                outline: none;
+                                box-shadow: 0 0 0 2px #f5b30155;
+                                border-radius: 4px;
+                            }
+                            </style>
                         <div class="product-single__review-form">
                             <form id="customer-review-form" name="customer-review-form" autocomplete="off">
                                 <h5>Write your review on "<%= product.name %>"</h5>

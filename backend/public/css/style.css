@@ -25234,20 +25234,3 @@ margin-top: -1rem;
 }
 }
 
-.star-rating__star {
-    font-size: 2rem;
-    color: #ccc;
-    cursor: pointer;
-    transition: color 0.15s;
-    user-select: none;
-    outline: none;
-    display: inline-block;
-}
-.star-rating__star.filled {
-    color: #f5b301;
-}
-.star-rating__star:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px #f5b30155;
-    border-radius: 4px;
-}
