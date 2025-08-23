@@ -233,8 +233,11 @@ router.get('/admin/products', isAdmin, async (req, res) => {
         // Fetch all categories for filter dropdown
         const categories = await Category.find();
 
-        // Count total products for pagination
+        // Count total products for pagination (filtered)
         const count = await Product.countDocuments(query);
+
+        // Count total products in DB (unfiltered)
+        const totalProductsCount = await Product.countDocuments({});
 
         res.render('admin/products', {
             title: 'Admin Products',
@@ -245,7 +248,8 @@ router.get('/admin/products', isAdmin, async (req, res) => {
             currentPage: page,
             limit,
             searchQuery: search,
-            selectedCategory
+            selectedCategory,
+            totalProductsCount // send total products count in db
         });
     } catch (error) {
         console.error(error);
