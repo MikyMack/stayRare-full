@@ -23858,7 +23858,7 @@ body.coming-soon-page .header {
 }
 
 .poster-img {
-  height: 500px !important;
+  /* height: 500px !important; */
   border-radius: 10px;
 }
 
@@ -24028,8 +24028,8 @@ body.coming-soon-page .header {
   }
 
   .poster-img {
-    height: 200px !important;
-    object-fit: cover;
+    /* height: 200px !important; */
+    object-fit: contain;
 
   }
 

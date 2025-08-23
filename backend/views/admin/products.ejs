@@ -863,13 +863,13 @@
                                                         <% if (product.images && product.images.length> 0) { %>
                                                             <img src="<%= product.images[0] %>" alt="Product Image"
                                                                 class="product-image">
-                                                            <% } else { %>
-                                                                <div class="no-image">
-                                                                    <i class="icon-image"
-                                                                        style="font-size: 1.5em; margin-right: 6px;"></i>
-                                                                    No Image
-                                                                </div>
-                                                                <% } %>
+                                                        <% } else { %>
+                                                            <div class="no-image">
+                                                                <i class="icon-image"
+                                                                    style="font-size: 1.5em; margin-right: 6px;"></i>
+                                                                No Image
+                                                            </div>
+                                                        <% } %>
                                                     </div>
                                                     <div style="flex: 1;">
                                                         <div class="product-title">
@@ -886,16 +886,22 @@
                                                         <div class="product-meta">
                                                             <span style="color:#888;">Subcategory:</span>
                                                             <span>
-                                                                <% let subcategoryName='-' ; if (product.category &&
-                                                                    product.category.subCategories &&
-                                                                    product.subcategory) { const
-                                                                    foundSub=product.category.subCategories.find(function(sub)
-                                                                    { return (sub._id && sub._id.toString &&
-                                                                    sub._id.toString()===product.subcategory.toString())
-                                                                    || (sub._id==product.subcategory); }); if (foundSub
-                                                                    && foundSub.name) { subcategoryName=foundSub.name; }
-                                                                    } %>
-                                                                    <%= subcategoryName %>
+                                                                <% 
+                                                                    let subcategoryName='-' ; 
+                                                                    if (product.category &&
+                                                                        product.category.subCategories &&
+                                                                        product.subcategory) { 
+                                                                        const foundSub=product.category.subCategories.find(function(sub) { 
+                                                                            return (sub._id && sub._id.toString &&
+                                                                                sub._id.toString()===product.subcategory.toString())
+                                                                                || (sub._id==product.subcategory); 
+                                                                        }); 
+                                                                        if (foundSub && foundSub.name) { 
+                                                                            subcategoryName=foundSub.name; 
+                                                                        }
+                                                                    } 
+                                                                %>
+                                                                <%= subcategoryName %>
                                                             </span>
                                                         </div>
                                                         <div class="product-meta">
@@ -915,277 +921,158 @@
                                                             Sales Price: ₹ <%= product.salePrice %>
                                                         </span>
                                                     </div>
-                                                    <% if (product.stock !==undefined) { %>
+                                                    <% if (product.stock !== undefined) { %>
                                                         <div class="product-meta">
                                                             <span style="color:#888;">Stock:</span>
                                                             <span>
                                                                 <%= product.stock %>
                                                             </span>
+                                                            <% if (product.stock === 0) { %>
+                                                                <span style="margin-left:8px; color: #fff; background: #dc3545; border-radius: 4px; padding: 2px 8px; font-size: 0.95em;">
+                                                                    <i class="icon-alert-triangle" style="margin-right:3px;"></i> Out of Stock
+                                                                </span>
+                                                            <% } else if (product.stock < 5) { %>
+                                                                <span style="margin-left:8px; color: #856404; background: #fff3cd; border-radius: 4px; padding: 2px 8px; font-size: 0.95em;">
+                                                                    <i class="icon-alert-circle" style="margin-right:3px;"></i> Low Stock
+                                                                </span>
+                                                            <% } %>
                                                         </div>
-                                                        <% } %>
-                                                            <% if (product.hasColorVariants && product.colorVariants &&
-                                                                product.colorVariants.length> 0) { %>
-                                                                <div class="product-variants">
-                                                                    <span style="color:#888;">Color Variants:</span>
-                                                                    <ul>
-                                                                        <% product.colorVariants.forEach(function(variant)
-                                                                            { %>
-                                                                            <li>
-                                                                                <span style="font-weight: 500;">
-                                                                                    <%= variant.color %>
-                                                                                </span>
-                                                                                <% if (variant.image) { %>
-                                                                                    <img src="<%= variant.image %>"
-                                                                                        alt="<%= variant.color %>">
-                                                                                    <% } %>
-                                                                                        <span
-                                                                                            style="color: #888; margin-left: 6px;">Stock:
-                                                                                            <%= variant.stock %>
-                                                                                        </span>
-                                                                            </li>
-                                                                            <% }); %>
-                                                                    </ul>
-                                                                </div>
-                                                                <% } %>
-                                                                    <% if (product.hasSizeVariants &&
-                                                                        product.sizeVariants &&
-                                                                        product.sizeVariants.length> 0) { %>
-                                                                        <div class="product-variants">
-                                                                            <span style="color:#888;">Size
-                                                                                Variants:</span>
-                                                                            <ul>
-                                                                                <% product.sizeVariants.forEach(function(variant)
-                                                                                    { %>
-                                                                                    <li>
-                                                                                        <span style="font-weight: 500;">
-                                                                                            <%= variant.size %>
-                                                                                        </span>
-                                                                                        <span
-                                                                                            style="color: #888; margin-left: 6px;">Stock:
-                                                                                            <%= variant.stock %>
-                                                                                        </span>
-                                                                                        <% if (typeof variant.length
-                                                                                            !=='undefined' &&
-                                                                                            variant.length !==null &&
-                                                                                            variant.length !=='' ) { %>
-                                                                                            <span
-                                                                                                style="color: #888; margin-left: 6px;">Length:
-                                                                                                <%= variant.length %>
-                                                                                            </span>
-                                                                                            <% } %>
-                                                                                                <% if (typeof
-                                                                                                    variant.chest
-                                                                                                    !=='undefined' &&
-                                                                                                    variant.chest
-                                                                                                    !==null &&
-                                                                                                    variant.chest !==''
-                                                                                                    ) { %>
-                                                                                                    <span
-                                                                                                        style="color: #888; margin-left: 6px;">Chest:
-                                                                                                        <%= variant.chest
-                                                                                                            %>
-                                                                                                    </span>
-                                                                                                    <% } %>
-                                                                                                        <% if (typeof
-                                                                                                            variant.sleeve
-                                                                                                            !=='undefined'
-                                                                                                            &&
-                                                                                                            variant.sleeve
-                                                                                                            !==null &&
-                                                                                                            variant.sleeve
-                                                                                                            !=='' ) { %>
-                                                                                                            <span
-                                                                                                                style="color: #888; margin-left: 6px;">Sleeve:
-                                                                                                                <%= variant.sleeve
-                                                                                                                    %>
-                                                                                                            </span>
-                                                                                                            <% } %>
-                                                                                    </li>
-                                                                                    <% }); %>
-                                                                            </ul>
-                                                                        </div>
+                                                    <% } %>
+                                                    <% if (product.hasColorVariants && product.colorVariants && product.colorVariants.length > 0) { %>
+                                                        <div class="product-variants">
+                                                            <span style="color:#888;">Color Variants:</span>
+                                                            <ul>
+                                                                <% product.colorVariants.forEach(function(variant) { %>
+                                                                    <li>
+                                                                        <span style="font-weight: 500;">
+                                                                            <%= variant.color %>
+                                                                        </span>
+                                                                        <% if (variant.image) { %>
+                                                                            <img src="<%= variant.image %>"
+                                                                                alt="<%= variant.color %>">
                                                                         <% } %>
-                                                                            <% if (product.description) { %>
-                                                                                <div class="product-description">
-                                                                                    <span
-                                                                                        style="color:#888;">Description:</span>
-                                                                                    <span>
-                                                                                        <%= product.description %>
-                                                                                    </span>
-                                                                                </div>
-                                                                                <% } %>
-                                                                                    <% if (product.moreDetails) { %>
-                                                                                        <div
-                                                                                            class="product-description">
-                                                                                            <span
-                                                                                                style="color:#888;">More
-                                                                                                Details:</span>
-                                                                                            <span>
-                                                                                                <%= product.moreDetails
-                                                                                                    %>
-                                                                                            </span>
-                                                                                        </div>
-                                                                                        <% } %>
-                                                                                            <% if
-                                                                                                (product.productDetails)
-                                                                                                { %>
-                                                                                                <div
-                                                                                                    class="product-meta">
-                                                                                                    <span
-                                                                                                        style="color:#888;">Product
-                                                                                                        Details:</span>
-                                                                                                    <ul
-                                                                                                        style="margin: 0; padding-left: 18px;">
-                                                                                                        <% if
-                                                                                                            (product.productDetails.articleNo)
-                                                                                                            { %>
-                                                                                                            <li><b>Article
-                                                                                                                    No:</b>
-                                                                                                                <%= product.productDetails.articleNo
-                                                                                                                    %>
-                                                                                                            </li>
-                                                                                                            <% } %>
-                                                                                                                <% if
-                                                                                                                    (product.productDetails.brand)
-                                                                                                                    { %>
-                                                                                                                    <li><b>Brand:</b>
-                                                                                                                        <%= product.productDetails.brand
-                                                                                                                            %>
-                                                                                                                    </li>
-                                                                                                                    <% }
-                                                                                                                        %>
-                                                                                                                        <% if
-                                                                                                                            (product.productDetails.productType)
-                                                                                                                            {
-                                                                                                                            %>
-                                                                                                                            <li><b>Product
-                                                                                                                                    Type:</b>
-                                                                                                                                <%= product.productDetails.productType
-                                                                                                                                    %>
-                                                                                                                            </li>
-                                                                                                                            <% }
-                                                                                                                                %>
-                                                                                                                                <% if
-                                                                                                                                    (product.productDetails.soleMaterial)
-                                                                                                                                    {
-                                                                                                                                    %>
-                                                                                                                                    <li><b>Sole
-                                                                                                                                            Material:</b>
-                                                                                                                                        <%= product.productDetails.soleMaterial
-                                                                                                                                            %>
-                                                                                                                                    </li>
-                                                                                                                                    <% }
-                                                                                                                                        %>
-                                                                                                                                        <% if
-                                                                                                                                            (product.productDetails.productCollection)
-                                                                                                                                            {
-                                                                                                                                            %>
-                                                                                                                                            <li><b>productCollection:</b>
-                                                                                                                                                <%= product.productDetails.productCollection
-                                                                                                                                                    %>
-                                                                                                                                            </li>
-                                                                                                                                            <% }
-                                                                                                                                                %>
-                                                                                                    </ul>
-                                                                                                </div>
-                                                                                                <% } %>
-                                                                                                    <div
-                                                                                                        class="product-tags">
-                                                                                                        <span><b>Best
-                                                                                                                Deals:</b>
-                                                                                                            <%= product.bestDeals
-                                                                                                                ? 'Yes'
-                                                                                                                : 'No'
-                                                                                                                %>
-                                                                                                        </span>
-                                                                                                        <span><b>Deals
-                                                                                                                of the
-                                                                                                                Day:</b>
-                                                                                                            <%= product.dealsOfTheDay
-                                                                                                                ? 'Yes'
-                                                                                                                : 'No'
-                                                                                                                %>
-                                                                                                        </span>
-                                                                                                        <span><b>New
-                                                                                                                Arrivals:</b>
-                                                                                                            <%= product.newArrivals
-                                                                                                                ? 'Yes'
-                                                                                                                : 'No'
-                                                                                                                %>
-                                                                                                        </span>
-                                                                                                    </div>
-                                                                                                    <div
-                                                                                                        class="product-tags">
-                                                                                                        <span><b>Best
-                                                                                                                Seller:</b>
-                                                                                                            <%= product.bestSeller
-                                                                                                                ? 'Yes'
-                                                                                                                : 'No'
-                                                                                                                %>
-                                                                                                        </span>
-                                                                                                        <span><b>Top
-                                                                                                                Rated:</b>
-                                                                                                            <%= product.topRated
-                                                                                                                ? 'Yes'
-                                                                                                                : 'No'
-                                                                                                                %>
-                                                                                                        </span>
-                                                                                                    </div>
-                                                                                                    <% if
-                                                                                                        (product.reviews
-                                                                                                        &&
-                                                                                                        product.reviews.length>
-                                                                                                        0) { %>
-                                                                                                        <div
-                                                                                                            class="product-reviews">
-                                                                                                            <span
-                                                                                                                style="color:#888;">Reviews
-                                                                                                                (<%= product.reviews.length
-                                                                                                                    %>
-                                                                                                                    ):</span>
-                                                                                                            <ul>
-                                                                                                                <% product.reviews.slice(0,
-                                                                                                                    2).forEach(function(review)
-                                                                                                                    { %>
-                                                                                                                    <li>
-                                                                                                                        <span
-                                                                                                                            style="font-weight: 500;">
-                                                                                                                            <%= review.name
-                                                                                                                                %>
-                                                                                                                        </span>
-                                                                                                                        <span
-                                                                                                                            style="color: #e67e22; margin-left: 6px;">Rating:
-                                                                                                                            <%= review.rating
-                                                                                                                                %>
-                                                                                                                                /5
-                                                                                                                        </span>
-                                                                                                                        <span
-                                                                                                                            style="margin-left: 8px;">
-                                                                                                                            <%= review.review
-                                                                                                                                %>
-                                                                                                                        </span>
-                                                                                                                    </li>
-                                                                                                                    <% });
-                                                                                                                        %>
-                                                                                                                        <% if
-                                                                                                                            (product.reviews.length>
-                                                                                                                            2)
-                                                                                                                            {
-                                                                                                                            %>
-                                                                                                                            <li
-                                                                                                                                style="color: #888;">
-                                                                                                                                ...and
-                                                                                                                                <%= product.reviews.length
-                                                                                                                                    -
-                                                                                                                                    2
-                                                                                                                                    %>
-                                                                                                                                    more
-                                                                                                                            </li>
-                                                                                                                            <% }
-                                                                                                                                %>
-                                                                                                            </ul>
-                                                                                                        </div>
-                                                                                                        <% } %>
+                                                                        <span style="color: #888; margin-left: 6px;">
+                                                                            Stock: <%= variant.stock %>
+                                                                        </span>
+                                                                        <% if (variant.stock === 0) { %>
+                                                                            <span style="margin-left:8px; color: #fff; background: #dc3545; border-radius: 4px; padding: 2px 8px; font-size: 0.92em;">
+                                                                                <i class="icon-alert-triangle" style="margin-right:3px;"></i> Out of Stock
+                                                                            </span>
+                                                                        <% } else if (variant.stock < 5) { %>
+                                                                            <span style="margin-left:8px; color: #856404; background: #fff3cd; border-radius: 4px; padding: 2px 8px; font-size: 0.92em;">
+                                                                                <i class="icon-alert-circle" style="margin-right:3px;"></i> Low Stock
+                                                                            </span>
+                                                                        <% } %>
+                                                                    </li>
+                                                                <% }); %>
+                                                            </ul>
+                                                        </div>
+                                                    <% } %>
+                                                    <% if (product.hasSizeVariants && product.sizeVariants && product.sizeVariants.length > 0) { %>
+                                                        <div class="product-variants">
+                                                            <span style="color:#888;">Size Variants:</span>
+                                                            <ul>
+                                                                <% product.sizeVariants.forEach(function(variant) { %>
+                                                                    <li>
+                                                                        <span style="font-weight: 500;">
+                                                                            <%= variant.size %>
+                                                                        </span>
+                                                                        <span style="color: #888; margin-left: 6px;">
+                                                                            Stock: <%= variant.stock %>
+                                                                        </span>
+                                                                        <% if (variant.stock === 0) { %>
+                                                                            <span style="margin-left:8px; color: #fff; background: #dc3545; border-radius: 4px; padding: 2px 8px; font-size: 0.92em;">
+                                                                                <i class="icon-alert-triangle" style="margin-right:3px;"></i> Out of Stock
+                                                                            </span>
+                                                                        <% } else if (variant.stock < 5) { %>
+                                                                            <span style="margin-left:8px; color: #856404; background: #fff3cd; border-radius: 4px; padding: 2px 8px; font-size: 0.92em;">
+                                                                                <i class="icon-alert-circle" style="margin-right:3px;"></i> Low Stock
+                                                                            </span>
+                                                                        <% } %>
+                                                                        <% if (typeof variant.length !=='undefined' && variant.length !==null && variant.length !=='' ) { %>
+                                                                            <span style="color: #888; margin-left: 6px;">Length: <%= variant.length %></span>
+                                                                        <% } %>
+                                                                        <% if (typeof variant.chest !=='undefined' && variant.chest !==null && variant.chest !=='' ) { %>
+                                                                            <span style="color: #888; margin-left: 6px;">Chest: <%= variant.chest %></span>
+                                                                        <% } %>
+                                                                        <% if (typeof variant.sleeve !=='undefined' && variant.sleeve !==null && variant.sleeve !=='' ) { %>
+                                                                            <span style="color: #888; margin-left: 6px;">Sleeve: <%= variant.sleeve %></span>
+                                                                        <% } %>
+                                                                    </li>
+                                                                <% }); %>
+                                                            </ul>
+                                                        </div>
+                                                    <% } %>
+                                                    <% if (product.description) { %>
+                                                        <div class="product-description">
+                                                            <span style="color:#888;">Description:</span>
+                                                            <span>
+                                                                <%= product.description %>
+                                                            </span>
+                                                        </div>
+                                                    <% } %>
+                                                    <% if (product.moreDetails) { %>
+                                                        <div class="product-description">
+                                                            <span style="color:#888;">More Details:</span>
+                                                            <span>
+                                                                <%= product.moreDetails %>
+                                                            </span>
+                                                        </div>
+                                                    <% } %>
+                                                    <% if (product.productDetails) { %>
+                                                        <div class="product-meta">
+                                                            <span style="color:#888;">Product Details:</span>
+                                                            <ul style="margin: 0; padding-left: 18px;">
+                                                                <% if (product.productDetails.articleNo) { %>
+                                                                    <li><b>Article No:</b> <%= product.productDetails.articleNo %></li>
+                                                                <% } %>
+                                                                <% if (product.productDetails.brand) { %>
+                                                                    <li><b>Brand:</b> <%= product.productDetails.brand %></li>
+                                                                <% } %>
+                                                                <% if (product.productDetails.productType) { %>
+                                                                    <li><b>Product Type:</b> <%= product.productDetails.productType %></li>
+                                                                <% } %>
+                                                                <% if (product.productDetails.soleMaterial) { %>
+                                                                    <li><b>Sole Material:</b> <%= product.productDetails.soleMaterial %></li>
+                                                                <% } %>
+                                                                <% if (product.productDetails.productCollection) { %>
+                                                                    <li><b>productCollection:</b> <%= product.productDetails.productCollection %></li>
+                                                                <% } %>
+                                                            </ul>
+                                                        </div>
+                                                    <% } %>
+                                                    <div class="product-tags">
+                                                        <span><b>Best Deals:</b> <%= product.bestDeals ? 'Yes' : 'No' %></span>
+                                                        <span><b>Deals of the Day:</b> <%= product.dealsOfTheDay ? 'Yes' : 'No' %></span>
+                                                        <span><b>New Arrivals:</b> <%= product.newArrivals ? 'Yes' : 'No' %></span>
+                                                    </div>
+                                                    <div class="product-tags">
+                                                        <span><b>Best Seller:</b> <%= product.bestSeller ? 'Yes' : 'No' %></span>
+                                                        <span><b>Top Rated:</b> <%= product.topRated ? 'Yes' : 'No' %></span>
+                                                    </div>
+                                                    <% if (product.reviews && product.reviews.length > 0) { %>
+                                                        <div class="product-reviews">
+                                                            <span style="color:#888;">Reviews (<%= product.reviews.length %>):</span>
+                                                            <ul>
+                                                                <% product.reviews.slice(0, 2).forEach(function(review) { %>
+                                                                    <li>
+                                                                        <span style="font-weight: 500;">
+                                                                            <%= review.name %>
+                                                                        </span>
+                                                                        <span style="color: #e67e22; margin-left: 6px;">Rating: <%= review.rating %>/5</span>
+                                                                        <span style="margin-left: 8px;">
+                                                                            <%= review.review %>
+                                                                        </span>
+                                                                    </li>
+                                                                <% }); %>
+                                                                <% if (product.reviews.length > 2) { %>
+                                                                    <li style="color: #888;">
+                                                                        ...and <%= product.reviews.length - 2 %> more
+                                                                    </li>
+                                                                <% } %>
+                                                            </ul>
+                                                        </div>
+                                                    <% } %>
                                                 </div>
                                                 <div class="product-actions">
                                                     <button class="btn btn-sm btn-primary" title="Edit"
