@@ -256,7 +256,7 @@ router.get('/store', async (req, res) => {
         }
 
         if (q && typeof q === 'string' && q.trim()) {
-            const keywords = q.trim().split(/\s+/).join('|'); // e.g. "leather boots" → "leather|boots"
+            const keywords = q.trim().split(/\s+/).join('|');
             const searchRegex = new RegExp(keywords, 'i');
         
             const matchedCategories = await Category.find({
@@ -269,7 +269,6 @@ router.get('/store', async (req, res) => {
                 (cat.subCategories || []).filter(sub => searchRegex.test(sub.name)).map(sub => sub._id.toString())
             );
         
-            // Combine full filter
             filter.$or = [
                 { name: searchRegex },
                 { description: searchRegex },
@@ -294,7 +293,7 @@ router.get('/store', async (req, res) => {
                 $or: [
                     { 
                         $and: [
-                            { $or: [{ salePrice: { $gt: 0 } }, { salePrice: { $exists: true } }] },
+                            { salePrice: { $gt: 0 } },
                             { salePrice: priceFilter }
                         ]
                     },
@@ -313,57 +312,100 @@ router.get('/store', async (req, res) => {
 
         const totalProducts = await Product.countDocuments(filter);
 
-        // Sorting logic for price-low and price-high
+        // FIXED: Proper MongoDB sorting for all cases
         let sortObj = {};
         switch (sort) {
             case 'price-low':
-                sortObj = { };
+                // Use aggregation for proper price sorting with pagination
                 break;
             case 'price-high':
-                sortObj = { };
+                // Use aggregation for proper price sorting with pagination
                 break;
             case 'bestseller':
                 sortObj = { soldCount: -1 };
                 break;
+            case 'featured':
+                sortObj = { isFeatured: -1, createdAt: -1 };
+                break;
+            case 'az':
+                sortObj = { name: 1 }; // A-Z alphabetical
+                break;
+            case 'za':
+                sortObj = { name: -1 }; // Z-A alphabetical
+                break;
+            case 'newest':
             default:
-                sortObj = { createdAt: -1 };
+                sortObj = { createdAt: -1 }; // Default: newest first
         }
 
         let products = [];
+        
+        // Use MongoDB aggregation for price sorting to maintain proper pagination
         if (sort === 'price-low' || sort === 'price-high') {
-
-            let fetchedProducts = await Product.find(filter)
-                .skip((effectivePage - 1) * Number(limit))
-                .limit(Number(limit))
-                .populate('category', 'name') // Populate category name
-                .lean();
-
-            if (fetchedProducts.length < Number(limit)) {
-                fetchedProducts = await Product.find(filter)
-                    .populate('category', 'name') // Populate category name
-                    .lean();
-            }
-
-            fetchedProducts.forEach(p => {
-                p.effectivePrice = (p.salePrice && p.salePrice > 0) ? p.salePrice : p.basePrice;
-            });
-
-            fetchedProducts.sort((a, b) => {
-                if (sort === 'price-low') {
-                    return a.effectivePrice - b.effectivePrice;
-                } else {
-                    return b.effectivePrice - a.effectivePrice;
+            const aggregationPipeline = [
+                { $match: filter },
+                {
+                    $addFields: {
+                        effectivePrice: {
+                            $cond: {
+                                if: { $and: [{ $gt: ['$salePrice', 0] }] },
+                                then: '$salePrice',
+                                else: '$basePrice'
+                            }
+                        }
+                    }
+                },
+                { $sort: { effectivePrice: sort === 'price-low' ? 1 : -1 } },
+                { $skip: (effectivePage - 1) * Number(limit) },
+                { $limit: Number(limit) },
+                {
+                    $lookup: {
+                        from: 'categories',
+                        localField: 'category',
+                        foreignField: '_id',
+                        as: 'categoryInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$categoryInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $project: {
+                        name: 1,
+                        description: 1,
+                        basePrice: 1,
+                        salePrice: 1,
+                        images: 1,
+                        category: 1,
+                        subcategory: 1,
+                        isActive: 1,
+                        newArrivals: 1,
+                        bestDeals: 1,
+                        isFeatured: 1,
+                        soldCount: 1,
+                        moreDetails: 1,
+                        productDetails: 1,
+                        sizeVariants: 1,
+                        colorVariants: 1,
+                        createdAt: 1,
+                        updatedAt: 1,
+                        effectivePrice: 1,
+                        'categoryInfo.name': 1
+                    }
                 }
-            });
+            ];
 
-            // Paginate after sort
-            products = fetchedProducts.slice((effectivePage - 1) * Number(limit), effectivePage * Number(limit));
+            products = await Product.aggregate(aggregationPipeline);
         } else {
+            // For all other sorting types, use regular find with sort
             products = await Product.find(filter)
                 .skip((effectivePage - 1) * Number(limit))
                 .limit(Number(limit))
                 .sort(sortObj)
-                .populate('category', 'name') // Populate category name
+                .populate('category', 'name')
                 .lean();
         }
 

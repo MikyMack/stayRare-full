@@ -943,8 +943,10 @@
         <div class="shop-acs d-flex align-items-center justify-content-between justify-content-md-end flex-grow-1">
           <form id="sortForm" method="get" class="d-inline">
             <%
-              function buildQueryString(filters, overrideSort) {
+            function buildQueryString(filters, overrideSort) {
                 const params = [];
+                
+                // Add all filter parameters except sort
                 if (filters.category) params.push('category=' + encodeURIComponent(filters.category));
                 if (filters.subcategory) params.push('subcategory=' + encodeURIComponent(filters.subcategory));
                 if (filters.q) params.push('q=' + encodeURIComponent(filters.q));
@@ -955,27 +957,44 @@
                 if (filters.limit) params.push('limit=' + encodeURIComponent(filters.limit));
                 if (filters.categoryPage) params.push('categoryPage=' + encodeURIComponent(filters.categoryPage));
                 if (filters.subcategoryPage) params.push('subcategoryPage=' + encodeURIComponent(filters.subcategoryPage));
+                
+                // Handle sort parameter - use override if provided, otherwise use existing filter
                 if (overrideSort !== undefined) {
-                  params.push('sort=' + encodeURIComponent(overrideSort));
+                    params.push('sort=' + encodeURIComponent(overrideSort));
                 } else if (filters.sort) {
-                  params.push('sort=' + encodeURIComponent(filters.sort));
+                    params.push('sort=' + encodeURIComponent(filters.sort));
                 }
+                
                 return params.join('&');
-              }
-              const sortValue = filters && filters.sort ? filters.sort : 'newest';
+            }
+            
+            const sortValue = filters && filters.sort ? filters.sort : 'newest';
             %>
+            
             <select class="shop-acs__select form-select w-auto border-0 py-0 order-1 order-md-0"
-            aria-label="Sort Items" name="sort"
-            onchange="location.href='/store?<%= buildQueryString(filters) %>&sort=' + this.value;">
-            <option value="newest" <%= sortValue==='newest' ? 'selected' : '' %>>Default Sorting</option>
-            <option value="featured" <%= sortValue==='featured' ? 'selected' : '' %>>Featured</option>
-            <option value="bestseller" <%= sortValue==='bestseller' ? 'selected' : '' %>>Best selling</option>
-            <option value="az" <%= sortValue==='az' ? 'selected' : '' %>>Alphabetically, A-Z</option>
-            <option value="za" <%= sortValue==='za' ? 'selected' : '' %>>Alphabetically, Z-A</option>
-            <option value="price-low" <%= sortValue==='price-low' ? 'selected' : '' %>>Price, low to high</option>
-            <option value="price-high" <%= sortValue==='price-high' ? 'selected' : '' %>>Price, high to low</option>
-          </select>
-          </form>
+                aria-label="Sort Items" name="sort"
+                onchange="updateSort(this.value)">
+                <option value="newest" <%= sortValue==='newest' ? 'selected' : '' %>>Default Sorting</option>
+                <option value="featured" <%= sortValue==='featured' ? 'selected' : '' %>>Featured</option>
+                <option value="bestseller" <%= sortValue==='bestseller' ? 'selected' : '' %>>Best selling</option>
+                <option value="az" <%= sortValue==='az' ? 'selected' : '' %>>Alphabetically, A-Z</option>
+                <option value="za" <%= sortValue==='za' ? 'selected' : '' %>>Alphabetically, Z-A</option>
+                <option value="price-low" <%= sortValue==='price-low' ? 'selected' : '' %>>Price, low to high</option>
+                <option value="price-high" <%= sortValue==='price-high' ? 'selected' : '' %>>Price, high to low</option>
+            </select>
+        </form>
+        
+        <script>
+        function updateSort(sortValue) {
+            const urlParams = new URLSearchParams(window.location.search);
+   
+            urlParams.set('sort', sortValue);
+
+            urlParams.set('page', '1');
+
+            window.location.href = '/store?' + urlParams.toString();
+        }
+        </script>
           <div class="shop-asc__seprator mx-3 bg-light d-none d-lg-block order-md-1"></div>
           <div class="shop-filter d-flex align-items-center order-0 order-md-3">
             <button class="btn-link btn-link_f d-flex align-items-center ps-0 js-open-aside" data-aside="shopFilter">
