@@ -768,9 +768,7 @@
                     </div>
                 </div>
             </div>
-            <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-            <!-- Add Bootstrap JS for tab switching if not already included -->
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+         
             <script>
                 // Helper function to show toast messages using Toastify
                 function showToast(message, type) {
@@ -938,12 +936,8 @@
                         localStorage.removeItem('cart');
 
                         showToast("Login successful!", "success");
-                        // Redirect based on server response (if provided)
-                        if (result.redirect) {
-                            window.location.href = result.redirect;
-                        } else {
-                            window.location.href = '/auth/login';
-                        }
+                        // Always redirect to /cart on successful login
+                        window.location.href = '/cart';
                     } catch (err) {
                         showToast(err.message, "error");
                     }
@@ -1467,7 +1461,9 @@
 
     <!-- Page Overlay -->
     <div class="page-overlay"></div><!-- /.page-overlay -->
-
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- Add Bootstrap JS for tab switching if not already included -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- External JavaScripts -->
     <script src="/js/plugins/jquery.min.js"></script>
     <script src="/js/plugins/bootstrap.bundle.min.js"></script>
