@@ -722,9 +722,20 @@
                 </div>
               </div>
             </li>
-      
-                     <li class="navigation__item">
+            <li class="navigation__item">
               <a href="/about" class="navigation__link">About</a>
+            </li>
+            <li class="navigation__item">
+              <a href="/account" class="navigation__link">Account</a>
+            </li>
+            <li class="navigation__item">
+              <a href="/orders" class="navigation__link">Orders</a>
+            </li>
+            <li class="navigation__item">
+              <a href="/cart" class="navigation__link">Cart</a>
+            </li>
+            <li class="navigation__item">
+              <a href="/wishlist" class="navigation__link">Wishlist</a>
             </li>
                 </li>
                      <li class="navigation__item">
@@ -931,13 +942,13 @@
                   <% wishlist.forEach((item, index) => { %>
                     <tr 
                       data-item-id="<%= item.product._id %>" 
-                      data-wishlist-item-id="<%= item._id %>"
+                      data-wishlist-item-id="<%= item.product._id %>"
                     >
                       <td class="text-center" style="width:120px;">
                         <a href="/product/<%= item.product._id %>">
                           <img src="<%= item.product.images && item.product.images[0] ? item.product.images[0] : '/images/placeholder.png' %>" alt="product" class="img-fluid rounded" style="max-width: 100px;">
                         </a>
-                        <button type="button" class="btn btn-sm btn-outline-danger mt-2 remove-wishlist" title="Remove from wishlist">
+                        <button type="button" class="btn btn-sm btn-outline-danger mt-2 remove-wishlist">
                           <i class="bi bi-x-lg"></i>
                         </button>
                       </td>
@@ -982,12 +993,10 @@
 
     <script>
       document.addEventListener('DOMContentLoaded', function () {
-        // Remove from Wishlist
         document.querySelectorAll('.remove-wishlist').forEach(button => {
           button.addEventListener('click', async function () {
             const row = this.closest('tr');
-            // Use the wishlist item _id for removal
-            const wishlistItemId = row.dataset.wishlistItemId;
+            const wishlistItemId = row.dataset.itemId;
 
             const response = await fetch(`/wishlist/${wishlistItemId}`, {
               method: 'DELETE'
@@ -1000,22 +1009,26 @@
                 backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
                 duration: 3000
               }).showToast();
+            } else {
+              let msg = "Failed to remove item from wishlist";
+              try {
+                msg = await response.text();
+              } catch (e) {}
+              Toastify({
+                text: msg,
+                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                duration: 3000
+              }).showToast();
             }
           });
         });
 
-        // Move to Cart
         document.querySelectorAll('.btn-cart').forEach(button => {
           button.addEventListener('click', async function () {
             const row = this.closest('tr');
-            // Use the wishlist item _id for move-to-cart
-            const wishlistItemId = row.dataset.wishlistItemId;
+            const wishlistItemId = row.dataset.itemId;
 
-            // The backend expects :itemId to be the PRODUCT _id, not the wishlist item _id!
-            // So we use data-item-id (product._id) for the move-to-cart endpoint.
-            const productId = row.dataset.itemId;
-
-            const response = await fetch(`/wishlist/${productId}/move-to-cart`, {
+            const response = await fetch(`/wishlist/${wishlistItemId}/move-to-cart`, {
               method: 'POST'
             });
 

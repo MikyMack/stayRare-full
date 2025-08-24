@@ -19009,7 +19009,7 @@ textarea.form-control.is-invalid {
   height: 0;
   max-height: 0;
   transition: max-height .35s, height .35s;
-  z-index: 1030;
+  z-index: 99999;
 }
 
 .header-mobile__navigation .search-field__input {
