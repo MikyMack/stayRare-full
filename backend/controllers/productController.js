@@ -43,37 +43,40 @@ exports.getProductsByType = async (req, res) => {
     const { type } = req.params;
     const { limit = 10 } = req.query;
 
-    let query = { isActive: true };
+    let match = { isActive: true };
 
     switch(type) {
       case 'best-deals':
-        query.bestDeals = true;
+        match.bestDeals = true;
         break;
       case 'new-arrivals':
-        query.newArrivals = true;
+        match.newArrivals = true;
         break;
       case 'best-seller':
-        query.bestSeller = true;
+        match.bestSeller = true;
         break;
       case 'top-rated':
-        query.topRated = true;
+        match.topRated = true;
         break;
       case 'all':
-        // Do nothing
         break;
       default:
         return res.status(400).json({ success: false, message: 'Invalid product type' });
     }
 
-    const products = await Product.find(query)
-      .populate('category', 'name')
-      .populate('subcategory', 'name')
-      .limit(parseInt(limit))
-      .sort({ createdAt: -1 });
+    const products = await Product.aggregate([
+      { $match: match },
+      { $sample: { size: parseInt(limit) } }
+    ]);
+
+    const populatedProducts = await Product.populate(products, [
+      { path: 'category', select: 'name' },
+      { path: 'subcategory', select: 'name' }
+    ]);
 
     res.json({
       success: true,
-      products
+      products: populatedProducts
     });
   } catch (err) {
     console.error(err);
