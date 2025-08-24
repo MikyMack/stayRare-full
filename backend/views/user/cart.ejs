@@ -912,8 +912,17 @@
         if (!checkoutBtn) return;
         if (user) {
           checkoutBtn.setAttribute('href', '/checkout');
+          checkoutBtn.classList.remove('disabled');
+          checkoutBtn.textContent = 'PROCEED TO CHECKOUT';
+          checkoutBtn.onclick = null;
         } else {
           checkoutBtn.setAttribute('href', '/auth/login');
+          checkoutBtn.classList.remove('disabled'); // Make sure it's clickable
+          checkoutBtn.textContent = 'Login to Checkout';
+          // Optionally, force navigation to login on click (in case of SPA or JS hijack)
+          checkoutBtn.onclick = function(e) {
+            // Allow default navigation
+          };
         }
       }
 
@@ -1033,13 +1042,6 @@
 
         // Set checkout button link and state
         setCheckoutBtnHref();
-        if (!isUser) {
-          checkoutBtn.classList.add('disabled');
-          checkoutBtn.textContent = 'Login to Checkout';
-        } else {
-          checkoutBtn.classList.remove('disabled');
-          checkoutBtn.textContent = 'PROCEED TO CHECKOUT';
-        }
       }
 
       async function removeCartItem(itemId, isUser) {
