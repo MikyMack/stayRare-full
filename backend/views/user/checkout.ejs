@@ -1828,8 +1828,6 @@
     <!-- Plugin JS File -->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-    <script src="/js/main.min.js"></script>
-    <script src="/js/script.js"></script>
      <script src="/js/plugins/jquery.min.js"></script>
   <script src="/js/plugins/bootstrap.bundle.min.js"></script>
   <script src="/js/plugins/bootstrap-slider.min.js"></script>
@@ -1855,20 +1853,22 @@
             if (!allSvgsLoaded) {
                 // Replace with Unicode fallbacks
                 const iconContainer = document.querySelector('.icon-container');
-                iconContainer.innerHTML = `
-                    <div class="icon">
-                        <div style="font-size: 24px; line-height: 32px; text-align: center;">👤</div>
-                        <div class="badge">5</div>
-                    </div>
-                    <div class="icon">
-                        <div style="font-size: 24px; line-height: 32px; text-align: center;">❤️</div>
-                        <div class="badge">2</div>
-                    </div>
-                    <div class="icon">
-                        <div style="font-size: 24px; line-height: 32px; text-align: center;">🛍️</div>
-                        <div class="badge">3</div>
-                    </div>
-                `;
+                if (iconContainer) {
+                    iconContainer.innerHTML = `
+                        <div class="icon">
+                            <div style="font-size: 24px; line-height: 32px; text-align: center;">👤</div>
+                            <div class="badge">5</div>
+                        </div>
+                        <div class="icon">
+                            <div style="font-size: 24px; line-height: 32px; text-align: center;">❤️</div>
+                            <div class="badge">2</div>
+                        </div>
+                        <div class="icon">
+                            <div style="font-size: 24px; line-height: 32px; text-align: center;">🛍️</div>
+                            <div class="badge">3</div>
+                        </div>
+                    `;
+                }
             }
         });
     </script>
