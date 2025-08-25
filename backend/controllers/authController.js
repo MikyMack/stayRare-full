@@ -92,10 +92,13 @@ exports.register = async (req, res) => {
   
 
   exports.login = async (req, res) => {
-    const { email, password, guestCart } = req.body;
+    let { email, password, guestCart } = req.body;
   
     try {
-      const user = await User.findOne({ email });
+      // Normalize email to lowercase for case-insensitive comparison
+      email = email.trim().toLowerCase();
+
+      const user = await User.findOne({ email: { $regex: new RegExp('^' + email + '$', 'i') } });
       if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({ success: false, message: 'Invalid email or password' });
       }
