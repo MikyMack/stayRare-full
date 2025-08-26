@@ -1046,23 +1046,76 @@
 
     <div class="mb-3 mb-md-4 mb-xl-5 pb-2 pt-1"></div>
 
-    <section class="grid-banner container mb-3" id="section-grid-banner">
-      <div class="row">
-        <% if (Array.isArray(bannerTwo) && bannerTwo.length) { %>
-          <% bannerTwo.slice(0,4).forEach(function(banner, idx) { %>
-            <div class="col-lg-6">
-              <div class="grid-banner__item position-relative mb-3">
-                <a href="<%= banner.link || '#' %>">
-                  <img loading="lazy" class="w-100 poster-btn" src="<%= banner.image %>" width="450" height="450"
-                    alt="Banner <%= idx+1 %>">
-                </a>
-              </div>
-            </div>
-            <% }); %>
-              <% } else { %>
-                <!-- No grid banners available -->
-                <% } %>
-      </div><!-- /.row -->
+   
+
+    <section class="category-carousel container">
+      <div class="position-relative">
+        <div class="swiper-container js-swiper-slider" data-settings='{
+          "autoplay": {
+            "delay": 3000
+          },
+          "slidesPerView": 4,
+          "slidesPerGroup": 4,
+          "effect": "slide",
+          "speed": 600,
+          "loop": true,
+          "allowTouchMove": true,
+          "simulateTouch": true,
+          "breakpoints": {
+            "320": {
+              "slidesPerView": 2,
+              "slidesPerGroup": 2,
+              "spaceBetween": 14,
+              "loop": false,
+              "allowTouchMove": true,
+              "simulateTouch": true
+            },
+            "768": {
+              "slidesPerView": 3,
+              "slidesPerGroup": 3,
+              "spaceBetween": 24,
+              "loop": false,
+              "allowTouchMove": true,
+              "simulateTouch": true
+            },
+            "992": {
+              "slidesPerView": 4,
+              "slidesPerGroup": 1,
+              "spaceBetween": 30,
+              "pagination": false,
+              "loop": false,
+              "allowTouchMove": true,
+              "simulateTouch": true
+            },
+            "993": {
+              "slidesPerView": 3,
+              "slidesPerGroup": 3,
+              "spaceBetween": 30,
+              "allowTouchMove": true,
+              "simulateTouch": true,
+              "pagination": false,
+              "navigation": false,
+              "freeMode": false,
+              "loop": false
+            }
+          }
+        }'>
+          <div class="swiper-wrapper" style="transition-timing-function: ease-in-out;">
+            <% if (Array.isArray(mobileBanner) && mobileBanner.length) { %>
+              <% mobileBanner.forEach(function(banner) { %>
+                <div class="swiper-slide" style="transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);">
+                  <a href="<%= banner.link || '#' %>">
+                    <img loading="lazy" class="w-100 h-auto mb-3 poster-img" src="<%= banner.image %>"
+                      width="258" height="278" alt="" style="transition: opacity 0.5s;">
+                  </a>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <!-- No mobile banners available -->
+            <% } %>
+          </div><!-- /.swiper-wrapper -->
+        </div><!-- /.swiper-container js-swiper-slider -->
+      </div>
     </section>
 
     <section class="products-carousel container">
@@ -1215,67 +1268,24 @@
           </div>
           <% }); %>
             <% } %>
-              <section class="category-carousel container">
-                <div class="position-relative">
-                  <div class="swiper-container js-swiper-slider" data-settings='{
-                    "autoplay": {
-                      "delay": 3000
-                    },
-                    "slidesPerView": 4,
-                    "slidesPerGroup": 4,
-                    "effect": "slide",
-                    "speed": 600,
-                    "loop": true,
-                    "breakpoints": {
-                      "320": {
-                        "slidesPerView": 2,
-                        "slidesPerGroup": 2,
-                        "spaceBetween": 14,
-                        "loop": false
-                      },
-                      "768": {
-                        "slidesPerView": 3,
-                        "slidesPerGroup": 3,
-                        "spaceBetween": 24,
-                        "loop": false
-                      },
-                      "992": {
-                        "slidesPerView": 4,
-                        "slidesPerGroup": 1,
-                        "spaceBetween": 30,
-                        "pagination": false,
-                        "loop": false
-                      },
-                      "993": {
-                        "slidesPerView": 3,
-                        "slidesPerGroup": 3,
-                        "spaceBetween": 30,
-                        "allowTouchMove": false,
-                        "simulateTouch": false,
-                        "pagination": false,
-                        "navigation": false,
-                        "freeMode": false,
-                        "loop": false
-                      }
-                    }
-                  }'>
-                    <div class="swiper-wrapper" style="transition-timing-function: ease-in-out;">
-                      <% if (Array.isArray(mobileBanner) && mobileBanner.length) { %>
-                        <% mobileBanner.forEach(function(banner) { %>
-                          <div class="swiper-slide" style="transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);">
-                            <a href="<%= banner.link || '#' %>">
-                              <img loading="lazy" class="w-100 h-auto mb-3 poster-img" src="<%= banner.image %>"
-                                width="258" height="278" alt="" style="transition: opacity 0.5s;">
-                            </a>
-                          </div>
-                        <% }); %>
+            <section class="grid-banner container mb-3" id="section-grid-banner">
+              <div class="row">
+                <% if (Array.isArray(bannerTwo) && bannerTwo.length) { %>
+                  <% bannerTwo.slice(0,4).forEach(function(banner, idx) { %>
+                    <div class="col-lg-6">
+                      <div class="grid-banner__item position-relative mb-3">
+                        <a href="<%= banner.link || '#' %>">
+                          <img loading="lazy" class="w-100 poster-btn" src="<%= banner.image %>" width="450" height="450"
+                            alt="Banner <%= idx+1 %>">
+                        </a>
+                      </div>
+                    </div>
+                    <% }); %>
                       <% } else { %>
-                        <!-- No mobile banners available -->
-                      <% } %>
-                    </div><!-- /.swiper-wrapper -->
-                  </div><!-- /.swiper-container js-swiper-slider -->
-                </div>
-              </section>
+                        <!-- No grid banners available -->
+                        <% } %>
+              </div><!-- /.row -->
+            </section>
     </section>
 
     <section class="products-carousel container">
