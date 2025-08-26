@@ -91,49 +91,63 @@ exports.register = async (req, res) => {
 };
   
 
-  exports.login = async (req, res) => {
-    let { email, password, guestCart } = req.body;
-  
-    try {
-      // Normalize email to lowercase for case-insensitive comparison
-      email = email.trim().toLowerCase();
+exports.login = async (req, res) => {
+  let { emailOrMobile, password, guestCart } = req.body;
 
-      const user = await User.findOne({ email: { $regex: new RegExp('^' + email + '$', 'i') } });
-      if (!user || !(await bcrypt.compare(password, user.password))) {
-        return res.status(401).json({ success: false, message: 'Invalid email or password' });
-      }
+  try {
 
-      // Check if user is blocked
-      if (user.isBlocked) {
-        return res.status(403).json({ success: false, message: 'Your account has been blocked. Please contact support.' });
-      }
-  
-      req.session.user = user;
+    let userQuery = {};
+    const input = emailOrMobile.trim();
 
-      const sessionGuestCart = req.session.guestCart || [];
-      const localStorageGuestCart = guestCart || [];
-      const combinedGuestCart = [...sessionGuestCart, ...localStorageGuestCart];
-      
-      if (combinedGuestCart.length > 0) {
-        await exports.mergeGuestCartToUserCart(req, user._id, combinedGuestCart);
-      }
-      
-      req.session.guestCart = [];
-      if (req.session.guestCartId) {
-        await Cart.deleteOne({ sessionId: req.session.guestCartId });
-        delete req.session.guestCartId;
-      }
-      
-      res.json({ 
-        success: true, 
-        message: 'Login successful', 
-        redirect: user.role === 'admin' ? '/admin/dashboard' : '/' 
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ success: false, message: 'Login failed' });
+    if (/^\d{10,}$/.test(input)) {
+
+      userQuery.mobile = { $regex: new RegExp(input + '$') };  
+    } else {
+      // Assume email
+      userQuery.email = { $regex: new RegExp('^' + input.toLowerCase() + '$', 'i') };
     }
-  };
+
+    // Find user by email or mobile
+    const user = await User.findOne(userQuery);
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ success: false, message: 'Invalid email/mobile or password' });
+    }
+
+    // Check if user is blocked
+    if (user.isBlocked) {
+      return res.status(403).json({ success: false, message: 'Your account has been blocked. Please contact support.' });
+    }
+
+    // Store user in session
+    req.session.user = user;
+
+    // Merge guest cart into user cart
+    const sessionGuestCart = req.session.guestCart || [];
+    const localStorageGuestCart = guestCart || [];
+    const combinedGuestCart = [...sessionGuestCart, ...localStorageGuestCart];
+
+    if (combinedGuestCart.length > 0) {
+      await exports.mergeGuestCartToUserCart(req, user._id, combinedGuestCart);
+    }
+
+    // Clear guest cart
+    req.session.guestCart = [];
+    if (req.session.guestCartId) {
+      await Cart.deleteOne({ sessionId: req.session.guestCartId });
+      delete req.session.guestCartId;
+    }
+
+    // Success response
+    res.json({
+      success: true,
+      message: 'Login successful',
+      redirect: user.role === 'admin' ? '/admin/dashboard' : '/'
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Login failed' });
+  }
+};
 
 
 

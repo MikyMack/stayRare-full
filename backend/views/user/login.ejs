@@ -564,14 +564,14 @@
                                     <div class="login-form">
                                         <form id="loginForm" onsubmit="return handleLogin(event)">
                                             <div class="form-floating mb-3">
-                                                <input name="email" type="email" class="form-control form-control_gray"
-                                                    id="loginEmail" placeholder="Email address *" required>
-                                                <label for="loginEmail">Email address *</label>
+                                                <input name="emailOrMobile" type="text" class="form-control form-control_gray"
+                                                    id="loginEmailOrMobile" placeholder="Email address or Mobile number *" required autocomplete="username">
+                                                <label for="loginEmailOrMobile">Email address or Mobile number *</label>
                                             </div>
                                             <div class="pb-3"></div>
                                             <div class="form-floating mb-3">
                                                 <input name="password" type="password" class="form-control form-control_gray"
-                                                    id="loginPassword" placeholder="Password *" required>
+                                                    id="loginPassword" placeholder="Password *" required autocomplete="current-password">
                                                 <label for="loginPassword">Password *</label>
                                             </div>
                                             <div class="d-flex align-items-center mb-3 pb-2">
@@ -699,8 +699,6 @@
                                     </div>
                                 </div>
                             </div>
-                           
-                         
                         </div>
 
                         <!-- Forgot Password Modal (true modal, overlays the login form) -->
@@ -898,7 +896,7 @@
                 async function handleLogin(event) {
                     event.preventDefault();
 
-                    const email = document.getElementById('loginEmail').value;
+                    const emailOrMobile = document.getElementById('loginEmailOrMobile').value.trim();
                     const password = document.getElementById('loginPassword').value;
 
                     // Get guestCart from localStorage
@@ -911,7 +909,7 @@
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
-                                email,
+                                emailOrMobile,
                                 password,
                                 guestCart // Send guest cart to server
                             })

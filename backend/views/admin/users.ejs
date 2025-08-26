@@ -269,7 +269,7 @@
                                                                 </div>
                                                             </td>
                                                             <td><%= user.email %></td>
-                                                            <td><%= user.phone || '-' %></td>
+                                                     
                                                             <td>
                                                                 <% 
                                                                     let role = user.role || 'user';
@@ -284,6 +284,13 @@
                                                                     }
                                                                 %>
                                                                 <span class="admin-role-badge <%= roleClass %>"><%= roleLabel %></span>
+                                                            </td>
+                                                            <td>
+                                                                <% 
+                                                                    // Show mobile number if present, else '-'
+                                                                    let mobile = user.mobile || user.phone || '-';
+                                                                %>
+                                                                <%= mobile %>
                                                             </td>
                                                             <td>
                                                                 <% 
