@@ -3,6 +3,29 @@
 
 
 <head>
+
+<meta name="google-site-verification" content="OoM2GuIbyW9r8Zi1ygTJJZ8N2I1mOwfgVhagiZYSPtY" />
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-356QPR0VTP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-356QPR0VTP');
+</script>
+
+
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-M2NQNR6J');</script>
+<!-- End Google Tag Manager -->
+
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
         j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -31,6 +54,10 @@
 </head>
 
 <body>
+  <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M2NQNR6J"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
   <svg class="d-none">
     <symbol id="icon_nav" viewBox="0 0 25 18">
       <rect width="25" height="2"/><rect y="8" width="20" height="2"/><rect y="16" width="25" height="2"/>
@@ -962,6 +989,43 @@
         renderCart(cart, false);
       }
 
+      // Helper to get the correct product image based on color images if available
+      function getCartProductImage(item) {
+        // If the product has color and that color has images, use that image
+        // Product model: product.colors: [{ name, value, images: [url, ...] }]
+        const colorName = item.selectedColor || item.productColor;
+        let colorImage = null;
+        if (
+          item.product &&
+          Array.isArray(item.product.colors) &&
+          colorName
+        ) {
+          // Try to find the color object by name or value (case-insensitive)
+          const colorObj = item.product.colors.find(
+            c =>
+              (c.name && typeof c.name === 'string' && c.name.toLowerCase() === colorName.toLowerCase()) ||
+              (c.value && typeof c.value === 'string' && c.value.toLowerCase() === colorName.toLowerCase())
+          );
+          if (colorObj && Array.isArray(colorObj.images) && colorObj.images.length > 0) {
+            colorImage = colorObj.images[0];
+          }
+        }
+        if (colorImage) {
+          return colorImage;
+        }
+        // Fallbacks
+        if (item.productImage && typeof item.productImage === 'string' && item.productImage) {
+          return item.productImage;
+        }
+        if (item.image && typeof item.image === 'string') {
+          return item.image;
+        }
+        if (item.product && Array.isArray(item.product.images) && item.product.images[0]) {
+          return item.product.images[0];
+        }
+        return '/images/placeholder.png';
+      }
+
       function renderCart(cart, isUser) {
         const tbody = document.getElementById('cart-items-body');
         const cartSection = document.querySelector('.shopping-cart');
@@ -986,11 +1050,8 @@
             if (!item || typeof item !== 'object' || Object.keys(item).length === 0) return;
             const price = (item.price !== undefined && item.price !== null) ? Number(item.price) : 0;
             const productName = item.productName || item.name || (item.product && item.product.name) || 'Product';
-            const productImage =
-              (item.productImage && typeof item.productImage === 'string' && item.productImage) ? item.productImage
-              : (item.image && typeof item.image === 'string') ? item.image
-              : (item.product && Array.isArray(item.product.images) && item.product.images[0]) ? item.product.images[0]
-              : '/images/placeholder.png';
+            // Use the helper to get the correct image
+            const productImage = getCartProductImage(item);
             const productId = item.productId || (item.product && item.product._id) || '';
             const itemId = isUser ? (item._id || idx) : idx;
             tbody.innerHTML += `

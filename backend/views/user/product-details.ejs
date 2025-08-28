@@ -4,6 +4,28 @@
 
 <head>
 
+    <meta name="google-site-verification" content="OoM2GuIbyW9r8Zi1ygTJJZ8N2I1mOwfgVhagiZYSPtY" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-356QPR0VTP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-356QPR0VTP');
+    </script>
+    
+    
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-M2NQNR6J');</script>
+    <!-- End Google Tag Manager -->
+    
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="author" content="flexkit">
 
@@ -74,6 +96,10 @@
 </head>
 
 <body>
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M2NQNR6J"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <svg class="d-none">
         <symbol id="icon_nav" viewBox="0 0 25 18">
             <rect width="25" height="2" />
@@ -564,25 +590,42 @@
                         style="width:100%;margin:0;">
                         <div class="product-single__image" style="width:100%;margin:0;">
                             <div class="swiper-container" style="width:100%;height:auto;">
-                                <div class="swiper-wrapper" style="width:100%;">
-                                    <% if (product.images && product.images.length> 0) { %>
-                                        <% product.images.forEach(image=> { %>
-                                            <div class="swiper-slide product-single__image-item" style="width:100%;">
-                                                <img loading="lazy"
-                                                    style="width:100%;height:auto;display:block;object-fit:cover;"
-                                                    src="<%= image %>" alt="<%= product.name || 'Product' %>">
-                                            </div>
-                                            <% }); %>
-                                                <% } else { %>
-                                                    <!-- Default images if none provided -->
-                                                    <div class="swiper-slide product-single__image-item"
-                                                        style="width:100%;">
-                                                        <img loading="lazy"
-                                                            style="width:100%;height:auto;display:block;object-fit:cover;"
-                                                            src="/images/stayrare/prd-3.webp"
-                                                            alt="Default product image">
-                                                    </div>
-                                                    <% } %>
+                                <div class="swiper-wrapper" style="width:100%;" id="main-image-swiper-wrapper">
+                                    <% 
+                                    // Helper: get images for selected color, or fallback to product.images
+                                    let defaultImages = (product.images && product.images.length > 0) ? product.images : ['/images/stayrare/prd-3.webp'];
+                                    let colorImagesMap = {};
+                                    if (product.hasColorVariants && product.colorVariants && product.colorVariants.length > 0) {
+                                        product.colorVariants.forEach(colorVar => {
+                                            if (colorVar.images && colorVar.images.length > 0) {
+                                                colorImagesMap[colorVar.color] = colorVar.images;
+                                            }
+                                        });
+                                    }
+                                    // Render default images for initial load (will be replaced by JS on color change)
+                                    let initialImages = defaultImages;
+                                    if (product.hasColorVariants && product.colorVariants && product.colorVariants.length > 0) {
+                                        // Try to find the checked color
+                                        let checkedColor = null;
+                                        for (let i = 0; i < product.colorVariants.length; i++) {
+                                            const colorVar = product.colorVariants[i];
+                                            const isOutOfStock = (typeof colorVar.stock !== 'undefined') ? (colorVar.stock <= 0) : false;
+                                            if (!isOutOfStock && i === 0) {
+                                                checkedColor = colorVar.color;
+                                                break;
+                                            }
+                                        }
+                                        if (checkedColor && colorImagesMap[checkedColor]) {
+                                            initialImages = colorImagesMap[checkedColor];
+                                        }
+                                    }
+                                    initialImages.forEach(image => { %>
+                                        <div class="swiper-slide product-single__image-item" style="width:100%;">
+                                            <img loading="lazy"
+                                                style="width:100%;height:auto;display:block;object-fit:cover;"
+                                                src="<%= image %>" alt="<%= product.name || 'Product' %>" data-product-image>
+                                        </div>
+                                    <% }); %>
                                 </div>
                                 <div class="swiper-button-prev"><svg width="7" height="11" viewBox="0 0 7 11"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -600,24 +643,17 @@
                         <div class="swiper-container"
                             style="height:80px;display:flex;justify-content:center;align-items:center;width:100%;">
                             <div class="swiper-wrapper slider-card"
-                                style="display:flex;flex-direction:row;gap:12px;justify-content:center;align-items:center;width:auto;">
-                                <% if (product.images && product.images.length> 0) { %>
-                                    <% product.images.forEach(image=> { %>
-                                        <div class="swiper-slide product-single__image-item slider-img"
-                                            style="width:80px;height:80px;display:flex;align-items:center;justify-content:center;">
-                                            <img loading="lazy" style="max-width:100%;max-height:100%;object-fit:cover;"
-                                                src="<%= image %>" alt="<%= product.name || 'Product' %> thumbnail">
-                                        </div>
-                                        <% }); %>
-                                            <% } else { %>
-                                                <!-- Default thumbnails if none provided -->
-                                                <div class="swiper-slide product-single__image-item slider-img"
-                                                    style="width:80px;height:80px;display:flex;align-items:center;justify-content:center;">
-                                                    <img loading="lazy"
-                                                        style="max-width:100%;max-height:100%;object-fit:cover;"
-                                                        src="/images/stayrare/prd-3.webp" alt="Default thumbnail">
-                                                </div>
-                                                <% } %>
+                                style="display:flex;flex-direction:row;gap:12px;justify-content:center;align-items:center;width:auto;"
+                                id="thumbnail-swiper-wrapper">
+                                <% 
+                                // Render initial thumbnails (same logic as above)
+                                initialImages.forEach(image => { %>
+                                    <div class="swiper-slide product-single__image-item slider-img"
+                                        style="width:80px;height:80px;display:flex;align-items:center;justify-content:center;">
+                                        <img loading="lazy" style="max-width:100%;max-height:100%;object-fit:cover;"
+                                            src="<%= image %>" alt="<%= product.name || 'Product' %> thumbnail" data-product-image>
+                                    </div>
+                                <% }); %>
                             </div>
                         </div>
                     </div>
@@ -638,7 +674,6 @@
                                 </a>
                                 <% } %>
                         </div>
-
                     </div>
 
                     <!-- Product Name -->
@@ -751,6 +786,7 @@
                                         <input type="radio" name="color" id="swatch-color-<%= index + 1 %>"
                                             value="<%= color.color %>" 
                                             data-color-id="<%= color._id %>" 
+                                            data-color-images='<%= JSON.stringify(color.images || []) %>'
                                             <%= (!isOutOfStock && index === firstEnabledColorIndex) ? 'checked' : '' %>
                                             class="d-none"
                                             <%= isOutOfStock ? 'disabled' : '' %>
@@ -1302,6 +1338,88 @@
                     if (firstChecked) firstChecked.dispatchEvent(new Event('change'));
                 }
 
+                // Dynamic product images based on color selection
+                var colorInputs = document.querySelectorAll('input[name="color"]');
+                var mainImageWrapper = document.getElementById('main-image-swiper-wrapper');
+                var thumbnailWrapper = document.getElementById('thumbnail-swiper-wrapper');
+                // Store default images for fallback
+                var defaultImages = [];
+                <% if (product.images && product.images.length > 0) { %>
+                    defaultImages = <%- JSON.stringify(product.images) %>;
+                <% } else { %>
+                    defaultImages = ["/images/stayrare/prd-3.webp"];
+                <% } %>
+                // Map color to images
+                var colorImagesMap = {};
+                <% if (product.hasColorVariants && product.colorVariants && product.colorVariants.length > 0) { %>
+                    <% product.colorVariants.forEach(function(colorVar) { %>
+                        colorImagesMap["<%- colorVar.color %>"] = <%- JSON.stringify(colorVar.images || []) %>;
+                    <% }); %>
+                <% } %>
+
+                function renderImages(images) {
+                    // Main images
+                    if (mainImageWrapper) {
+                        mainImageWrapper.innerHTML = '';
+                        (images.length ? images : defaultImages).forEach(function(img) {
+                            var div = document.createElement('div');
+                            div.className = 'swiper-slide product-single__image-item';
+                            div.style.width = '100%';
+                            var imageEl = document.createElement('img');
+                            imageEl.setAttribute('loading', 'lazy');
+                            imageEl.setAttribute('style', 'width:100%;height:auto;display:block;object-fit:cover;');
+                            imageEl.setAttribute('src', img);
+                            imageEl.setAttribute('alt', "<%= product.name || 'Product' %>");
+                            imageEl.setAttribute('data-product-image', '');
+                            div.appendChild(imageEl);
+                            mainImageWrapper.appendChild(div);
+                        });
+                    }
+                    // Thumbnails
+                    if (thumbnailWrapper) {
+                        thumbnailWrapper.innerHTML = '';
+                        (images.length ? images : defaultImages).forEach(function(img) {
+                            var div = document.createElement('div');
+                            div.className = 'swiper-slide product-single__image-item slider-img';
+                            div.style.width = '80px';
+                            div.style.height = '80px';
+                            div.style.display = 'flex';
+                            div.style.alignItems = 'center';
+                            div.style.justifyContent = 'center';
+                            var imageEl = document.createElement('img');
+                            imageEl.setAttribute('loading', 'lazy');
+                            imageEl.setAttribute('style', 'max-width:100%;max-height:100%;object-fit:cover;');
+                            imageEl.setAttribute('src', img);
+                            imageEl.setAttribute('alt', "<%= product.name || 'Product' %> thumbnail");
+                            imageEl.setAttribute('data-product-image', '');
+                            div.appendChild(imageEl);
+                            thumbnailWrapper.appendChild(div);
+                        });
+                    }
+                }
+
+                // Initial render (in case JS needs to re-render on page load)
+                // (No-op, as EJS already rendered initial images)
+
+                // Listen for color change
+                colorInputs.forEach(function(input) {
+                    input.addEventListener('change', function() {
+                        if (this.checked) {
+                            var color = this.value;
+                            var images = [];
+                            try {
+                                images = JSON.parse(this.getAttribute('data-color-images')) || [];
+                            } catch (e) {
+                                images = [];
+                            }
+                            if (!images.length && colorImagesMap[color]) {
+                                images = colorImagesMap[color];
+                            }
+                            renderImages(images);
+                        }
+                    });
+                });
+
                 // Star rating for review form
                 var starIcons = document.querySelectorAll('.star-rating__star-icon');
                 var ratingInput = document.getElementById('form-input-rating');
@@ -1363,6 +1481,24 @@
                         const colorInput = this.querySelector('input[name="color"]:checked');
                         const size = sizeInput ? sizeInput.value : null;
                         const color = colorInput ? colorInput.value : null;
+
+                        // --- BEGIN: Get selected color image if available ---
+                        let selectedColorImage = null;
+                        if (colorInput) {
+                            // Try to get images from data-color-images attribute
+                            let colorImages = [];
+                            try {
+                                colorImages = JSON.parse(colorInput.getAttribute('data-color-images')) || [];
+                            } catch (e) {
+                                colorImages = [];
+                            }
+                            if (colorImages.length > 0) {
+                                selectedColorImage = colorImages[0];
+                            } else if (color && typeof colorImagesMap === 'object' && colorImagesMap[color] && colorImagesMap[color].length > 0) {
+                                selectedColorImage = colorImagesMap[color][0];
+                            }
+                        }
+                        // --- END: Get selected color image if available ---
 
                         // Validate variant selection
                         if (hasSizeVariants && !size) {
@@ -1429,7 +1565,8 @@
                                         productId,
                                         quantity,
                                         selectedSize: size,
-                                        selectedColor: color
+                                        selectedColor: color,
+                                        selectedColorImage: selectedColorImage // Pass color image if available
                                     })
                                 });
 
@@ -1504,6 +1641,12 @@
                                     }
                                 }
 
+                                // --- BEGIN: Use selected color image if available ---
+                                if (selectedColorImage) {
+                                    productImage = selectedColorImage;
+                                }
+                                // --- END: Use selected color image if available ---
+
                                 // If price is dynamic (e.g., based on size/color), adjust accordingly
                                 let price = 0;
                                 const priceElement = document.querySelector('[data-product-price]');
@@ -1537,6 +1680,10 @@
                                         item.quantity += quantity;
                                         // Update total for this item
                                         item.total = item.price * item.quantity;
+                                        // If color image is now available, update it
+                                        if (selectedColorImage) {
+                                            item.productImage = selectedColorImage;
+                                        }
                                         found = true;
                                         break;
                                     }
