@@ -6,9 +6,10 @@ const colorVariantSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  image: {
-    type: String,
-    default: ''
+  images: {
+    type: [String],
+    required: false,
+    default: undefined
   },
   stock: {
     type: Number,

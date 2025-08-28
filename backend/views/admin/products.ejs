@@ -1532,6 +1532,39 @@
                                             .move-down-btn {
                                                 bottom: 0;
                                             }
+                                            .color-images-preview, .existing-color-images {
+                                             display: flex;
+                                              flex-wrap: wrap;
+                                             gap: 5px;
+                                              margin-top: 5px;
+                                            }
+
+.color-images-preview > div, .existing-color-images > div {
+    position: relative;
+}
+
+.color-images-preview img, .existing-color-images img {
+    max-width: 40px;
+    max-height: 40px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.color-images-preview button, .existing-color-images button {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    font-size: 10px;
+    line-height: 10px;
+    cursor: pointer;
+}
                                         </style>
                                         <script>
                                             document.addEventListener('DOMContentLoaded', function () {
@@ -1539,6 +1572,8 @@
                                             });
 
                                             let mainImagesFiles = [];
+                                            // For color variant images: { [colorId]: [ {file, url} ] }
+                                            let colorVariantImagesFiles = {};
 
                                             function goToStep(step) {
                                                 document.querySelectorAll('.product-step').forEach(s => s.style.display = 'none');
@@ -1734,6 +1769,128 @@
                                                 });
                                             }
 
+                                            // --- Color Variant Multiple Images Logic ---
+
+                                            function renderColorVariantImagesPreview(colorId) {
+                                                const preview = document.querySelector(`.color-variant-option[data-color-id="${colorId}"] .color-images-preview`);
+                                                if (!preview) return;
+                                                preview.innerHTML = '';
+                                                const filesArr = colorVariantImagesFiles[colorId] || [];
+                                                filesArr.forEach((item, idx) => {
+                                                    const imgContainer = document.createElement('div');
+                                                    imgContainer.className = 'preview-image';
+                                                    imgContainer.style.position = 'relative';
+
+                                                    const img = document.createElement('img');
+                                                    img.src = item.url;
+                                                    imgContainer.appendChild(img);
+
+                                                    const removeBtn = document.createElement('button');
+                                                    removeBtn.type = 'button';
+                                                    removeBtn.className = 'remove-image-btn';
+                                                    removeBtn.innerHTML = '&times;';
+                                                    removeBtn.onclick = function (ev) {
+                                                        ev.stopPropagation();
+                                                        URL.revokeObjectURL(item.url);
+                                                        filesArr.splice(idx, 1);
+                                                        renderColorVariantImagesPreview(colorId);
+                                                    };
+                                                    imgContainer.appendChild(removeBtn);
+
+                                                    if (idx > 0) {
+                                                        const upBtn = document.createElement('button');
+                                                        upBtn.type = 'button';
+                                                        upBtn.className = 'move-up-btn';
+                                                        upBtn.title = 'Move Up';
+                                                        upBtn.innerHTML = '&#8593;';
+                                                        upBtn.onclick = function (ev) {
+                                                            ev.stopPropagation();
+                                                            [filesArr[idx - 1], filesArr[idx]] = [filesArr[idx], filesArr[idx - 1]];
+                                                            renderColorVariantImagesPreview(colorId);
+                                                        };
+                                                        imgContainer.appendChild(upBtn);
+                                                    }
+
+                                                    if (idx < filesArr.length - 1) {
+                                                        const downBtn = document.createElement('button');
+                                                        downBtn.type = 'button';
+                                                        downBtn.className = 'move-down-btn';
+                                                        downBtn.title = 'Move Down';
+                                                        downBtn.innerHTML = '&#8595;';
+                                                        downBtn.onclick = function (ev) {
+                                                            ev.stopPropagation();
+                                                            [filesArr[idx], filesArr[idx + 1]] = [filesArr[idx + 1], filesArr[idx]];
+                                                            renderColorVariantImagesPreview(colorId);
+                                                        };
+                                                        imgContainer.appendChild(downBtn);
+                                                    }
+
+                                                    preview.appendChild(imgContainer);
+                                                });
+                                            }
+
+                                            function makeExistingColorImagesSortable(colorId) {
+                                                const container = document.querySelector(`.color-variant-option[data-color-id="${colorId}"] .existing-color-images`);
+                                                if (!container) return;
+
+                                                let dragSrcIdx = null;
+
+                                                container.querySelectorAll('.existing-image').forEach(el => {
+                                                    el.removeEventListener('dragstart', el._dragstartHandler);
+                                                    el.removeEventListener('dragover', el._dragoverHandler);
+                                                    el.removeEventListener('dragleave', el._dragleaveHandler);
+                                                    el.removeEventListener('drop', el._dropHandler);
+                                                    el.removeEventListener('dragend', el._dragendHandler);
+                                                });
+
+                                                const images = Array.from(container.querySelectorAll('.existing-image'));
+                                                images.forEach((el, idx) => {
+
+                                                    el._dragstartHandler = function (e) {
+                                                        dragSrcIdx = idx;
+                                                        this.classList.add('dragging');
+                                                        e.dataTransfer.effectAllowed = 'move';
+                                                        e.dataTransfer.setData('text/plain', idx);
+                                                    };
+                                                    el.addEventListener('dragstart', el._dragstartHandler);
+
+                                                    el._dragoverHandler = function (e) {
+                                                        e.preventDefault();
+                                                        e.dataTransfer.dropEffect = 'move';
+                                                        this.classList.add('drag-over');
+                                                    };
+                                                    el.addEventListener('dragover', el._dragoverHandler);
+
+                                                    el._dragleaveHandler = function (e) {
+                                                        this.classList.remove('drag-over');
+                                                    };
+                                                    el.addEventListener('dragleave', el._dragleaveHandler);
+
+                                                    el._dropHandler = function (e) {
+                                                        e.preventDefault();
+                                                        this.classList.remove('drag-over');
+                                                        const toIdx = idx;
+                                                        if (dragSrcIdx !== null && dragSrcIdx !== toIdx) {
+                                                            const nodes = Array.from(container.children);
+                                                            const moved = nodes[dragSrcIdx];
+                                                            if (toIdx > dragSrcIdx) {
+                                                                container.insertBefore(moved, nodes[toIdx].nextSibling);
+                                                            } else {
+                                                                container.insertBefore(moved, nodes[toIdx]);
+                                                            }
+                                                            makeExistingColorImagesSortable(colorId);
+                                                        }
+                                                    };
+                                                    el.addEventListener('drop', el._dropHandler);
+
+                                                    el._dragendHandler = function (e) {
+                                                        this.classList.remove('dragging');
+                                                        container.querySelectorAll('.existing-image').forEach(img => img.classList.remove('drag-over'));
+                                                    };
+                                                    el.addEventListener('dragend', el._dragendHandler);
+                                                });
+                                            }
+
                                             function addColorVariantOption() {
                                                 const container = document.getElementById('colorVariantOptions');
                                                 const colorId = Date.now();
@@ -1747,10 +1904,10 @@
                                                     <input type="text" name="colorVariants[${colorId}][color]" required placeholder="e.g. Red">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label>Color Image</label>
-                                                    <input type="file" name="colorVariants[${colorId}][image]" accept="image/*">
-                                                    <div class="color-image-preview"></div>
-                                                    <div class="existing-color-image"></div>
+                                                    <label>Color Images</label>
+                                                    <input type="file" name="colorVariants[${colorId}][images][]" accept="image/*" multiple>
+                                                    <div class="color-images-preview"></div>
+                                                    <div class="existing-color-images"></div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Stock</label>
@@ -1762,22 +1919,45 @@
                                             </div>
                                         `;
                                                 container.appendChild(colorDiv);
-                                                const fileInput = colorDiv.querySelector('input[type="file"]');
+
+                                                // Init color variant images files array
+                                                colorVariantImagesFiles[colorId] = [];
+
+                                                // File input for new images
+                                                const fileInput = colorDiv.querySelector('input[type="file"][name^="colorVariants"]');
                                                 fileInput.addEventListener('change', function (e) {
-                                                    previewImages(e.target.files, colorDiv.querySelector('.color-image-preview'));
+                                                    const files = Array.from(e.target.files);
+                                                    files.forEach(file => {
+                                                        const url = URL.createObjectURL(file);
+                                                        colorVariantImagesFiles[colorId].push({ file, url });
+                                                    });
+                                                    renderColorVariantImagesPreview(colorId);
+                                                    e.target.value = '';
                                                 });
+
+                                                renderColorVariantImagesPreview(colorId);
+                                                makeExistingColorImagesSortable(colorId);
                                             }
+
                                             function removeColorVariantOption(btn) {
                                                 if (confirm('Remove this color variant?')) {
                                                     const variantDiv = btn.closest('.color-variant-option');
+                                                    const colorId = variantDiv.dataset.colorId;
                                                     // Add a hidden input to mark this variant for deletion
                                                     const deleteInput = document.createElement('input');
                                                     deleteInput.type = 'hidden';
                                                     deleteInput.name = `deletedColorVariants[]`;
-                                                    deleteInput.value = variantDiv.dataset.colorId;
+                                                    deleteInput.value = colorId;
                                                     document.getElementById('productForm').appendChild(deleteInput);
                                                     // Remove the variant
                                                     variantDiv.remove();
+                                                    // Clean up colorVariantImagesFiles
+                                                    if (colorVariantImagesFiles[colorId]) {
+                                                        colorVariantImagesFiles[colorId].forEach(item => {
+                                                            try { URL.revokeObjectURL(item.url); } catch (e) {}
+                                                        });
+                                                        delete colorVariantImagesFiles[colorId];
+                                                    }
                                                 }
                                             }
 
@@ -1996,6 +2176,7 @@
                                                     if (saveBtnLoading) saveBtnLoading.style.display = '';
                                                 }
 
+                                                // Main images (existing)
                                                 Array.from(formData.keys()).forEach(key => {
                                                     if (key === 'existingMainImages[]') formData.delete(key);
                                                 });
@@ -2003,6 +2184,7 @@
                                                     formData.append('existingMainImages[]', input.value);
                                                 });
 
+                                                // Main images (new)
                                                 formData.delete('mainImages');
                                                 if (mainImagesFiles.length > 0) {
                                                     mainImagesFiles.forEach(item => {
@@ -2010,11 +2192,44 @@
                                                     });
                                                 }
 
+                                                // --- Color Variant Images (existing) ---
+                                                // For each color variant, collect the order of existing images
+                                                document.querySelectorAll('.color-variant-option').forEach(variantDiv => {
+                                                    const colorId = variantDiv.dataset.colorId;
+                                                    // Remove any previous existingImages for this colorId
+                                                    Array.from(formData.keys()).forEach(key => {
+                                                        if (key.startsWith(`colorVariants[${colorId}][existingImages]`)) {
+                                                            formData.delete(key);
+                                                        }
+                                                    });
+                                                    // Add in order
+                                                    const existingImgs = variantDiv.querySelectorAll('.existing-color-images .existing-image input[type="hidden"]');
+                                                    existingImgs.forEach((input, idx) => {
+                                                        formData.append(`colorVariants[${colorId}][existingImages][${idx}]`, input.value);
+                                                    });
+                                                });
+
+                                                // --- Color Variant Images (new) ---
+                                                // Remove any previous colorVariants[...][images] keys
+                                                Array.from(formData.keys()).forEach(key => {
+                                                    if (key.match(/^colorVariants\[\d+\]\[images\]/)) {
+                                                        formData.delete(key);
+                                                    }
+                                                });
+                                                // Add new images in order for each color variant
+                                                Object.entries(colorVariantImagesFiles).forEach(([colorId, filesArr]) => {
+                                                    filesArr.forEach((item, idx) => {
+                                                        formData.append(`colorVariants[${colorId}][images][${idx}]`, item.file);
+                                                    });
+                                                });
+
+                                                // For backward compatibility: also handle single [image] and [existingImage]
                                                 document.querySelectorAll('input[name*="[existingImage]"]').forEach(input => {
                                                     const name = input.name.replace('[existingImage]', '[image]');
                                                     formData.append(name, input.value);
                                                 });
 
+                                                // Reviews
                                                 const reviewInputs = document.querySelectorAll('.review-input-block');
                                                 reviewInputs.forEach((div, idx) => {
                                                     const reviewer = div.querySelector('input[name*="[name]"]').value;
@@ -2065,6 +2280,7 @@
                                                     document.getElementById('existingMainImages').innerHTML = '';
                                                     mainImagesFiles.forEach(item => { try { URL.revokeObjectURL(item.url); } catch (e) { } });
                                                     mainImagesFiles = [];
+                                                    colorVariantImagesFiles = {};
                                                     document.getElementById('colorVariantOptions').innerHTML = '';
                                                     document.getElementById('sizeVariantOptions').innerHTML = '';
                                                     document.getElementById('hasColorVariants').checked = false;
@@ -2188,6 +2404,7 @@
                                                         product.hasColorVariants ? 'block' : 'none';
                                                     const colorContainer = document.getElementById('colorVariantOptions');
                                                     colorContainer.innerHTML = '';
+                                                    colorVariantImagesFiles = {};
                                                     if (product.colorVariants && product.colorVariants.length > 0) {
                                                         product.colorVariants.forEach((color, index) => {
                                                             const colorId = color._id || index;
@@ -2201,10 +2418,10 @@
                                                                 <input type="text" name="colorVariants[${colorId}][color]" value="${color.color}" required>
                                                             </div>
                                                             <div class="form-group">
-                                                                <label>Color Image</label>
-                                                                <input type="file" name="colorVariants[${colorId}][image]" accept="image/*">
-                                                                <div class="color-image-preview"></div>
-                                                                <div class="existing-color-image"></div>
+                                                                <label>Color Images</label>
+                                                                <input type="file" name="colorVariants[${colorId}][images][]" accept="image/*" multiple>
+                                                                <div class="color-images-preview"></div>
+                                                                <div class="existing-color-images"></div>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label>Stock</label>
@@ -2215,18 +2432,51 @@
                                                             </button>
                                                         </div>
                                                     `;
-                                                            const existingColorImage = colorDiv.querySelector('.existing-color-image');
-                                                            if (color.image) {
+                                                            // Existing images (array)
+                                                            const existingColorImages = colorDiv.querySelector('.existing-color-images');
+                                                            if (Array.isArray(color.images) && color.images.length > 0) {
+                                                                color.images.forEach((img, idx) => {
+                                                                    const imgDiv = document.createElement('div');
+                                                                    imgDiv.className = 'existing-image';
+                                                                    imgDiv.draggable = true;
+                                                                    imgDiv.title = "Drag to reorder";
+                                                                    imgDiv.innerHTML = `
+                                                                        <img src="${img}" alt="Color Image">
+                                                                        <input type="hidden" name="colorVariants[${colorId}][existingImages][${idx}]" value="${img}">
+                                                                        <button type="button" onclick="removeImage(this)">×</button>
+                                                                    `;
+                                                                    existingColorImages.appendChild(imgDiv);
+                                                                });
+                                                            } else if (color.image) {
+                                                                // Backward compatibility: single image
                                                                 const imgDiv = document.createElement('div');
                                                                 imgDiv.className = 'existing-image';
                                                                 imgDiv.innerHTML = `
-                                                            <img src="${color.image}" alt="Color Image">
-                                                            <input type="hidden" name="colorVariants[${colorId}][existingImage]" value="${color.image}">
-                                                            <button type="button" onclick="removeImage(this)">×</button>
-                                                        `;
-                                                                existingColorImage.appendChild(imgDiv);
+                                                                    <img src="${color.image}" alt="Color Image">
+                                                                    <input type="hidden" name="colorVariants[${colorId}][existingImage]" value="${color.image}">
+                                                                    <button type="button" onclick="removeImage(this)">×</button>
+                                                                `;
+                                                                existingColorImages.appendChild(imgDiv);
                                                             }
                                                             colorContainer.appendChild(colorDiv);
+
+                                                            // Init colorVariantImagesFiles for this colorId
+                                                            colorVariantImagesFiles[colorId] = [];
+
+                                                            // File input for new images
+                                                            const fileInput = colorDiv.querySelector('input[type="file"][name^="colorVariants"]');
+                                                            fileInput.addEventListener('change', function (e) {
+                                                                const files = Array.from(e.target.files);
+                                                                files.forEach(file => {
+                                                                    const url = URL.createObjectURL(file);
+                                                                    colorVariantImagesFiles[colorId].push({ file, url });
+                                                                });
+                                                                renderColorVariantImagesPreview(colorId);
+                                                                e.target.value = '';
+                                                            });
+
+                                                            renderColorVariantImagesPreview(colorId);
+                                                            makeExistingColorImagesSortable(colorId);
                                                         });
                                                     }
                                                     // Size variants

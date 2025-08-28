@@ -146,24 +146,57 @@ exports.createProduct = async (req, res) => {
     let parsedSizeVariants = [];
     let parsedReviews = [];
     let images = [];
-    const colorVariantImages = {};
+    const colorVariantImagesMap = {}; // Changed to store arrays of images
 
     if (req.files && req.files.length > 0) {
+      // Process main images
       const mainImageFiles = req.files.filter(f => f.fieldname === 'mainImages' || f.fieldname.startsWith('mainImages['));
       images = await Promise.all(
         mainImageFiles.map(file => uploadToS3(file, 'products'))
       );
       
+      // Process color variant images (now multiple images per variant)
       const colorVariantFiles = req.files.filter(file =>
-        file.fieldname.includes('colorVariants') && file.fieldname.includes('[image]')
+        file.fieldname.includes('colorVariants') && 
+        file.fieldname.includes('[images]')
       );
-    
+
+      // Group images by color variant ID
       await Promise.all(
         colorVariantFiles.map(async file => {
+          const match = file.fieldname.match(/colorVariants\[([^\]]+)\]\[images\]\[(\d+)\]/);
+          if (match && match[1] && match[2]) {
+            const colorId = match[1];
+            const imageIndex = match[2];
+            const imageUrl = await uploadToS3(file, 'products/color-variants');
+            
+            if (!colorVariantImagesMap[colorId]) {
+              colorVariantImagesMap[colorId] = [];
+            }
+            colorVariantImagesMap[colorId][imageIndex] = imageUrl;
+          }
+        })
+      );
+
+      // Also handle single image uploads for backward compatibility
+      const singleColorVariantFiles = req.files.filter(file =>
+        file.fieldname.includes('colorVariants') && 
+        file.fieldname.includes('[image]') && // singular
+        !file.fieldname.includes('[images]') // not plural
+      );
+
+      await Promise.all(
+        singleColorVariantFiles.map(async file => {
           const match = file.fieldname.match(/colorVariants\[([^\]]+)\]\[image\]/);
           if (match && match[1]) {
             const colorId = match[1];
-            colorVariantImages[colorId] = await uploadToS3(file, 'products/color-variants');
+            const imageUrl = await uploadToS3(file, 'products/color-variants');
+            
+            if (!colorVariantImagesMap[colorId]) {
+              colorVariantImagesMap[colorId] = [imageUrl];
+            } else {
+              colorVariantImagesMap[colorId].push(imageUrl);
+            }
           }
         })
       );
@@ -172,11 +205,29 @@ exports.createProduct = async (req, res) => {
     if (colorVariants) {
       try {
         const raw = typeof colorVariants === 'string' ? JSON.parse(colorVariants) : colorVariants;
-        parsedColorVariants = Object.entries(raw).map(([key, variant]) => ({
-          color: variant.color,
-          stock: variant.stock || 0,
-          image: colorVariantImages[key] || variant.image || null
-        }));
+        parsedColorVariants = Object.entries(raw).map(([key, variant]) => {
+          // Handle both single image (backward compatibility) and multiple images
+          let variantImages = [];
+          
+          // Get uploaded images for this variant
+          if (colorVariantImagesMap[key]) {
+            variantImages = colorVariantImagesMap[key].filter(img => img);
+          }
+          
+          // Also include existing images from the request
+          if (variant.images && Array.isArray(variant.images)) {
+            variantImages = [...variantImages, ...variant.images];
+          } else if (variant.image) {
+            // Backward compatibility with single image
+            variantImages.push(variant.image);
+          }
+
+          return {
+            color: variant.color,
+            stock: variant.stock || 0,
+            images: variantImages.length > 0 ? variantImages : undefined
+          };
+        });
       } catch (e) {
         console.error('Error parsing color variants:', e);
         return res.status(400).json({
@@ -186,7 +237,7 @@ exports.createProduct = async (req, res) => {
       }
     }
 
-    // Process size variants (now with length, chest, sleeve)
+    // Process size variants
     if (sizeVariants) {
       try {
         const raw = typeof sizeVariants === 'string' ? JSON.parse(sizeVariants) : sizeVariants;
@@ -220,7 +271,7 @@ exports.createProduct = async (req, res) => {
       }
     }
 
-    // Process productdetails (new field)
+    // Process productdetails
     let parsedProductDetails = undefined;
     if (typeof productDetails !== 'undefined') {
       try {
@@ -279,7 +330,6 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-
 exports.updateProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -289,11 +339,10 @@ exports.updateProduct = async (req, res) => {
 
     let images = [];
 
+    // Handle existing main images
     if (req.body.existingMainImages) {
-
       let existingImages = req.body.existingMainImages;
       if (!Array.isArray(existingImages)) {
-
         if (typeof existingImages === 'string' && existingImages.startsWith('[')) {
           try {
             existingImages = JSON.parse(existingImages);
@@ -304,26 +353,23 @@ exports.updateProduct = async (req, res) => {
           existingImages = [existingImages];
         }
       }
-
       images = existingImages.filter(img => img);
     }
 
+    // Handle new main image uploads
     if (req.files && req.files.length > 0) {
       let mainImageFiles = [];
-
       mainImageFiles.push(...req.files.filter(f => f.fieldname === 'mainImages' || f.fieldname === 'mainImages[]'));
 
       const indexedFiles = req.files
         .filter(f => /^mainImages\[\d+\]$/.test(f.fieldname))
         .sort((a, b) => {
-          // Sort by index in fieldname
           const aIdx = parseInt(a.fieldname.match(/^mainImages\[(\d+)\]$/)[1], 10);
           const bIdx = parseInt(b.fieldname.match(/^mainImages\[(\d+)\]$/)[1], 10);
           return aIdx - bIdx;
         });
       mainImageFiles.push(...indexedFiles);
 
-      // Remove duplicates (in case multer sends both 'mainImages' and 'mainImages[0]')
       mainImageFiles = Array.from(new Set(mainImageFiles));
 
       if (mainImageFiles.length > 0) {
@@ -332,23 +378,52 @@ exports.updateProduct = async (req, res) => {
         );
         images = [...images, ...uploadedImages];
       }
-      
     }
 
-    // --- Handle Color Variant Images ---
-    const colorVariantImages = {};
+    // --- Handle Color Variant Images (now array) ---
+    const colorVariantImagesMap = {};
     if (req.files && req.files.length > 0) {
+      // Process multiple images per color variant
       const colorVariantFiles = req.files.filter(file =>
         file.fieldname.includes('colorVariants') && 
-        file.fieldname.includes('[image]')
+        file.fieldname.includes('[images]')
       );
 
       await Promise.all(
         colorVariantFiles.map(async (file) => {
+          const match = file.fieldname.match(/colorVariants\[([^\]]+)\]\[images\]\[(\d+)\]/);
+          if (match && match[1] && match[2]) {
+            const colorId = match[1];
+            const imageIndex = match[2];
+            const imageUrl = await uploadToS3(file, 'products/color-variants');
+            
+            if (!colorVariantImagesMap[colorId]) {
+              colorVariantImagesMap[colorId] = [];
+            }
+            colorVariantImagesMap[colorId][imageIndex] = imageUrl;
+          }
+        })
+      );
+
+      // Also handle single image uploads for backward compatibility
+      const singleColorVariantFiles = req.files.filter(file =>
+        file.fieldname.includes('colorVariants') && 
+        file.fieldname.includes('[image]') &&
+        !file.fieldname.includes('[images]')
+      );
+
+      await Promise.all(
+        singleColorVariantFiles.map(async (file) => {
           const match = file.fieldname.match(/colorVariants\[([^\]]+)\]\[image\]/);
           if (match && match[1]) {
             const colorId = match[1];
-            colorVariantImages[colorId] = file.location;
+            const imageUrl = await uploadToS3(file, 'products/color-variants');
+            
+            if (!colorVariantImagesMap[colorId]) {
+              colorVariantImagesMap[colorId] = [imageUrl];
+            } else {
+              colorVariantImagesMap[colorId].push(imageUrl);
+            }
           }
         })
       );
@@ -366,7 +441,6 @@ exports.updateProduct = async (req, res) => {
             rawColorVariants = {};
         }
     
-        // Get IDs of variants to delete
         const deletedVariantIds = Array.isArray(req.body.deletedColorVariants) 
             ? req.body.deletedColorVariants 
             : req.body.deletedColorVariants ? [req.body.deletedColorVariants] : [];
@@ -377,22 +451,43 @@ exports.updateProduct = async (req, res) => {
                 const existing = product.colorVariants.find(cv =>
                     cv._id?.toString() === key || cv.color === variant.color
                 ) || {};
-    
+
+                // Handle images - combine uploaded, existing, and new images
+                let variantImages = [];
+                
+                // Add uploaded images
+                if (colorVariantImagesMap[key]) {
+                  variantImages = colorVariantImagesMap[key].filter(img => img);
+                }
+                
+                // Add existing images that are kept
+                if (variant.existingImages && Array.isArray(variant.existingImages)) {
+                  variantImages = [...variantImages, ...variant.existingImages];
+                } else if (variant.existingImage) {
+                  // Backward compatibility
+                  variantImages.push(variant.existingImage);
+                }
+                
+                // Add new images from the request
+                if (variant.images && Array.isArray(variant.images)) {
+                  variantImages = [...variantImages, ...variant.images];
+                } else if (variant.image) {
+                  // Backward compatibility
+                  variantImages.push(variant.image);
+                }
+
                 return {
                     _id: existing._id || key,
                     color: variant.color,
                     stock: variant.stock || 0,
-                    image: colorVariantImages[key] !== undefined
-                        ? colorVariantImages[key]
-                        : (variant.existingImage || existing.image || variant.image || null)
+                    images: variantImages.length > 0 ? variantImages : undefined
                 };
             });
     } else {
-        // If no color variants in request but product had them, clear all
         parsedColorVariants = [];
     }
 
-    // --- Process Size Variants (now with length, chest, sleeve) ---
+    // --- Process Size Variants ---
     let parsedSizeVariants = [];
     if (req.body.sizeVariants) {
         let rawSizeVariants;
@@ -405,7 +500,6 @@ exports.updateProduct = async (req, res) => {
             rawSizeVariants = {};
         }
 
-        // Get IDs of variants to delete
         const deletedVariantIds = Array.isArray(req.body.deletedSizeVariants) 
             ? req.body.deletedSizeVariants 
             : req.body.deletedSizeVariants ? [req.body.deletedSizeVariants] : [];
@@ -413,7 +507,7 @@ exports.updateProduct = async (req, res) => {
         parsedSizeVariants = Object.entries(rawSizeVariants)
             .filter(([key]) => !deletedVariantIds.includes(key))
             .map(([key, variant]) => ({
-                _id: key, // Preserve the ID if it exists
+                _id: key,
                 size: variant.size,
                 stock: variant.stock || 0,
                 length: typeof variant.length !== 'undefined' ? variant.length : undefined,
@@ -441,7 +535,7 @@ exports.updateProduct = async (req, res) => {
       parsedReviews = product.reviews || [];
     }
 
-    // --- Process productdetails (new field) ---
+    // --- Process productdetails ---
     let parsedProductDetails = product.productDetails;
     if (typeof req.body.productDetails !== 'undefined') {
       try {
@@ -494,9 +588,9 @@ exports.updateProduct = async (req, res) => {
     product.colorVariants = parsedColorVariants;
     product.sizeVariants = parsedSizeVariants;
     product.reviews = parsedReviews;
-    product.images = images; // This array is now in the correct order
+    product.images = images;
     product.isActive = product.status !== 'inactive';
-    product.productDetails = parsedProductDetails; // <-- new field
+    product.productDetails = parsedProductDetails;
 
     await product.save();
 
