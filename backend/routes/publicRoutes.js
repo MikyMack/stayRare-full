@@ -179,17 +179,14 @@ router.get('/store', async (req, res) => {
             color,
             sort = 'newest', 
             q,
-            subcategory,
-            categoryPage = 1,
-            subcategoryPage = 1
+            subcategory
         } = req.query;
 
+        // Parse filters
         if (size) size = Array.isArray(size) ? size : size.split(',').filter(s => s.trim());
         if (color) color = Array.isArray(color) ? color : color.split(',').filter(c => c.trim());
 
         let filter = { isActive: true };
-        let useSubcategoryPagination = false;
-        let useCategoryPagination = false;
 
         const specialNewArrivalsCategory = "68401f815a149404380fc58f";
         const specialNewArrivalsSubcategory = "684020345a149404380fc594";
@@ -198,15 +195,16 @@ router.get('/store', async (req, res) => {
         let isSpecialNewArrivals = false;
         let isSpecialBestDeals = false;
 
+        // Subcategory filter
         if (subcategory && mongoose.Types.ObjectId.isValid(subcategory)) {
             if (subcategory === specialNewArrivalsSubcategory) {
                 isSpecialNewArrivals = true;
             } else {
                 filter.subcategory = subcategory;
-                useSubcategoryPagination = true;
             }
         }
 
+        // Category filter
         if (category) {
             let decodedCategory = decodeURIComponent(category);
 
@@ -214,47 +212,34 @@ router.get('/store', async (req, res) => {
                 isSpecialNewArrivals = true;
             } else if (category === specialBestDealsCategory) {
                 isSpecialBestDeals = true;
+            } else if (mongoose.Types.ObjectId.isValid(category)) {
+                filter.category = category;
             } else {
+                // Try to resolve by slug or name
                 const foundCategory = await Category.findOne({
                     $or: [
                         { slug: decodedCategory },
                         { name: new RegExp('^' + decodedCategory + '$', 'i') }
                     ]
                 }).lean();
-
                 if (foundCategory) {
                     filter.category = foundCategory._id;
-                    useCategoryPagination = true;
-                } else if (mongoose.Types.ObjectId.isValid(category)) {
-                    filter.category = category;
-                    useCategoryPagination = true;
                 }
             }
         }
 
+        // Special categories override
         if (isSpecialNewArrivals) {
             filter = { isActive: true, newArrivals: true };
-            useCategoryPagination = false;
-            useSubcategoryPagination = false;
         } else if (isSpecialBestDeals) {
             filter = { isActive: true, bestDeals: true };
-            useCategoryPagination = false;
-            useSubcategoryPagination = false;
         }
 
+        // Pagination: always use "page" param for all cases
         let effectivePage = Number(page) || 1;
         let currentPage = effectivePage;
 
-        if (!isSpecialNewArrivals && !isSpecialBestDeals) {
-            if (useSubcategoryPagination) {
-                effectivePage = Number(subcategoryPage) || 1;
-                currentPage = effectivePage;
-            } else if (useCategoryPagination) {
-                effectivePage = Number(categoryPage) || 1;
-                currentPage = effectivePage;
-            }
-        }
-
+        // Search
         if (q && typeof q === 'string' && q.trim()) {
             const keywords = q.trim().split(/\s+/).join('|');
             const searchRegex = new RegExp(keywords, 'i');
@@ -278,11 +263,9 @@ router.get('/store', async (req, res) => {
                 { 'productDetails.productCollection': searchRegex },
                 { subcategory: { $in: subcategoryIds } }
             ];
-        
-            effectivePage = Number(page) || 1;
-            currentPage = effectivePage;
         }
         
+        // Price filter
         if (minPrice || maxPrice) {
             const priceFilter = {};
             if (minPrice) priceFilter.$gte = Number(minPrice);
@@ -312,7 +295,7 @@ router.get('/store', async (req, res) => {
 
         const totalProducts = await Product.countDocuments(filter);
 
-        // FIXED: Proper MongoDB sorting for all cases
+        // Sorting
         let sortObj = {};
         switch (sort) {
             case 'price-low':
@@ -422,12 +405,19 @@ router.get('/store', async (req, res) => {
             const subcat = await Category.findOne({ 'subCategories._id': subcategory }, { 'subCategories.$': 1, name: 1 }).lean();
             if (subcat) pageTitle = `${subcat.name} - ${subcat.subCategories[0].name}`;
         } else if (category) {
-            const cat = await Category.findOne({
-                $or: [
-                    { slug: category },
-                    { name: new RegExp('^' + category + '$', 'i') }
-                ]
-            }).lean();
+            // Try to resolve by slug, name, or id
+            let cat = null;
+            if (mongoose.Types.ObjectId.isValid(category)) {
+                cat = await Category.findById(category).lean();
+            }
+            if (!cat) {
+                cat = await Category.findOne({
+                    $or: [
+                        { slug: category },
+                        { name: new RegExp('^' + category + '$', 'i') }
+                    ]
+                }).lean();
+            }
             if (cat) pageTitle = cat.name;
         } else if (q) {
             pageTitle = `Search: ${q}`;
@@ -449,9 +439,7 @@ router.get('/store', async (req, res) => {
                 sort,
                 limit: Number(limit),
                 q: q || '',
-                subcategory,
-                categoryPage: useCategoryPagination ? currentPage : 1,
-                subcategoryPage: useSubcategoryPagination ? currentPage : 1
+                subcategory
             },
             cartItems: cart?.items || [],
             title: pageTitle
