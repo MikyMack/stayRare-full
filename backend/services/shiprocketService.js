@@ -1,5 +1,6 @@
 const axios = require('axios');
 const BASE_URL = process.env.SHIPROCKET_BASE_URL || 'https://apiv2.shiprocket.in';
+const momentTz  = require("moment-timezone");
 
 let token = null;
 
@@ -21,8 +22,9 @@ async function getToken() {
 
 function calculateOrderWeight(items) {
     if (!items || items.length === 0) return 1;
-    return items.reduce((total, item) => total + (item.weight || 0.2), 0);
+    return items.reduce((total, item) => total + (item.weight || 0.3), 0);
 }
+
 
 async function createOrder(order, shippingAddress) {
     try {
@@ -36,10 +38,24 @@ async function createOrder(order, shippingAddress) {
         const firstName = nameParts[0] || 'Customer';
         const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
 
+        // 👇 Flexible pickup date logic (Asia/Kolkata)
+        const orderTime = momentTz().tz("Asia/Kolkata");
+        const cutoffHour = 22; // 10 PM cutoff
+        let pickupDate;
+
+        if (orderTime.hour() < cutoffHour) {
+            // If order placed before 10 PM → next day pickup
+            pickupDate = orderTime.add(1, "days").format("YYYY-MM-DD");
+        } else {
+            // If order placed after 10 PM → pickup after 2 days
+            pickupDate = orderTime.add(2, "days").format("YYYY-MM-DD");
+        }
+
         const payload = {
             order_id: order._id.toString(),
             order_date: new Date(order.createdAt).toISOString().split('T')[0],
             pickup_location: 'Home',
+            pickup_date: pickupDate,  // 👈 added
             billing_customer_name: firstName,
             billing_last_name: lastName,
             billing_address: shippingAddress.addressLine1 || '',
@@ -62,9 +78,9 @@ async function createOrder(order, shippingAddress) {
             })),
             payment_method: 'Prepaid',
             sub_total: order.totalAmount || 0,
-            length: 10,
-            breadth: 10,
-            height: 10,
+            length: 30,
+            breadth: 27,
+            height: 2,
             weight: calculateOrderWeight(order.items)
         };
 
@@ -92,7 +108,8 @@ async function createOrder(order, shippingAddress) {
         return {
             ...response.data,
             shipment_id: response.data.shipment_id,
-            order_id: response.data.order_id || order._id.toString()
+            order_id: response.data.order_id || order._id.toString(),
+            pickup_date: pickupDate  // 👈 return it for debugging/logging
         };
     } catch (error) {
         console.error('Shiprocket createOrder error:', {
