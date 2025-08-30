@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Management | Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        html, body {
+            background: #f8f9fa;
+            font-size: 1.18rem !important;
+            color: #181818 !important;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        body {
+            background: #f8f9fa;
+        }
+        .order-card {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            background: #fff;
+            border-width: 2.5px !important;
+            transition: box-shadow 0.2s;
+            font-size: 1.13rem;
+            color: #181818;
+        }
+        .order-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+        .order-status {
+            font-weight: bold;
+            display: inline-block;
+            min-width: 90px;
+            padding: 0.4em 0.9em;
+            border-radius: 0.5em;
+            font-size: 1.15em;
+            text-align: center;
+            white-space: nowrap;
+            color: #181818;
+        }
+        /* Status border colors */
+        .order-card-border-cancelled { border-color: #dc3545 !important; }
+        .order-card-border-canceled { border-color: #dc3545 !important; }
+        .order-card-border-delivered { border-color: #198754 !important; }
+        .order-card-border-receivedorder { border-color: #ffc107 !important; }
+        .order-card-border-shipping { border-color: #0d6efd !important; }
+        .order-card-border-shipped { border-color: #0d6efd !important; }
+        .order-card-border-pending { border-color: #ffc107 !important; }
+        .order-card-border-confirmed { border-color: #0d6efd !important; }
+        .order-card-border-processing { border-color: #17a2b8 !important; }
+        .order-card-border-returned { border-color: #fd7e14 !important; }
+        .order-card-border-failed { border-color: #6c757d !important; }
+        /* Status badge backgrounds */
+        .order-status.Cancelled, .order-status.Canceled {
+            background: #dc3545 !important;
+            color: #fff !important;
+        }
+        .order-status.Delivered {
+            background: #198754 !important;
+            color: #fff !important;
+        }
+        .order-status.ReceivedOrder, .order-status['Received Order'], .order-status['Received_Order'] {
+            background: #ffc107 !important;
+            color: #181818 !important;
+        }
+        .order-status.Shipping, .order-status.Shipped {
+            background: #0d6efd !important;
+            color: #fff !important;
+        }
+        .order-status.Pending { color: #b8860b; background: #fffbe6; }
+        .order-status.Confirmed { color: #0d6efd; background: #e7f1ff; }
+        .order-status.Processing { color: #138496; background: #e6f7fa; }
+        .order-status.Returned { color: #fd7e14; background: #fff3e6; }
+        .order-status.Failed { color: #343a40; background: #f2f2f2; }
+        .filter-bar {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 1.2rem 2rem;
+            margin-bottom: 2rem;
+            font-size: 1.13rem;
+            color: #181818;
+        }
+        .filter-bar label,
+        .filter-bar .form-label,
+        .form-label {
+            font-size: 1.08em;
+            color: #181818;
+            font-weight: 600;
+        }
+        .form-control, .form-select {
+            font-size: 1.08em !important;
+            color: #181818 !important;
+            background: #f9f9f9;
+        }
+        .download-btn {
+            transition: background 0.2s;
+            font-size: 1.08em;
+            color: #181818;
+        }
+        .download-btn:hover {
+            background: #0d6efd;
+            color: #fff;
+        }
+        .pagination .page-link {
+            color: #0d6efd;
+            font-size: 1.08em;
+        }
+        .pagination .active .page-link {
+            background: #0d6efd;
+            color: #fff;
+            border-color: #0d6efd;
+        }
+        /* Responsive tweaks */
+        @media (max-width: 991.98px) {
+            .order-status {
+                min-width: 70px;
+                font-size: 1em;
+                padding: 0.3em 0.7em;
+            }
+            .order-card {
+                padding: 0.9rem 0.9rem;
+                font-size: 1.08rem;
+            }
+            .filter-bar {
+                font-size: 1.08rem;
+            }
+        }
+        @media (max-width: 767.98px) {
+            .order-status {
+                min-width: 60px;
+                font-size: 0.95em;
+                padding: 0.25em 0.5em;
+            }
+            .order-card {
+                padding: 0.7rem 0.7rem;
+                font-size: 1.05rem;
+            }
+            .filter-bar {
+                font-size: 1.05rem;
+            }
+        }
+        @media (max-width: 575.98px) {
+            .order-status {
+                min-width: 50px;
+                font-size: 0.9em;
+                padding: 0.18em 0.4em;
+            }
+            .container {
+                padding-left: 0.2rem !important;
+                padding-right: 0.2rem !important;
+            }
+            .order-card {
+                padding: 0.5rem 0.3rem;
+                font-size: 1rem;
+            }
+            .filter-bar {
+                font-size: 1rem;
+            }
+        }
+        .order-items-list {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
+            font-size: 1.08em;
+            color: #181818;
+        }
+        .order-items-list li {
+            border-bottom: 1px solid #e1e1e1;
+            padding: 0.4em 0;
+            color: #181818;
+        }
+        .order-items-list li:last-child {
+            border-bottom: none;
+        }
+        .order-card-actions {
+            display: flex;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+        }
+        .order-card-label {
+            font-weight: 600;
+            color: #181818;
+            font-size: 1.08em;
+        }
+        .order-card-value {
+            font-weight: 700;
+            color: #181818;
+            font-size: 1.08em;
+        }
+        .order-card-section-title {
+            font-size: 1.18em;
+            font-weight: 700;
+            color: #483087;
+            margin-bottom: 0.3em;
+        }
+        .order-card-section {
+            margin-bottom: 0.7em;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary mb-0"><i class="fa-solid fa-boxes-stacked me-2"></i>Order Management</h2>
+        <a href="/admin/dashboard" class="btn btn-outline-secondary">
+            <i class="fa fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+    </div>
+    <div class="filter-bar mb-4">
+        <div class="row g-3 align-items-end">
+            <form id="filterForm" class="col-12 col-lg-10 row g-3 align-items-end">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <label for="status" class="form-label">Order Status</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">All</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Shipping">Shipping</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Canceled">Canceled</option>
+                        <option value="Returned">Returned</option>
+                    </select>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="startDate" name="startDate">
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="endDate" name="endDate">
+                </div>
+                <div class="col-6 col-sm-3 col-md-2">
+                    <label for="limit" class="form-label">Per Page</label>
+                    <select class="form-select" id="limit" name="limit">
+                        <option value="10" selected>10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <div class="col-6 col-sm-3 col-md-1 d-grid">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-filter"></i></button>
+                </div>
+            </form>
+            <div class="col-12 col-lg-2 d-grid">
+                <button id="downloadBulkBtn" class="btn btn-success" type="button">
+                    <i class="fa fa-download me-1"></i> Download Bulk Orders
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="ordersSection">
+        <div id="ordersCardsContainer" class="row g-3">
+            <!-- Order cards will be loaded here via JS -->
+        </div>
+        <nav>
+            <ul class="pagination justify-content-center mt-4" id="pagination">
+                <!-- Pagination will be loaded here via JS -->
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="orderDetailsModalLabel"><i class="fa fa-receipt me-2"></i>Order Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="orderDetailsBody">
+        <!-- Order details will be loaded here via JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Helper: format date
+    function formatDate(dateStr) {
+        if (!dateStr) return '-';
+        const d = new Date(dateStr);
+        return d.toLocaleString();
+    }
+
+    // Helper: escape HTML
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text.replace(/[&<>"']/g, function(m) {
+            return ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[m];
+        });
+    }
+
+    // Helper: get status class for color
+    function getStatusClass(status) {
+        if (!status) return 'order-status';
+        // Normalize status for matching
+        const s = status.toLowerCase().replace(/\s|_/g, '');
+        if (s === 'cancelled' || s === 'canceled') return 'order-status Cancelled';
+        if (s === 'delivered') return 'order-status Delivered';
+        if (s === 'shipping' || s === 'shipped') return 'order-status Shipping';
+        if (s === 'pending') return 'order-status Pending';
+        if (s === 'confirmed') return 'order-status Confirmed';
+        if (s === 'processing') return 'order-status Processing';
+        if (s === 'returned') return 'order-status Returned';
+        if (s === 'failed') return 'order-status Failed';
+        // fallback to original
+        return 'order-status ' + status.replace(/\s/g, '');
+    }
+
+    // Helper: get border class for card
+    function getCardBorderClass(status) {
+        if (!status) return '';
+        const s = status.toLowerCase().replace(/\s|_/g, '');
+        if (s === 'cancelled' || s === 'canceled') return 'order-card-border-cancelled';
+        if (s === 'delivered') return 'order-card-border-delivered';
+        if (s === 'shipping') return 'order-card-border-shipping';
+        if (s === 'shipped') return 'order-card-border-shipped';
+        if (s === 'pending') return 'order-card-border-pending';
+        if (s === 'confirmed') return 'order-card-border-confirmed';
+        if (s === 'processing') return 'order-card-border-processing';
+        if (s === 'returned') return 'order-card-border-returned';
+        if (s === 'failed') return 'order-card-border-failed';
+        return '';
+    }
+
+    // State
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentFilters = {};
+
+    // Fetch and render orders
+    async function fetchOrders(page = 1) {
+        const status = document.getElementById('status').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const limit = document.getElementById('limit').value;
+
+        currentFilters = { status, startDate, endDate, limit };
+
+        let url = `/manage-orders?page=${page}&limit=${limit}`;
+        if (status) url += `&status=${encodeURIComponent(status)}`;
+        if (startDate) url += `&startDate=${encodeURIComponent(startDate)}`;
+        if (endDate) url += `&endDate=${encodeURIComponent(endDate)}`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        renderOrders(data.orders);
+        renderPagination(data.pagination.page, data.pagination.pages);
+    }
+
+    // Render orders as cards
+    function renderOrders(orders) {
+        const container = document.getElementById('ordersCardsContainer');
+        container.innerHTML = '';
+        if (!orders.length) {
+            container.innerHTML = `<div class="col-12 text-center text-muted">No orders found.</div>`;
+            return;
+        }
+        for (const order of orders) {
+            // Show user name, email, and mobile (if available)
+            let user = '-';
+            if (order.user) {
+                user = `<span class="fw-bold">${escapeHtml(order.user.name || '')}</span>`;
+                if (order.user.email) {
+                    user += `<br><span class="text-muted" style="font-size:0.97em;"><i class="fa fa-envelope me-1"></i><b>${escapeHtml(order.user.email)}</b></span>`;
+                }
+                if (order.user.mobile || order.user.phone) {
+                    user += `<br><span class="text-muted" style="font-size:0.97em;"><i class="fa fa-phone me-1"></i><b>${escapeHtml(order.user.mobile || order.user.phone)}</b></span>`;
+                }
+            }
+
+            const statusClass = getStatusClass(order.orderStatus);
+            const borderClass = getCardBorderClass(order.orderStatus);
+            const itemsCount = order.items ? order.items.length : 0;
+            const itemsList = order.items && order.items.length
+                ? `<ul class="order-items-list mb-1">
+                    ${order.items.map((item, i) => `
+                        <li>
+                            <span class="order-card-label">${i+1}.</span>
+                            <span class="order-card-value">${escapeHtml(item.name || '')}</span>
+                            <span class="text-muted small">(${escapeHtml(item.selectedColor || '-')}, ${escapeHtml(item.selectedSize || '-')})</span>
+                            <span class="ms-2">x${item.quantity}</span>
+                            <span class="ms-2">₹${item.price}</span>
+                        </li>
+                    `).join('')}
+                </ul>`
+                : '-';
+
+            // Responsive: col-12 on xs, col-md-6, col-lg-4
+            const card = document.createElement('div');
+            card.className = `col-12 col-md-6 col-lg-4`;
+            card.innerHTML = `
+                <div class="order-card border ${borderClass} p-3 h-100 d-flex flex-column justify-content-between" style="border-style: solid;">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold text-primary"><i class="fa fa-hashtag"></i> ${order._id}</span>
+                            <span class="${statusClass}">${escapeHtml(order.orderStatus)}</span>
+                        </div>
+                        <div class="order-card-section mb-2">
+                            <div class="order-card-section-title">User</div>
+                            <div>${user}</div>
+                        </div>
+                        <div class="order-card-section mb-2">
+                            <div class="order-card-section-title">Order Date</div>
+                            <div>${formatDate(order.createdAt)}</div>
+                        </div>
+                        <div class="order-card-section mb-2">
+                            <div class="order-card-section-title">Total Amount</div>
+                            <div class="fw-bold">₹${order.totalAmount || 0}</div>
+                        </div>
+                        <div class="order-card-section mb-2">
+                            <div class="order-card-section-title">Items (${itemsCount})</div>
+                            ${itemsList}
+                        </div>
+                        <div class="order-card-section mb-2">
+                            <div class="order-card-section-title">Addresses</div>
+                            <div>
+                                <span class="order-card-label">Billing:</span>
+                                <span class="order-card-value">${order.billingAddress ? escapeHtml(order.billingAddress.addressLine1 || '') : '-'}</span>
+                                <br>
+                                <span class="order-card-label">Shipping:</span>
+                                <span class="order-card-value">${order.shippingAddress ? escapeHtml(order.shippingAddress.addressLine1 || '') : '-'}</span>
+                            </div>
+                        </div>
+                        <div class="order-card-section mb-2">
+                            <div class="order-card-section-title">Payment</div>
+                            <div>
+                                <span class="order-card-label">Status:</span>
+                                <span class="order-card-value">${order.paymentInfo?.status || 'Pending'}</span>
+                                <br>
+                                <span class="order-card-label">Razorpay Order ID:</span>
+                                <span class="order-card-value">${order.paymentInfo?.razorpayOrderId || '-'}</span>
+                            </div>
+                        </div>
+                        <div class="order-card-section mb-2">
+                            <div class="order-card-section-title">Delivery</div>
+                            <div>
+                                <span class="order-card-label">Courier:</span>
+                                <span class="order-card-value">${order.deliveryInfo?.courier || '-'}</span>
+                                <br>
+                                <span class="order-card-label">Tracking ID:</span>
+                                <span class="order-card-value">${order.deliveryInfo?.trackingId || '-'}</span>
+                            </div>
+                        </div>
+                        ${order.couponUsed?.code ? `
+                        <div class="order-card-section mb-2">
+                            <div class="order-card-section-title">Coupon</div>
+                            <div>
+                                <span class="order-card-label">Code:</span>
+                                <span class="order-card-value">${escapeHtml(order.couponUsed.code)}</span>
+                                <br>
+                                <span class="order-card-label">Discount:</span>
+                                <span class="order-card-value">₹${order.couponUsed.discountAmount || 0}</span>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div class="order-card-actions mt-2">
+                        <a href="/admin/orders/${order._id}/download-pdf" class="btn btn-outline-primary btn-sm download-btn" title="Download PDF">
+                            <i class="fa fa-download"></i> PDF
+                        </a>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="showOrderDetails('${order._id}')">
+                            <i class="fa fa-eye"></i> Details
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+    }
+
+    // Render pagination
+    function renderPagination(page, pages) {
+        currentPage = page;
+        totalPages = pages;
+        const pag = document.getElementById('pagination');
+        pag.innerHTML = '';
+        if (pages <= 1) return;
+
+        function pageItem(p, label, active = false, disabled = false) {
+            return `<li class="page-item${active ? ' active' : ''}${disabled ? ' disabled' : ''}">
+                <a class="page-link" href="#" onclick="gotoPage(${p});return false;">${label}</a>
+            </li>`;
+        }
+
+        pag.innerHTML += pageItem(1, '&laquo;', page === 1, page === 1);
+        for (let i = Math.max(1, page - 2); i <= Math.min(pages, page + 2); i++) {
+            pag.innerHTML += pageItem(i, i, page === i);
+        }
+        pag.innerHTML += pageItem(pages, '&raquo;', page === pages, page === pages);
+    }
+
+    function gotoPage(p) {
+        if (p < 1 || p > totalPages) return;
+        fetchOrders(p);
+    }
+
+    // Filter form submit
+    document.getElementById('filterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        fetchOrders(1);
+    });
+
+    // Bulk download button handler
+    document.getElementById('downloadBulkBtn').addEventListener('click', function() {
+        // Gather current filters
+        const status = document.getElementById('status').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        // For bulk download, we do not use limit or page
+        let url = `/download-orders-bulk?`;
+        const params = [];
+        if (status) params.push(`status=${encodeURIComponent(status)}`);
+        if (startDate) params.push(`startDate=${encodeURIComponent(startDate)}`);
+        if (endDate) params.push(`endDate=${encodeURIComponent(endDate)}`);
+        if (params.length) url += params.join('&');
+        // Open in new tab to trigger download
+        window.open(url, '_blank');
+    });
+
+    // Show order details modal (unchanged except for mobile)
+    async function showOrderDetails(orderId) {
+        // Fetch order details
+        const res = await fetch(`/manage-orders?orderId=${orderId}`);
+        let order;
+        if (res.headers.get('content-type').includes('application/json')) {
+            const data = await res.json();
+            if (data.orders && data.orders.length) {
+                order = data.orders[0];
+            }
+        }
+        if (!order) {
+            document.getElementById('orderDetailsBody').innerHTML = `<div class="alert alert-danger">Order not found.</div>`;
+            new bootstrap.Modal(document.getElementById('orderDetailsModal')).show();
+            return;
+        }
+
+        // Build details HTML
+        function getStatusClassForModal(status) {
+            if (!status) return 'order-status';
+            const s = status.toLowerCase().replace(/\s|_/g, '');
+            if (s === 'cancelled' || s === 'canceled') return 'order-status Cancelled';
+            if (s === 'delivered') return 'order-status Delivered';
+            if (s === 'receivedorder') return 'order-status ReceivedOrder';
+            if (s === 'shipping' || s === 'shipped') return 'order-status Shipping';
+            return 'order-status ' + status.replace(/\s/g, '');
+        }
+
+        let html = `
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h6 class="fw-bold text-primary">Order Info</h6>
+                    <ul class="list-group list-group-flush mb-2">
+                        <li class="list-group-item"><b>Order ID:</b> ${order._id}</li>
+                        <li class="list-group-item"><b>Status:</b> <span class="${getStatusClassForModal(order.orderStatus)}">${escapeHtml(order.orderStatus)}</span></li>
+                        <li class="list-group-item"><b>Created:</b> ${formatDate(order.createdAt)}</li>
+                        <li class="list-group-item"><b>Updated:</b> ${formatDate(order.updatedAt)}</li>
+                        <li class="list-group-item"><b>Total:</b> ₹${order.totalAmount || 0}</li>
+                        <li class="list-group-item"><b>Is Replacement:</b> ${order.isReplacement ? 'Yes' : 'No'}</li>
+                        ${order.replacementReason ? `<li class="list-group-item"><b>Replacement Reason:</b> ${escapeHtml(order.replacementReason)}</li>` : ''}
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold text-primary">User Info</h6>
+                    <ul class="list-group list-group-flush mb-2">
+                        <li class="list-group-item"><b>User:</b> ${order.user ? escapeHtml(order.user.name || '') : '-'}</li>
+                        <li class="list-group-item"><b>Email:</b> ${order.user ? escapeHtml(order.user.email || '') : '-'}</li>
+                        <li class="list-group-item"><b>Mobile:</b> ${order.user ? (escapeHtml(order.user.mobile || order.user.phone || '-')) : '-'}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h6 class="fw-bold text-primary">Billing Address</h6>
+                    <div class="border rounded p-2 mb-2">
+                        ${order.billingAddress ? `
+                            <div><b>Name:</b> ${escapeHtml(order.billingAddress.name || '-')}</div>
+                            <div><b>Phone:</b> ${escapeHtml(order.billingAddress.phone || '-')}</div>
+                            <div><b>Address:</b> ${escapeHtml(order.billingAddress.addressLine1 || '')}, ${escapeHtml(order.billingAddress.addressLine2 || '')}</div>
+                            <div><b>Landmark:</b> ${escapeHtml(order.billingAddress.landmark || '-')}</div>
+                            <div><b>City:</b> ${escapeHtml(order.billingAddress.city || '-')} | <b>District:</b> ${escapeHtml(order.billingAddress.district || '-')}</div>
+                            <div><b>State:</b> ${escapeHtml(order.billingAddress.state || '-')} | <b>Pincode:</b> ${escapeHtml(order.billingAddress.pincode || '-')}</div>
+                            <div><b>Type:</b> ${escapeHtml(order.billingAddress.addressType || '-')}</div>
+                        ` : '-'}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold text-primary">Shipping Address</h6>
+                    <div class="border rounded p-2 mb-2">
+                        ${order.shippingAddress ? `
+                            <div><b>Name:</b> ${escapeHtml(order.shippingAddress.name || '-')}</div>
+                            <div><b>Phone:</b> ${escapeHtml(order.shippingAddress.phone || '-')}</div>
+                            <div><b>Address:</b> ${escapeHtml(order.shippingAddress.addressLine1 || '')}, ${escapeHtml(order.shippingAddress.addressLine2 || '')}</div>
+                            <div><b>Landmark:</b> ${escapeHtml(order.shippingAddress.landmark || '-')}</div>
+                            <div><b>City:</b> ${escapeHtml(order.shippingAddress.city || '-')} | <b>District:</b> ${escapeHtml(order.shippingAddress.district || '-')}</div>
+                            <div><b>State:</b> ${escapeHtml(order.shippingAddress.state || '-')} | <b>Pincode:</b> ${escapeHtml(order.shippingAddress.pincode || '-')}</div>
+                            <div><b>Type:</b> ${escapeHtml(order.shippingAddress.addressType || '-')}</div>
+                        ` : '-'}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <h6 class="fw-bold text-primary">Order Items</h6>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Color</th>
+                                <th>Size</th>
+                                <th>Qty</th>
+                                <th>Price (₹)</th>
+                                <th>Subtotal (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${order.items.map((item, i) => `
+                                <tr>
+                                    <td>${i+1}</td>
+                                    <td>${escapeHtml(item.name || '')}</td>
+                                    <td>${escapeHtml(item.selectedColor || '-')}</td>
+                                    <td>${escapeHtml(item.selectedSize || '-')}</td>
+                                    <td>${item.quantity}</td>
+                                    <td>${item.price}</td>
+                                    <td>${item.quantity * item.price}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h6 class="fw-bold text-primary">Payment Info</h6>
+                    <ul class="list-group list-group-flush mb-2">
+                        <li class="list-group-item"><b>Razorpay Order ID:</b> ${order.paymentInfo?.razorpayOrderId || '-'}</li>
+                        <li class="list-group-item"><b>Razorpay Payment ID:</b> ${order.paymentInfo?.razorpayPaymentId || '-'}</li>
+                        <li class="list-group-item"><b>Status:</b> ${order.paymentInfo?.status || 'Pending'}</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold text-primary">Delivery Info</h6>
+                    <ul class="list-group list-group-flush mb-2">
+                        <li class="list-group-item"><b>Courier:</b> ${order.deliveryInfo?.courier || '-'}</li>
+                        <li class="list-group-item"><b>Shipment ID:</b> ${order.deliveryInfo?.shipmentId || '-'}</li>
+                        <li class="list-group-item"><b>Tracking ID:</b> ${order.deliveryInfo?.trackingId || '-'}</li>
+                        <li class="list-group-item"><b>AWB Code:</b> ${order.deliveryInfo?.awbCode || '-'}</li>
+                        <li class="list-group-item"><b>Status:</b> ${order.deliveryInfo?.status || '-'}</li>
+                        <li class="list-group-item"><b>Estimated Delivery:</b> ${formatDate(order.deliveryInfo?.estimatedDelivery)}</li>
+                        <li class="list-group-item"><b>Last Updated:</b> ${formatDate(order.deliveryInfo?.updatedAt)}</li>
+                        <li class="list-group-item"><b>Error:</b> ${order.deliveryInfo?.error || '-'}</li>
+                    </ul>
+                </div>
+            </div>
+            ${order.deliveryInfo?.trackingHistory?.length ? `
+                <div class="mb-3">
+                    <h6 class="fw-bold text-primary">Tracking History</h6>
+                    <ul class="list-group list-group-flush">
+                        ${order.deliveryInfo.trackingHistory.map((t, i) => `
+                            <li class="list-group-item">
+                                <b>${i+1}.</b> ${escapeHtml(t.status || '')} (${escapeHtml(t.original_status || '')}) - ${escapeHtml(t.location || 'Unknown')} - ${escapeHtml(t.remark || '')} <br>
+                                <small class="text-muted">Updated: ${escapeHtml(t.updated_date || '')}</small>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+            ${order.couponUsed?.code ? `
+                <div class="mb-3">
+                    <h6 class="fw-bold text-primary">Coupon Info</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><b>Code:</b> ${escapeHtml(order.couponUsed.code)}</li>
+                        <li class="list-group-item"><b>Type:</b> ${escapeHtml(order.couponUsed.discountType || '-')}</li>
+                        <li class="list-group-item"><b>Value:</b> ${order.couponUsed.discountValue || '-'}</li>
+                        <li class="list-group-item"><b>Discount Amount:</b> ₹${order.couponUsed.discountAmount || 0}</li>
+                    </ul>
+                </div>
+            ` : ''}
+        `;
+        document.getElementById('orderDetailsBody').innerHTML = html;
+        new bootstrap.Modal(document.getElementById('orderDetailsModal')).show();
+    }
+
+    // On page load
+    window.addEventListener('DOMContentLoaded', () => {
+        fetchOrders(1);
+    });
+</script>
+</body>
+</html>

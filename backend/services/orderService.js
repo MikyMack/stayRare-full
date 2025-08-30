@@ -1,6 +1,7 @@
 const Order = require('../models/Order');
 const { trackShipment, parseShiprocketDate } = require('./shiprocketService');
 const mapShiprocketStatus = require('../utils/shiprocketStatusMapper');
+const { getToken } = require("./shiprocketService");
 
 async function getOrdersWithTracking(userId, { skip = 0, limit = 10 } = {}) {
   const orders = await Order.find({ user: userId })
@@ -77,4 +78,37 @@ async function getOrdersWithTracking(userId, { skip = 0, limit = 10 } = {}) {
   return { orders: updatedOrders, needsRefresh: true };
 }
 
-module.exports = { getOrdersWithTracking };
+async function refreshOrderStatuses() {
+  try {
+    const token = await getToken();
+
+    const orders = await Order.find({ shiprocketOrderId: { $exists: true } });
+
+    for (let order of orders) {
+      try {
+        const resp = await axios.get(
+          `https://apiv2.shiprocket.in/v1/external/courier/track/shipment/${order.shiprocketOrderId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const trackingData = resp.data.tracking_data;
+
+        if (trackingData) {
+          order.deliveryStatus = trackingData.current_status;
+          order.shiprocketTrackingUrl = trackingData.track_url;
+          order.lastUpdated = new Date();
+          await order.save();
+        }
+      } catch (err) {
+        console.error(`Error updating order ${order._id}:`, err.message);
+      }
+    }
+  } catch (err) {
+    console.error("Error in refreshOrderStatuses:", err.message);
+  }
+}
+
+
+module.exports = { getOrdersWithTracking,refreshOrderStatuses };

@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const moment = require('moment')
 const isAdmin = require('../middleware/isAdmin');
-const productController = require('../controllers/productController');
-const { multerUpload } = require('../middleware/uploadS3');  
 const Category = require('../models/Category');
 const Product = require('../models/Product');
 const Coupons = require('../models/Coupon');
 const Order = require('../models/Order');
 const User = require('../models/User');
+const generateAdminOrderPDF = require('../utils/orderpdfGenerator');
+const { refreshOrderStatuses } = require("../services/orderService");
+const JSZip = require('jszip');
 
 
 
@@ -291,6 +292,17 @@ router.get('/admin-testimonials',isAdmin, (req, res) => {
 router.get('/admin-blogs',isAdmin, (req, res) => {
     res.render('admin/blogs');
   });
+
+
+  router.get('/order_management', isAdmin, async (req, res) => {
+    // Refresh statuses before rendering
+    await refreshOrderStatuses();
+  
+    // Fetch updated orders
+    const orders = await Order.find().sort({ createdAt: -1 });
+  
+    res.render('admin/order-management', { orders });
+  });
 router.get('/admin-banners',isAdmin, (req, res) => {
     res.render('admin/banners');
   });
@@ -427,5 +439,107 @@ router.get('/admin/users', isAdmin, async (req, res) => {
         res.status(500).send('Failed to load users');
     }
 });
+
+router.get("/manage-orders", async (req, res) => {
+    try {
+        if (req.query.orderId) {
+            const order = await Order.find({ _id: req.query.orderId })
+                .populate("user", "name email mobile")
+                .populate("items.product", "name price")
+                .lean();
+            return res.json({ orders: order });
+        }
+
+        const { status, startDate, endDate, page = 1, limit = 10 } = req.query;
+
+        const filter = {};
+
+        if (status) filter.orderStatus = status;
+        if (startDate && endDate) {
+            filter.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
+        }
+
+        const orders = await Order.find(filter)
+            .populate("user", "name email mobile")
+            .populate("items.product", "name price")
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
+
+        const total = await Order.countDocuments(filter);
+
+        res.json({
+            orders,
+            pagination: {
+                total,
+                page: Number(page),
+                pages: Math.ceil(total / limit)
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get('/admin/orders/:orderId/download-pdf', async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+        const order = await Order.findById(orderId)
+            .populate('user', 'name email')
+            .populate('items.product', 'name price')
+            .lean();
+
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+
+        // Generate PDF buffer
+        const pdfBuffer = await generateAdminOrderPDF(order);
+
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename="order_${order._id}.pdf"`,
+            'Content-Length': pdfBuffer.length
+        });
+        res.send(pdfBuffer);
+    } catch (err) {
+        console.error('Error generating order PDF:', err);
+        res.status(500).send('Failed to generate order PDF');
+    }
+});
+router.get('/download-orders-bulk', async (req, res) => {
+    try {
+      const { status, startDate, endDate } = req.query;
+      const filter = {};
+  
+      if (status) filter.orderStatus = status;
+      if (startDate && endDate) {
+        filter.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
+      }
+  
+      const orders = await Order.find(filter)
+        .populate('user', 'name email')
+        .populate('items.product', 'name price')
+        .sort({ createdAt: -1 })
+        .lean();
+  
+      if (!orders.length) return res.status(404).send('No orders found');
+  
+      const zip = new JSZip();
+      for (let i = 0; i < orders.length; i++) {
+        const pdfBuffer = await generateAdminOrderPDF(orders[i]);
+        zip.file(`order_${orders[i]._id}.pdf`, pdfBuffer);
+      }
+  
+      const zipData = await zip.generateAsync({ type: 'nodebuffer' });
+      res.set('Content-Type', 'application/zip');
+      res.set('Content-Disposition', 'attachment; filename=orders.zip');
+      res.send(zipData);
+  
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err.message);
+    }
+  });
 
 module.exports = router;
