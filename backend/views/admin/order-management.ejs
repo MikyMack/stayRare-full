@@ -9,7 +9,7 @@
     <style>
         html, body {
             background: #f8f9fa;
-            font-size: 1.18rem !important;
+            font-size: 1rem !important;
             color: #181818 !important;
             font-family: 'Segoe UI', Arial, sans-serif;
         }
@@ -17,28 +17,53 @@
             background: #f8f9fa;
         }
         .order-card {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+            border-radius: 14px;
+            margin-bottom: 1.2rem;
             background: #fff;
-            border-width: 2.5px !important;
-            transition: box-shadow 0.2s;
-            font-size: 1.13rem;
+            border-width: 4px !important;
+            border-style: solid;
+            border-color: #e0e0e0;
+            transition: box-shadow 0.2s, border-color 0.2s;
+            font-size: 1rem;
             color: #181818;
+            padding: 1.2rem 1.2rem;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden; /* Ensures children don't overflow the card */
         }
         .order-card:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.16);
+            border-color: #0d6efd;
         }
         .order-status {
-            font-weight: bold;
+            font-weight: 500;
             display: inline-block;
-            min-width: 90px;
-            padding: 0.4em 0.9em;
-            border-radius: 0.5em;
-            font-size: 1.15em;
+            min-width: 80px;
+            max-width: 100%;
+            padding: 0.38em 1.3em;
+            border-radius: 0.6em;
+            font-size: 1.08em;
             text-align: center;
             white-space: nowrap;
             color: #181818;
+            margin-bottom: 0.4em;
+            letter-spacing: 0.02em;
+            border: 2.5px solid transparent;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            overflow-x: auto;
+            overflow-y: hidden;
+            /* Prevents status from overflowing card horizontally */
+            word-break: break-all;
+            /* If you want to force break long status words, otherwise use 'break-word' */
+            box-sizing: border-box;
+        }
+        .order-card .order-status {
+            /* Extra insurance: always keep status inside card */
+            max-width: 100%;
         }
         /* Status border colors */
         .order-card-border-cancelled { border-color: #dc3545 !important; }
@@ -56,49 +81,94 @@
         .order-status.Cancelled, .order-status.Canceled {
             background: #dc3545 !important;
             color: #fff !important;
+            border-color: #dc3545 !important;
         }
         .order-status.Delivered {
             background: #198754 !important;
             color: #fff !important;
+            border-color: #198754 !important;
         }
-        .order-status.ReceivedOrder, .order-status['Received Order'], .order-status['Received_Order'] {
+        .order-status.ReceivedOrder {
             background: #ffc107 !important;
             color: #181818 !important;
+            border-color: #ffc107 !important;
         }
         .order-status.Shipping, .order-status.Shipped {
             background: #0d6efd !important;
             color: #fff !important;
+            border-color: #0d6efd !important;
         }
-        .order-status.Pending { color: #b8860b; background: #fffbe6; }
-        .order-status.Confirmed { color: #0d6efd; background: #e7f1ff; }
-        .order-status.Processing { color: #138496; background: #e6f7fa; }
-        .order-status.Returned { color: #fd7e14; background: #fff3e6; }
-        .order-status.Failed { color: #343a40; background: #f2f2f2; }
+        .order-status.Pending {
+            color: #b8860b;
+            background: #fffbe6;
+            border-color: #ffc107 !important;
+        }
+        .order-status.Confirmed {
+            color: #0d6efd;
+            background: #e7f1ff;
+            border-color: #0d6efd !important;
+        }
+        .order-status.Processing {
+            color: #138496;
+            background: #e6f7fa;
+            border-color: #17a2b8 !important;
+        }
+        .order-status.Returned {
+            color: #fd7e14;
+            background: #fff3e6;
+            border-color: #fd7e14 !important;
+        }
+        .order-status.Failed {
+            color: #343a40;
+            background: #f2f2f2;
+            border-color: #6c757d !important;
+        }
+
+        /* Delivery status always inside card, bold and catchy */
+        .order-delivery-status {
+            margin-top: 0.2em;
+            margin-bottom: 0.2em;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #fff;
+            background: #0d6efd;
+            border-radius: 0.5em;
+            padding: 0.22em 0.9em;
+            display: inline-block;
+            max-width: 100%;
+            word-break: break-word;
+            letter-spacing: 0.03em;
+            box-shadow: 0 1px 6px rgba(13,110,253,0.10);
+        }
+
         .filter-bar {
             background: #fff;
-            border-radius: 10px;
+            border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            padding: 1.2rem 2rem;
+            padding: 1rem 1.5rem;
             margin-bottom: 2rem;
-            font-size: 1.13rem;
+            font-size: 1rem;
             color: #181818;
+            font-weight: 600;
         }
         .filter-bar label,
         .filter-bar .form-label,
         .form-label {
-            font-size: 1.08em;
+            font-size: 1.3em;
             color: #181818;
             font-weight: 600;
         }
         .form-control, .form-select {
-            font-size: 1.08em !important;
+            font-size: 1.3em !important;
             color: #181818 !important;
             background: #f9f9f9;
+            font-weight: 600;
         }
         .download-btn {
             transition: background 0.2s;
-            font-size: 1.08em;
+            font-size: 1.3em;
             color: #181818;
+            font-weight: 600;
         }
         .download-btn:hover {
             background: #0d6efd;
@@ -106,70 +176,111 @@
         }
         .pagination .page-link {
             color: #0d6efd;
-            font-size: 1.08em;
+            font-size: 1.3em;
+            font-weight: 600;
         }
         .pagination .active .page-link {
             background: #0d6efd;
             color: #fff;
             border-color: #0d6efd;
         }
+
+        /* Responsive grid for order cards */
+        .order-cards-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: -0.5rem;
+            margin-right: -0.5rem;
+        }
+        .order-cards-row > .order-card-col {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+        }
+        /* 4 cards per row on large screens */
+        @media (min-width: 1200px) {
+            .order-cards-row > .order-card-col {
+                width: 25%;
+            }
+        }
+        /* 3 cards per row on md-lg screens */
+        @media (min-width: 992px) and (max-width: 1199.98px) {
+            .order-cards-row > .order-card-col {
+                width: 33.3333%;
+            }
+        }
+        /* 2 cards per row on sm-md screens */
+        @media (min-width: 576px) and (max-width: 991.98px) {
+            .order-cards-row > .order-card-col {
+                width: 50%;
+            }
+        }
+        /* 1 card per row on xs screens */
+        @media (max-width: 575.98px) {
+            .order-cards-row > .order-card-col {
+                width: 100%;
+            }
+        }
+
         /* Responsive tweaks */
         @media (max-width: 991.98px) {
             .order-status {
-                min-width: 70px;
-                font-size: 1em;
-                padding: 0.3em 0.7em;
+                min-width: 55px;
+                font-size: 1.3em;
+                padding: 0.22em 0.5em;
+                max-width: 100%;
             }
             .order-card {
-                padding: 0.9rem 0.9rem;
-                font-size: 1.08rem;
+                padding: 0.7rem 0.7rem;
+                font-size: 1.3rem;
             }
             .filter-bar {
-                font-size: 1.08rem;
+                font-size: 1.3rem;
             }
         }
         @media (max-width: 767.98px) {
             .order-status {
-                min-width: 60px;
-                font-size: 0.95em;
-                padding: 0.25em 0.5em;
+                min-width: 45px;
+                font-size: 1.3em;
+                padding: 0.15em 0.4em;
+                max-width: 100%;
             }
             .order-card {
-                padding: 0.7rem 0.7rem;
-                font-size: 1.05rem;
+                padding: 0.5rem 0.3rem;
+                font-size: 0.92rem;
             }
             .filter-bar {
-                font-size: 1.05rem;
+                font-size: 0.92rem;
             }
         }
         @media (max-width: 575.98px) {
-            .order-status {
-                min-width: 50px;
-                font-size: 0.9em;
-                padding: 0.18em 0.4em;
-            }
             .container {
                 padding-left: 0.2rem !important;
                 padding-right: 0.2rem !important;
             }
             .order-card {
-                padding: 0.5rem 0.3rem;
-                font-size: 1rem;
+                padding: 0.4rem 0.2rem;
+                font-size: 0.9rem;
             }
             .filter-bar {
-                font-size: 1rem;
+                font-size: 0.9rem;
+            }
+            .order-status {
+                max-width: 100%;
             }
         }
         .order-items-list {
             list-style: none;
             padding-left: 0;
             margin-bottom: 0;
-            font-size: 1.08em;
+            font-size: 1.3em;
             color: #181818;
+            font-weight: 600;
         }
         .order-items-list li {
             border-bottom: 1px solid #e1e1e1;
-            padding: 0.4em 0;
+            padding: 0.3em 0;
             color: #181818;
         }
         .order-items-list li:last-child {
@@ -177,27 +288,29 @@
         }
         .order-card-actions {
             display: flex;
-            gap: 0.7rem;
+            gap: 0.5rem;
             flex-wrap: wrap;
         }
         .order-card-label {
-            font-weight: 600;
+            font-weight: 700;
             color: #181818;
-            font-size: 1.08em;
+            font-size: 1.3em;
         }
         .order-card-value {
             font-weight: 700;
             color: #181818;
-            font-size: 1.08em;
+            font-size: 1.3em;
         }
         .order-card-section-title {
-            font-size: 1.18em;
+            font-size: 1.08em;
             font-weight: 700;
             color: #483087;
-            margin-bottom: 0.3em;
+            margin-bottom: 0.2em;
+            letter-spacing: 0.01.3em;
+            text-decoration: underline;
         }
         .order-card-section {
-            margin-bottom: 0.7em;
+            margin-bottom: 0.5em;
         }
     </style>
 </head>
@@ -211,7 +324,7 @@
     </div>
     <div class="filter-bar mb-4">
         <div class="row g-3 align-items-end">
-            <form id="filterForm" class="col-12 col-lg-10 row g-3 align-items-end">
+            <form id="filterForm" action="/order_management" method="get" class="col-12 col-lg-10 row g-3 align-items-end">
                 <div class="col-12 col-sm-6 col-md-3">
                     <label for="status" class="form-label">Order Status</label>
                     <select class="form-select" id="status" name="status">
@@ -243,8 +356,13 @@
                         <option value="50">50</option>
                     </select>
                 </div>
-                <div class="col-6 col-sm-3 col-md-1 d-grid">
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-filter"></i></button>
+                <div class="col-3 col-sm-3 col-md-1 d-grid">
+                    <button type="submit" class="btn btn-primary" title="Apply Filters"><i class="fa fa-filter"></i></button>
+                </div>
+                <div class="col-3 col-sm-3 col-md-1 d-grid">
+                    <a href="/order_management" class="btn btn-secondary" id="resetFiltersBtn" title="Reset Filters">
+                        <i class="fa fa-undo"></i>
+                    </a>
                 </div>
             </form>
             <div class="col-12 col-lg-2 d-grid">

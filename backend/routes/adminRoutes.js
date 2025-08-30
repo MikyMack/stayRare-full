@@ -9,14 +9,14 @@ const Order = require('../models/Order');
 const User = require('../models/User');
 const generateAdminOrderPDF = require('../utils/orderpdfGenerator');
 const { refreshOrderStatuses } = require("../services/orderService");
-const JSZip = require('jszip');
+const generateBulkOrdersPDF = require('../utils/bulkOrdersPdfGenerator');
 
 
 
 router.get('/admin/login', (req, res) => {
   res.render('admin/admin-login', {
     title: 'Admin Login',
-    user: req.session.user || null
+    user: req.session.user || null 
   });
 });
 
@@ -507,39 +507,40 @@ router.get('/admin/orders/:orderId/download-pdf', async (req, res) => {
         res.status(500).send('Failed to generate order PDF');
     }
 });
+
+
 router.get('/download-orders-bulk', async (req, res) => {
-    try {
-      const { status, startDate, endDate } = req.query;
-      const filter = {};
-  
-      if (status) filter.orderStatus = status;
-      if (startDate && endDate) {
-        filter.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
-      }
-  
-      const orders = await Order.find(filter)
-        .populate('user', 'name email')
-        .populate('items.product', 'name price')
-        .sort({ createdAt: -1 })
-        .lean();
-  
-      if (!orders.length) return res.status(404).send('No orders found');
-  
-      const zip = new JSZip();
-      for (let i = 0; i < orders.length; i++) {
-        const pdfBuffer = await generateAdminOrderPDF(orders[i]);
-        zip.file(`order_${orders[i]._id}.pdf`, pdfBuffer);
-      }
-  
-      const zipData = await zip.generateAsync({ type: 'nodebuffer' });
-      res.set('Content-Type', 'application/zip');
-      res.set('Content-Disposition', 'attachment; filename=orders.zip');
-      res.send(zipData);
-  
-    } catch (err) {
-      console.error(err);
-      res.status(500).send(err.message);
+  try {
+    const { status, startDate, endDate } = req.query;
+    const filter = {};
+
+    if (status) filter.orderStatus = status;
+    if (startDate && endDate) {
+      filter.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
     }
-  });
+
+    const orders = await Order.find(filter)
+      .populate('user', 'name email')
+      .populate('items.product', 'name price')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    if (!orders.length) return res.status(404).send('No orders found');
+
+    // Use a dedicated PDF generator for bulk orders
+    const bulkOrdersPdfBuffer = await generateBulkOrdersPDF(orders);
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename=orders_bulk.pdf',
+      'Content-Length': bulkOrdersPdfBuffer.length
+    });
+    res.send(bulkOrdersPdfBuffer);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err.message);
+  }
+});
 
 module.exports = router;
