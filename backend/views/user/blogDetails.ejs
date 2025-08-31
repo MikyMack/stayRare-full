@@ -210,13 +210,13 @@
 
       <div class="logo">
         <a href="/">
-          <img src="images/stayrare/logo.png" alt="Uomo" class="logo__image d-block">
+          <img src="/images/stayrare/logo.png" alt="Uomo" class="logo__image d-block">
         </a>
       </div><!-- /.logo -->
 
       <a href="/cart" class="header-tools__item header-tools__cart " >
         <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_cart" /></svg>
-      
+     
       </a>
     </div><!-- /.container -->
 
@@ -231,10 +231,10 @@
        
             </li>
             <li class="navigation__item">
-              <a href="" class="navigation__link js-nav-right d-flex align-items-center">Store<svg class="ms-auto" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_next_sm" /></svg></a>
+              <a href="#" class="navigation__link js-nav-right d-flex align-items-center">Store<svg class="ms-auto" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_next_sm" /></svg></a>
               <div class="sub-menu position-absolute top-0 start-100 w-100 d-none">
                 <a href="#" class="navigation__link js-nav-left d-flex align-items-center border-bottom mb-3"><svg class="me-2" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_prev_sm" /></svg>Store</a>
-               <div class="sub-menu__wrapper">
+              <div class="sub-menu__wrapper">
                   <% if (typeof categories !== 'undefined' && categories.length) { %>
                     <% categories.forEach(function(category) { %>
                       <a href="/store?category=<%= category._id %>" class="navigation__link js-nav-right d-flex align-items-center">
@@ -272,20 +272,20 @@
               </div>
             </li>
             <li class="navigation__item">
-              <a href="/about" class="navigation__link">About</a>
-            </li>
-            <li class="navigation__item">
-              <a href="/account" class="navigation__link">Account</a>
-            </li>
-            <li class="navigation__item">
-              <a href="/orders" class="navigation__link">Orders</a>
-            </li>
-            <li class="navigation__item">
-              <a href="/cart" class="navigation__link">Cart</a>
-            </li>
-            <li class="navigation__item">
-              <a href="/wishlist" class="navigation__link">Wishlist</a>
-            </li>
+                <a href="/about" class="navigation__link">About</a>
+              </li>
+              <li class="navigation__item">
+                <a href="/account" class="navigation__link">Account</a>
+              </li>
+              <li class="navigation__item">
+                <a href="/orders" class="navigation__link">Orders</a>
+              </li>
+              <li class="navigation__item">
+                <a href="/cart" class="navigation__link">Cart</a>
+              </li>
+              <li class="navigation__item">
+                <a href="/wishlist" class="navigation__link">Wishlist</a>
+              </li>
                 </li>
                      <li class="navigation__item">
               <a href="/blogs" class="navigation__link">blogs</a>
@@ -323,7 +323,7 @@
 
           <ul class="container social-links d-flex justify-content-around list-unstyled d-flex flex-wrap mb-0">
             <li>
-              <a href="https://www.facebook.com/profile.php?id=61578094636322" class="footer__social-link d-block ps-0">
+              <a href="https://www.facebook.com/profile.php?id=61578094636322 " class="footer__social-link d-block ps-0">
                 <svg class="svg-icon svg-icon_facebook" width="9" height="15" viewBox="0 0 9 15"
                   xmlns="http://www.w3.org/2000/svg">
                   <use href="#icon_facebook" />
@@ -658,7 +658,7 @@
   <script src="/js/plugins/jquery.fancybox.js"></script>
 
   <!-- Footer Scripts -->
-  <script src="js/theme.js"></script>
+  <script src="/js/theme.js"></script>
 
 </body>
 </html>
