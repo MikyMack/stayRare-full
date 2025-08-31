@@ -62,10 +62,17 @@ async function generateBulkOrdersPDF(orders = null, filter = {}) {
 
         if (order.items && order.items.length) {
           doc.fontSize(10);
-          doc.text("Product", { continued: true, width: 200 });
+
+          // Table headers
+          doc.font("Helvetica-Bold");
+          doc.text("Product", { continued: true, width: 150 });
+          doc.text("Color", { continued: true, width: 80, align: "center" });
+          doc.text("Size", { continued: true, width: 80, align: "center" });
           doc.text("Qty", { continued: true, width: 50, align: "center" });
           doc.text("Price", { align: "right" });
+
           doc.moveDown(0.1);
+          doc.font("Helvetica"); // Reset font for rows
 
           order.items.forEach((item) => {
             const productName =
@@ -73,7 +80,17 @@ async function generateBulkOrdersPDF(orders = null, filter = {}) {
             const price =
               (item.product && item.product.price) || item.price || 0;
 
-            doc.text(productName, { continued: true, width: 200 });
+            doc.text(productName, { continued: true, width: 150 });
+            doc.text(item.selectedColor || "-", {
+              continued: true,
+              width: 80,
+              align: "center",
+            });
+            doc.text(item.selectedSize || "-", {
+              continued: true,
+              width: 80,
+              align: "center",
+            });
             doc.text(item.quantity || 1, {
               continued: true,
               width: 50,
