@@ -750,6 +750,9 @@
                                 </div>
                                 <div id="forgotPasswordStepOtp" style="display:none;">
                                     <h4 class="mb-3">Enter OTP</h4>
+                                    <p class="text-muted mb-2" style="font-size: 0.98rem;">
+                                        Please check your registered email for the OTP and enter it below.
+                                    </p>
                                     <form id="forgotOtpForm" onsubmit="return verifyForgotPasswordOtp(event)">
                                         <div class="form-group">
                                             <label>Enter the OTP sent to your email *</label>
@@ -1037,16 +1040,25 @@
                         // Replace form with OTP form
                         const signUpTab = document.getElementById('sign-up');
                         signUpTab.innerHTML = `
+      <div class="mb-3 text-center">
+        <h4 class="mb-2">Almost There!</h4>
+        <p class="text-muted" style="font-size:1.05rem;">
+          🚀 We've sent a One-Time Password (OTP) to your email.<br>        
+        </p>
+        <p class="text-muted" style="font-size:0.97rem;">
+          Enter the 6-digit code below to verify your email and complete your registration.
+        </p>
+      </div>
       <form id="otpForm" onsubmit="return verifyOtp(event)">
-        <div class="form-group">
-          <label>Enter OTP *</label>
-          <input type="text" class="form-control" name="otp" id="registerOtp" required>
+        <div class="form-group mb-3">
+          <label for="registerOtp">Enter OTP *</label>
+          <input type="text" class="form-control" name="otp" id="registerOtp" required maxlength="6" minlength="4" pattern="\\d{4,6}" placeholder="e.g. 123456">
         </div>
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <button type="button" class="btn btn-link" onclick="resendOtp()">Resend OTP</button>
+          <button type="button" class="btn btn-link" onclick="resendOtp()">Didn't get it? Resend OTP</button>
           <span id="countdown" class="text-muted"></span>
         </div>
-        <button type="submit" class="btn btn-primary">Verify & Complete Registration</button>
+        <button type="submit" class="btn btn-primary w-100">Verify & Complete Registration</button>
       </form>
     `;
                         startCountdown();
