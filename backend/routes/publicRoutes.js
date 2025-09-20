@@ -1236,10 +1236,91 @@ router.post('/confirm-order', async (req, res) => {
         });
     }
 });
+async function reduceCategoryStock(orderId) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+  
+    try {
+      const order = await Order.findById(orderId)
+        .populate("items.product")
+        .session(session);
+  
+      if (!order) throw new Error("Order not found");
+  
+      for (const item of order.items) {
+        const orderedProduct = item.product;
+  
+        // Find all products in the same category
+        const categoryProducts = await Product.find({
+          category: orderedProduct.category,
+        }).session(session);
+  
+        for (const prod of categoryProducts) {
+          // Base stock reduce
+          if (prod.stock >= item.quantity) {
+            prod.stock -= item.quantity;
+          } else {
+            throw new Error(
+              `Insufficient stock for product ${prod.name} in category`
+            );
+          }
+  
+          // If product has color variants
+          if (prod.hasColorVariants && prod.colorVariants?.length > 0) {
+            prod.colorVariants = prod.colorVariants.map((cv) => {
+              if (cv.color === item.selectedColor) {
+                if (cv.stock < item.quantity) {
+                  throw new Error(
+                    `Not enough stock in color ${cv.color} of ${prod.name}`
+                  );
+                }
+                cv.stock -= item.quantity;
+              }
+              return cv;
+            });
+          }
+  
+          // If product has size variants
+          if (prod.hasSizeVariants && prod.sizeVariants?.length > 0) {
+            prod.sizeVariants = prod.sizeVariants.map((sv) => {
+              if (sv.size === item.selectedSize) {
+                if (sv.stock < item.quantity) {
+                  throw new Error(
+                    `Not enough stock in size ${sv.size} of ${prod.name}`
+                  );
+                }
+                sv.stock -= item.quantity;
+              }
+              return sv;
+            });
+          }
+  
+          await prod.save({ session });
+        }
+      }
+  
+      await session.commitTransaction();
+      session.endSession();
+      console.log("✅ Stock updated for all products in categories");
+  
+    } catch (err) {
+      await session.abortTransaction();
+      session.endSession();
+      console.error("❌ Stock update failed:", err.message);
+      throw err;
+    }
+  }
 
 router.get('/order-confirmation/:orderId', async (req, res) => {
     try {
         const orderId = req.params.orderId;
+
+        try {
+            await reduceCategoryStock(orderId);
+        } catch (stockErr) {
+            console.error("Stock update failed:", stockErr.message);
+            return res.status(400).render('error', { message: 'Stock update failed. Please contact support.' });
+        }
 
         const order = await Order.findById(orderId)
             .populate('items.product')
@@ -1249,13 +1330,15 @@ router.get('/order-confirmation/:orderId', async (req, res) => {
         if (!order) {
             return res.status(404).render('error', { message: 'Order not found' });
         }
+
         const categories = await Category.find({ isActive: true })
             .select('name imageUrl isActive subCategories')
             .lean();
 
         res.render('user/order-confirmation', {
             user: req.user || null,
-            order, categories
+            order,
+            categories
         });
     } catch (err) {
         console.error("Error loading order confirmation:", err);
