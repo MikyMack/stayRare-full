@@ -1,15 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment')
+const webpush = require('web-push');
 const isAdmin = require('../middleware/isAdmin');
 const Category = require('../models/Category');
 const Product = require('../models/Product');
 const Coupons = require('../models/Coupon');
 const Order = require('../models/Order');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const generateAdminOrderPDF = require('../utils/orderpdfGenerator');
 const { refreshOrderStatuses } = require("../services/orderService");
 const generateBulkOrdersPDF = require('../utils/bulkOrdersPdfGenerator');
+const { sendNotificationToUser } = require('./publicRoutes');
 
 
 
@@ -286,6 +289,40 @@ router.get('/admin/category', isAdmin, async (req, res) => {
     }
 });
 
+async function sendNotificationToAllUsers(title, message, url) {
+    const users = await User.find({ pushSubscription: { $exists: true } });
+  
+    const payload = JSON.stringify({ title, message, url });
+  
+    const promises = users.map(user => 
+      webpush.sendNotification(user.pushSubscription, payload).catch(err => console.error(err))
+    );
+  
+    await Promise.all(promises);
+  }
+router.post('/admin/send-notification', isAdmin, async (req, res) => {
+    try {
+      const { title, message, type, url } = req.body;
+  
+      // Save to DB (optional, for history)
+      const notification = await Notification.create({
+        title,
+        message,
+        type,
+        url
+      });
+  
+      // Send push to all users
+      await sendNotificationToAllUsers(title, message, url);
+  
+      req.flash('success', 'Notification sent successfully!');
+      res.redirect('/admin/dashboard'); 
+    } catch (error) {
+      console.error('Error sending notification:', error);
+      req.flash('error', 'Failed to send notification');
+      res.redirect('/admin/products');
+    }
+  });
 router.get('/admin-testimonials',isAdmin, (req, res) => {
     res.render('admin/testimonials');
   });
@@ -388,31 +425,50 @@ router.get('/admin/orders/:id', isAdmin, async (req, res) => {
 // Update order status
 router.put('/admin/orders/:id', isAdmin, async (req, res) => {
     try {
-        const { orderStatus, deliveryStatus } = req.body;
-        
-        const updateData = {
-            orderStatus,
-            'deliveryInfo.status': deliveryStatus,
-            'deliveryInfo.updatedAt': new Date()
-        };
-        
-        // If delivered, set delivered date
-        if (deliveryStatus === 'Delivered') {
-            updateData['deliveryInfo.deliveredAt'] = new Date();
+      const { orderStatus, deliveryStatus } = req.body;
+  
+      const updateData = {
+        orderStatus,
+        'deliveryInfo.status': deliveryStatus,
+        'deliveryInfo.updatedAt': new Date()
+      };
+  
+      // If delivered, set delivered date
+      if (deliveryStatus === 'Delivered') {
+        updateData['deliveryInfo.deliveredAt'] = new Date();
+      }
+  
+      const updatedOrder = await Order.findByIdAndUpdate(
+        req.params.id,
+        updateData,
+        { new: true }
+      ).populate('user');
+  
+      if (updatedOrder.user && updatedOrder.user._id) {
+        if (deliveryStatus === 'Shipped') {
+          await sendNotificationToUser(
+            updatedOrder.user._id,
+            "Order Shipped 🚚",
+            `Your order #${updatedOrder._id} is on the way!`,
+            `/orders/${updatedOrder._id}`
+          );
+        } else if (deliveryStatus === 'Delivered') {
+          await sendNotificationToUser(
+            updatedOrder.user._id,
+            "Order Delivered 📦",
+            `Your order #${updatedOrder._id} has been delivered successfully.`,
+            `/orders/${updatedOrder._id}`
+          );
         }
-        
-        const updatedOrder = await Order.findByIdAndUpdate(
-            req.params.id,
-            updateData,
-            { new: true }
-        );
-        
-        res.json(updatedOrder);
+      }
+  
+      res.json(updatedOrder);
     } catch (error) {
-        console.error('Error updating order:', error);
-        res.status(500).json({ error: 'Failed to update order' });
+      console.error('Error updating order:', error);
+      res.status(500).json({ error: 'Failed to update order' });
     }
-});
+  });
+  
 router.get('/admin/users', isAdmin, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;

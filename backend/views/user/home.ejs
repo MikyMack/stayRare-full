@@ -1748,7 +1748,37 @@
   </footer>
 
 
-
+  <script>
+    if ('serviceWorker' in navigator) {
+ 
+      navigator.serviceWorker.register('/sw.js');
+    
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+   
+          navigator.serviceWorker.ready.then(async (registration) => {
+            try {
+              const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: '<%= process.env.VAPID_PUBLIC_KEY %>'
+              });
+    
+              await fetch('/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(subscription)
+              });
+            } catch (err) {
+             console.log(err);
+             
+            }
+          });
+        }
+      });
+    }
+    </script>
+    
+    
 
 
   <% if (!user) { %>

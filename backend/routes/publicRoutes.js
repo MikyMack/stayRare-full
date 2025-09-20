@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 const crypto = require('crypto');
+const cron = require("node-cron");
 require('dotenv').config();
 const shiprocketService = require('../services/shiprocketService');
 const { getOrdersWithTracking } = require('../services/orderService');
@@ -18,6 +19,8 @@ const Address = require('../models/Address');
 const Coupon = require('../models/Coupon');
 const Order = require('../models/Order');
 const Blog = require('../models/Blog');
+const webPush = require("web-push");
+const Subscription = require('../models/Subscription');
 const Testimonial = require('../models/Testimonial');
 const { createEmptyCart, validateCartCoupon } = require('../utils/cartUtils');
 const isUser = require('../middleware/isUser');
@@ -1310,41 +1313,68 @@ async function reduceCategoryStock(orderId) {
       throw err;
     }
   }
+  
+  async function sendNotificationToUser(userId, title, body, url = "/") {
+    const subscriptions = await Subscription.find({ user: userId });
+    const payload = JSON.stringify({ title, body, url });
 
-router.get('/order-confirmation/:orderId', async (req, res) => {
+    subscriptions.forEach(sub => {
+      webPush.sendNotification(sub.subscription, payload).catch(console.error);
+    });
+  }
+
+
+  
+  router.get('/order-confirmation/:orderId', async (req, res) => {
     try {
-        const orderId = req.params.orderId;
-
-        try {
-            await reduceCategoryStock(orderId);
-        } catch (stockErr) {
-            console.error("Stock update failed:", stockErr.message);
-            return res.status(400).render('error', { message: 'Stock update failed. Please contact support.' });
-        }
-
-        const order = await Order.findById(orderId)
-            .populate('items.product')
-            .populate('user')
-            .lean();
-
-        if (!order) {
-            return res.status(404).render('error', { message: 'Order not found' });
-        }
-
-        const categories = await Category.find({ isActive: true })
-            .select('name imageUrl isActive subCategories')
-            .lean();
-
-        res.render('user/order-confirmation', {
-            user: req.user || null,
-            order,
-            categories
-        });
+      const orderId = req.params.orderId;
+  
+      try {
+        await reduceCategoryStock(orderId);
+      } catch (stockErr) {
+        console.error("Stock update failed:", stockErr.message);
+        return res.status(400).render('error', { message: 'Stock update failed. Please contact support.' });
+      }
+  
+      const order = await Order.findById(orderId)
+        .populate('items.product')
+        .populate('user')
+        .lean();
+  
+      if (!order) {
+        return res.status(404).render('error', { message: 'Order not found' });
+      }
+  
+      // ✅ Send Transactional Push Notification
+      if (order.user && order.user._id) {
+        await sendNotificationToUser(
+          order.user._id,
+          "Order Confirmed ✅",
+          `Your order #${order._id} has been confirmed!`,
+          `/orders/${order._id}`
+        );
+      }
+  
+      const categories = await Category.find({ isActive: true })
+        .select('name imageUrl isActive subCategories')
+        .lean();
+  
+      res.render('user/order-confirmation', {
+        user: req.user || null,
+        order,
+        categories
+      });
     } catch (err) {
-        console.error("Error loading order confirmation:", err);
-        res.status(500).render('error', { message: 'Failed to load order confirmation' });
+      console.error("Error loading order confirmation:", err);
+      res.status(500).render('error', { message: 'Failed to load order confirmation' });
     }
-});
+  });
+  
+
+router.post("/subscribe", async (req, res) => {
+    await Subscription.create({ subscription: req.body });
+    res.status(201).json({ message: "Subscribed!" });
+  });
 
 router.get('/privacy_policy', async (req, res) => {
     const categories = await Category.find({ isActive: true })
@@ -1436,4 +1466,15 @@ router.post('/orders/:orderId/cancel', orderController.cancelOrder);
 // Replacement request
 router.post('/orders/replace', orderController.requestReplacement);
 
-module.exports = router;
+cron.schedule("0 0 * * *", async () => { 
+    const abandonedCarts = await Cart.find({ checkedOut: false });
+    for (let cart of abandonedCarts) {
+      await sendNotificationToAll(
+        "You left items in your cart 🛒",
+        "Complete your purchase before stock runs out!",
+        "/cart"
+      );
+    }
+  });
+  module.exports.sendNotificationToUser = sendNotificationToUser;
+  module.exports = router;

@@ -6,6 +6,7 @@ const flash = require('connect-flash');
 const path = require('path');
 require('dotenv').config();
 require('./config/passport'); 
+const webPush = require("web-push");
 
 const authRoutes = require('./routes/authRoutes');
 const publicRoutes = require('./routes/publicRoutes');
@@ -40,6 +41,12 @@ app.use(session({
     sameSite: 'lax'
   }
 }));
+
+webPush.setVapidDetails(
+  "mailto:stayrareofficial@gmail.com",
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
