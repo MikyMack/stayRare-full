@@ -1747,15 +1747,12 @@
     </div>
   </footer>
 
-
   <script>
     if ('serviceWorker' in navigator) {
- 
       navigator.serviceWorker.register('/sw.js');
     
       Notification.requestPermission().then(permission => {
         if (permission === 'granted') {
-   
           navigator.serviceWorker.ready.then(async (registration) => {
             try {
               const subscription = await registration.pushManager.subscribe({
@@ -1769,8 +1766,7 @@
                 body: JSON.stringify(subscription)
               });
             } catch (err) {
-             console.log(err);
-             
+              console.error("Push subscription error:", err);
             }
           });
         }
@@ -1778,8 +1774,6 @@
     }
     </script>
     
-    
-
 
   <% if (!user) { %>
     <div class="modal fade" id="newsletterPopup" tabindex="-1" aria-hidden="true">

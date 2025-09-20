@@ -12,7 +12,7 @@ const Notification = require('../models/Notification');
 const generateAdminOrderPDF = require('../utils/orderpdfGenerator');
 const { refreshOrderStatuses } = require("../services/orderService");
 const generateBulkOrdersPDF = require('../utils/bulkOrdersPdfGenerator');
-const { sendNotificationToUser } = require('./publicRoutes');
+const { sendNotificationToAllUsers } = require("../services/notificationService");
 
 
 
@@ -289,40 +289,24 @@ router.get('/admin/category', isAdmin, async (req, res) => {
     }
 });
 
-async function sendNotificationToAllUsers(title, message, url) {
-    const users = await User.find({ pushSubscription: { $exists: true } });
-  
-    const payload = JSON.stringify({ title, message, url });
-  
-    const promises = users.map(user => 
-      webpush.sendNotification(user.pushSubscription, payload).catch(err => console.error(err))
-    );
-  
-    await Promise.all(promises);
-  }
+
 router.post('/admin/send-notification', isAdmin, async (req, res) => {
     try {
       const { title, message, type, url } = req.body;
   
-      // Save to DB (optional, for history)
-      const notification = await Notification.create({
-        title,
-        message,
-        type,
-        url
-      });
+      await Notification.create({ title, message, type, url });
   
-      // Send push to all users
       await sendNotificationToAllUsers(title, message, url);
   
       req.flash('success', 'Notification sent successfully!');
-      res.redirect('/admin/dashboard'); 
+      res.redirect('/admin/dashboard');
     } catch (error) {
       console.error('Error sending notification:', error);
       req.flash('error', 'Failed to send notification');
       res.redirect('/admin/products');
     }
   });
+  
 router.get('/admin-testimonials',isAdmin, (req, res) => {
     res.render('admin/testimonials');
   });

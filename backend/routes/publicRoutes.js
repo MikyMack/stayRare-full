@@ -26,6 +26,7 @@ const { createEmptyCart, validateCartCoupon } = require('../utils/cartUtils');
 const isUser = require('../middleware/isUser');
 const razorpayInstance = require('../utils/razorpay');
 const sendInvoiceEmail = require("../utils/sendInvoice");
+const { sendNotificationToUser,sendNotificationToAllUsers } = require("../services/notificationService");
 
 const shuffleArray = (arr) => {
     if (!Array.isArray(arr)) return arr;
@@ -1314,15 +1315,6 @@ async function reduceCategoryStock(orderId) {
     }
   }
   
-  async function sendNotificationToUser(userId, title, body, url = "/") {
-    const subscriptions = await Subscription.find({ user: userId });
-    const payload = JSON.stringify({ title, body, url });
-
-    subscriptions.forEach(sub => {
-      webPush.sendNotification(sub.subscription, payload).catch(console.error);
-    });
-  }
-
 
   
   router.get('/order-confirmation/:orderId', async (req, res) => {
@@ -1345,7 +1337,6 @@ async function reduceCategoryStock(orderId) {
         return res.status(404).render('error', { message: 'Order not found' });
       }
   
-      // ✅ Send Transactional Push Notification
       if (order.user && order.user._id) {
         await sendNotificationToUser(
           order.user._id,
@@ -1371,10 +1362,27 @@ async function reduceCategoryStock(orderId) {
   });
   
 
-router.post("/subscribe", async (req, res) => {
-    await Subscription.create({ subscription: req.body });
-    res.status(201).json({ message: "Subscribed!" });
+  router.post("/subscribe", async (req, res) => {
+    try {
+      const subscription = req.body;
+  
+      if (req.user) {
+        await Subscription.findOneAndUpdate(
+          { user: req.user._id },
+          { subscription },
+          { upsert: true, new: true }
+        );
+      } else {
+        await Subscription.create({ subscription });
+      }
+  
+      res.status(201).json({ message: "Subscribed!" });
+    } catch (err) {
+      console.error("Subscription error:", err);
+      res.status(500).json({ message: "Failed to subscribe" });
+    }
   });
+  
 
 router.get('/privacy_policy', async (req, res) => {
     const categories = await Category.find({ isActive: true })
@@ -1466,15 +1474,15 @@ router.post('/orders/:orderId/cancel', orderController.cancelOrder);
 // Replacement request
 router.post('/orders/replace', orderController.requestReplacement);
 
-cron.schedule("0 0 * * *", async () => { 
+cron.schedule("0 0 * * *", async () => {
     const abandonedCarts = await Cart.find({ checkedOut: false });
-    for (let cart of abandonedCarts) {
-      await sendNotificationToAll(
+    if (abandonedCarts.length > 0) {
+      await sendNotificationToAllUsers(
         "You left items in your cart 🛒",
         "Complete your purchase before stock runs out!",
         "/cart"
       );
     }
   });
-  module.exports.sendNotificationToUser = sendNotificationToUser;
+  
   module.exports = router;
