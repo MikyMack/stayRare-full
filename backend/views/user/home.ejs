@@ -468,6 +468,7 @@
       <ul class="list-unstyled d-flex flex-1 gap-3 m-0">
         <li><a href="/account" class="menu-link menu-link_us-s color-white">Shipping</a></li>
         <li><a href="/account" class="menu-link menu-link_us-s color-white"> Orders</a></li>
+
       </ul>
 
       <!-- Marquee Container with more width, catchy sentence, and infinite loop -->
@@ -1746,33 +1747,45 @@
       </div>
     </div>
   </footer>
-
+  <button id="enableNotificationsBtn" style="display:none; position:fixed; bottom:64px; right:24px; z-index:9999; padding:8px 20px; background:#3b1e58; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:500; height:40px; line-height:1.2; box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+    🔔 Enable Live Notifications
+  </button>
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
+    async function subscribeForPush() {
+      const permission = await Notification.requestPermission();
     
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          navigator.serviceWorker.ready.then(async (registration) => {
-            try {
-              const subscription = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: '<%= process.env.VAPID_PUBLIC_KEY %>'
-              });
+      if (permission === "granted") {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: "<%= process.env.VAPID_PUBLIC_KEY %>"
+        });
     
-              await fetch('/subscribe', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(subscription)
-              });
-            } catch (err) {
-              console.error("Push subscription error:", err);
-            }
-          });
-        }
+        await fetch("/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(subscription)
+        });
+        // No alert if enabled
+      } else if (permission === "denied") {
+        console.log("❌ You blocked notifications. Please enable them in browser settings.");
+        
+      } else {
+        console.log("User dismissed the permission popup.");
+        document.getElementById("enableNotificationsBtn").style.display = "block";
+      }
+    }
+    
+    // Auto-ask on first visit
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").then(() => {
+        // Trigger permission popup once
+        subscribeForPush();
       });
     }
-    </script>
+    
+    document.getElementById("enableNotificationsBtn").addEventListener("click", subscribeForPush);
+  </script>
     
 
   <% if (!user) { %>
@@ -1841,6 +1854,8 @@
           }
       });
   </script>
+
+  
   <!-- External JavaScripts -->
   <script src="js/plugins/jquery.min.js"></script>
   <script src="js/plugins/bootstrap.bundle.min.js"></script>
