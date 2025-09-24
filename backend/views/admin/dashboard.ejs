@@ -428,37 +428,78 @@
                                   </button>
                                 </form>
 
-                                <div style="background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.07);padding:2em;max-width:800px;margin:0 auto 2.5em;">
+                                <div class="bulk-update-category-stock-container" style="background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.07);padding:2em;max-width:800px;margin:0 auto 2.5em;">
                                     <h4 style="font-weight:700;margin-bottom:1.2em;color:#3b3663;">Bulk Update Category Stock</h4>
                                     <% if (categories && categories.length > 0) { %>
-                                      <% categories.forEach(function(category) { %>
-                                        <form method="POST" action="/admin/update-stock" class="mb-4 border p-3 rounded">
-                                          <input type="hidden" name="categoryId" value="<%= category._id %>">
-                                          <h6 style="margin-bottom:1em;"><%= category.name %></h6>
-                                  
-                                          <!-- Main stock -->
-                                          <div class="mb-2">
-                                            <label>Main Stock:</label>
-                                            <input type="number" name="mainStock" class="form-control w-25 d-inline-block">
+                                      <div class="row g-3">
+                                        <% categories.forEach(function(category) { %>
+                                          <div class="col-12 col-md-6">
+                                            <form method="POST" action="/admin/update-stock" class="mb-4 border p-3 rounded h-100 d-flex flex-column justify-content-between">
+                                              <input type="hidden" name="categoryId" value="<%= category._id %>">
+                                              <h6 style="margin-bottom:1em;word-break:break-word;"><%= category.name %></h6>
+                                      
+                                              <!-- Main stock -->
+                                              <div class="mb-2">
+                                                <label class="form-label" style="font-weight:500;">Main Stock:</label>
+                                                <input type="number" name="mainStock" class="form-control" style="max-width:120px;display:inline-block;">
+                                              </div>
+                                      
+                                              <!-- Size variant stock -->
+                                              <h6 style="margin-top:1em;">Size Variants Stock</h6>
+                                              <div class="row g-2">
+                                                <div class="col-6 col-sm-4 col-lg-3">
+                                                  <label class="form-label">S:</label>
+                                                  <input type="number" name="sizes[S]" class="form-control" style="max-width:90px;">
+                                                </div>
+                                                <div class="col-6 col-sm-4 col-lg-3">
+                                                  <label class="form-label">M:</label>
+                                                  <input type="number" name="sizes[M]" class="form-control" style="max-width:90px;">
+                                                </div>
+                                                <div class="col-6 col-sm-4 col-lg-3">
+                                                  <label class="form-label">L:</label>
+                                                  <input type="number" name="sizes[L]" class="form-control" style="max-width:90px;">
+                                                </div>
+                                                <div class="col-6 col-sm-4 col-lg-3">
+                                                  <label class="form-label">XL:</label>
+                                                  <input type="number" name="sizes[XL]" class="form-control" style="max-width:90px;">
+                                                </div>
+                                                <div class="col-6 col-sm-4 col-lg-3">
+                                                  <label class="form-label">XXL:</label>
+                                                  <input type="number" name="sizes[XXL]" class="form-control" style="max-width:90px;">
+                                                </div>
+                                              </div>
+                                      
+                                              <button type="submit" class="btn btn-primary mt-3 w-100">Update</button>
+                                            </form>
                                           </div>
-                                  
-                                          <!-- Size variant stock -->
-                                          <h6>Size Variants Stock</h6>
-                                          <div class="d-flex flex-wrap gap-3">
-                                            <div><label>S:</label><input type="number" name="sizes[S]" class="form-control w-20"></div>
-                                            <div><label>M:</label><input type="number" name="sizes[M]" class="form-control w-20"></div>
-                                            <div><label>L:</label><input type="number" name="sizes[L]" class="form-control w-20"></div>
-                                            <div><label>XL:</label><input type="number" name="sizes[XL]" class="form-control w-20"></div>
-                                            <div><label>XXL:</label><input type="number" name="sizes[XXL]" class="form-control w-20"></div>
-                                          </div>
-                                  
-                                          <button type="submit" class="btn btn-primary mt-3">Update</button>
-                                        </form>
-                                      <% }); %>
+                                        <% }); %>
+                                      </div>
                                     <% } else { %>
                                       <div class="alert alert-warning">No categories found.</div>
                                     <% } %>
-                                  </div>
+                                </div>
+                                <style>
+                                  @media (max-width: 767.98px) {
+                                    .bulk-update-category-stock-container {
+                                      padding: 1em !important;
+                                    }
+                                    .bulk-update-category-stock-container form {
+                                      padding: 1em !important;
+                                    }
+                                    .bulk-update-category-stock-container h4 {
+                                      font-size: 1.1em !important;
+                                    }
+                                  }
+                                  @media (max-width: 575.98px) {
+                                    .bulk-update-category-stock-container .row > [class^="col-"] {
+                                      flex: 0 0 100%;
+                                      max-width: 100%;
+                                    }
+                                    .bulk-update-category-stock-container h6 {
+                                      font-size: 1em !important;
+                                    }
+                                  }
+                                </style>
                                   
                                   
                                 <div class="tf-section-2 mb-30">
