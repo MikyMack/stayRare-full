@@ -19,6 +19,7 @@ const Address = require('../models/Address');
 const Coupon = require('../models/Coupon');
 const Order = require('../models/Order');
 const Blog = require('../models/Blog');
+const User = require('../models/User');
 const webPush = require("web-push");
 const Subscription = require('../models/Subscription');
 const Testimonial = require('../models/Testimonial');
@@ -1193,14 +1194,29 @@ router.post('/confirm-order', async (req, res) => {
 
         await newOrder.save();
 
-        // Send invoice email
-        if (userId && req.user?.email) {
-            try {
-                await sendInvoiceEmail(newOrder.toObject(), req.user.email);
-            } catch (emailError) {
-                console.error('Failed to send invoice:', emailError.message);
-            }
-        }
+   // Send invoice email
+try {
+    let recipientEmail = null;
+
+    if (req.user?.email) {
+        recipientEmail = req.user.email;
+    } else if (shippingAddress?.email) {
+        recipientEmail = shippingAddress.email;
+    } else if (billingAddress?.email) {
+        recipientEmail = billingAddress.email;
+    } else if (userId) {
+        const user = await User.findById(userId).select("email");
+        recipientEmail = user?.email;
+    }
+
+    if (recipientEmail) {
+        await sendInvoiceEmail(newOrder.toObject(), recipientEmail);
+    } else {
+        console.warn("No recipient email found for order:", newOrder._id);
+    }
+} catch (emailError) {
+    console.error("Failed to send invoice:", emailError.message);
+}
 
         // Update coupon usage
         if (userId && cart.couponInfo?.validated && cart.couponInfo?.code) {

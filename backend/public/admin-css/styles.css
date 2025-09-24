@@ -257,8 +257,8 @@ input,
 select,
 textarea {
   font-family: "Albert Sans", sans-serif;
-  font-weight: 400;
-  color: var(--Surface-2);
+  font-weight: 600;
+  color: black;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;

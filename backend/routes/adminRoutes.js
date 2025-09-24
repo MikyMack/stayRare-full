@@ -25,10 +25,7 @@ router.get('/admin/login', (req, res) => {
 
 router.get('/admin/dashboard', isAdmin, async (req, res) => {
     try {
-        // Get time period from query params (default to weekly)
         const timePeriod = req.query.period || 'weekly';
-        
-        // Calculate date ranges based on time period
         let startDate = new Date();
         switch(timePeriod) {
             case 'monthly':
@@ -37,13 +34,11 @@ router.get('/admin/dashboard', isAdmin, async (req, res) => {
             case 'yearly':
                 startDate.setFullYear(startDate.getFullYear() - 1);
                 break;
-            default: // weekly
+            default:
                 startDate.setDate(startDate.getDate() - 7);
         }
 
-        // Get counts for dashboard cards with growth percentages
-        const [currentPeriodData, previousPeriodData] = await Promise.all([
-            // Current period data
+        const [currentPeriodData, previousPeriodData, categories] = await Promise.all([
             Promise.all([
                 Order.aggregate([
                     { $match: { 
@@ -58,7 +53,6 @@ router.get('/admin/dashboard', isAdmin, async (req, res) => {
                     createdAt: { $gte: startDate }
                 })
             ]),
-            // Previous period data (for comparison)
             Promise.all([
                 Order.aggregate([
                     { $match: { 
@@ -72,10 +66,10 @@ router.get('/admin/dashboard', isAdmin, async (req, res) => {
                     role: 'user',
                     createdAt: { $lt: startDate }
                 })
-            ])
+            ]),
+            Category.find()
         ]);
 
-        // Calculate growth percentages
         const calculateGrowth = (current, previous) => {
             if (!previous || previous === 0) return 100;
             return ((current - previous) / previous * 100).toFixed(2);
@@ -94,14 +88,12 @@ router.get('/admin/dashboard', isAdmin, async (req, res) => {
             previousPeriodData[2]
         );
 
-        // Get recent orders (last 5)
         const recentOrders = await Order.find()
             .sort({ createdAt: -1 })
             .limit(5)
             .populate('user', 'name email')
             .lean();
-        
-        // Get top selling products
+
         const topProducts = await Order.aggregate([
             { $unwind: '$items' },
             { 
@@ -125,8 +117,7 @@ router.get('/admin/dashboard', isAdmin, async (req, res) => {
             { $sort: { totalSales: -1 } },
             { $limit: 5 }
         ]);
-        
-        // Get order status distribution
+
         const orderStatusStats = await Order.aggregate([
             { 
                 $group: { 
@@ -135,20 +126,19 @@ router.get('/admin/dashboard', isAdmin, async (req, res) => {
                 } 
             }
         ]);
-        
-        // Get revenue data for charts
+
         let groupByFormat, dateFormat;
         switch(timePeriod) {
             case 'yearly':
-                groupByFormat = '%Y-%m'; // Group by month for yearly view
+                groupByFormat = '%Y-%m';
                 dateFormat = 'MMM YYYY';
                 break;
             case 'monthly':
-                groupByFormat = '%Y-%m-%d'; // Group by day for monthly view
+                groupByFormat = '%Y-%m-%d';
                 dateFormat = 'DD MMM';
                 break;
-            default: // weekly
-                groupByFormat = '%Y-%m-%d'; // Group by day for weekly view
+            default:
+                groupByFormat = '%Y-%m-%d';
                 dateFormat = 'ddd';
         }
 
@@ -174,7 +164,6 @@ router.get('/admin/dashboard', isAdmin, async (req, res) => {
             { $sort: { _id: 1 } }
         ]);
 
-        // Format dates for charts
         const formattedRevenueData = revenueData.map(item => ({
             ...item,
             formattedDate: moment(item._id, groupByFormat === '%Y-%m' ? 'YYYY-MM' : 'YYYY-MM-DD')
@@ -185,6 +174,7 @@ router.get('/admin/dashboard', isAdmin, async (req, res) => {
             title: 'Admin Dashboard',
             user: req.session.user || null,
             timePeriod,
+            categories,
             dashboardData: {
                 totalEarnings: currentPeriodData[0][0]?.total || 0,
                 earningsGrowth,
@@ -582,5 +572,42 @@ router.get('/download-orders-bulk', async (req, res) => {
     res.status(500).send(err.message);
   }
 });
+
+router.post("/admin/update-stock", async (req, res) => {
+    try {
+      const { categoryId, mainStock, sizes } = req.body;
+  
+      if (!categoryId) {
+        return res.status(400).json({ success: false, message: "Category is required" });
+      }
+  
+      // If mainStock provided → update product stock
+      if (mainStock !== "" && mainStock !== undefined) {
+        await Product.updateMany(
+          { category: categoryId },
+          { $set: { stock: parseInt(mainStock) } }
+        );
+      }
+  
+      // If size-specific stocks provided → update individually
+      if (sizes && typeof sizes === "object") {
+        for (const [size, stockValue] of Object.entries(sizes)) {
+          if (stockValue && stockValue !== "") {
+            await Product.updateMany(
+              { category: categoryId, "sizeVariants.size": size },
+              { $set: { "sizeVariants.$.stock": parseInt(stockValue) } }
+            );
+          }
+        }
+      }
+  
+      res.redirect('/admin/dashboard');
+    } catch (err) {
+      console.error("Stock update error:", err);
+      res.status(500).json({ success: false, message: "Something went wrong" });
+    }
+  });
+  
+  
 
 module.exports = router;
