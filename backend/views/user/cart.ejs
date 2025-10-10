@@ -526,7 +526,7 @@
                         <% if (user) { %>
                           <a href="/checkout" class="btn btn-primary mt-3 d-block">Checkout</a>
                         <% } else { %>
-                          <a href="/auth/login" class="btn btn-primary mt-3 d-block">Login to continue</a>
+                          <a href="/checkout" class="btn btn-primary mt-3 d-block">Login to continue</a>
                         <% } %>
                       </div>
                     `;
@@ -866,7 +866,7 @@
             </div>
             <div class="mobile_fixed-btn_wrapper">
                 <div class="button-wrapper container" style="display: flex; justify-content: center; align-items: center; height: 100%;">
-                    <a class="btn btn-primary btn-checkout mb-3" id="checkout-btn" href="#" style="display: flex; align-items: center; justify-content: center; width: 100%; max-width: 320px; height: 56px; font-size: 1.1rem;">PROCEED TO CHECKOUT</a>
+                    <a class="btn btn-primary btn-checkout mb-3"  href="/checkout" style="display: flex; align-items: center; justify-content: center; width: 100%; max-width: 320px; height: 56px; font-size: 1.1rem;">PROCEED TO CHECKOUT</a>
                 </div>
                 <button class="btn btn-secondary ml-2" id="clear-cart-btn" style="background-color: #e74c3c;">Clear Cart</button>
             </div>
@@ -918,28 +918,26 @@
           }
         });
 
-        setCheckoutBtnHref();
+        // setCheckoutBtnHref();
 
       });
 
-      function setCheckoutBtnHref() {
-        const checkoutBtn = document.getElementById('checkout-btn');
-        if (!checkoutBtn) return;
-        if (user) {
-          checkoutBtn.setAttribute('href', '/checkout');
-          checkoutBtn.classList.remove('disabled');
-          checkoutBtn.textContent = 'PROCEED TO CHECKOUT';
-          checkoutBtn.onclick = null;
-        } else {
-          checkoutBtn.setAttribute('href', '/auth/login');
-          checkoutBtn.classList.remove('disabled'); // Make sure it's clickable
-          checkoutBtn.textContent = 'Login to Checkout';
-          // Optionally, force navigation to login on click (in case of SPA or JS hijack)
-          checkoutBtn.onclick = function(e) {
-            // Allow default navigation
-          };
-        }
-      }
+      // function setCheckoutBtnHref() {
+      //   const checkoutBtn = document.getElementById('checkout-btn');
+      //   if (!checkoutBtn) return;
+      //   if (user) {
+      //     checkoutBtn.setAttribute('href', '/checkout');
+      //     checkoutBtn.classList.remove('disabled');
+      //     checkoutBtn.textContent = 'PROCEED TO CHECKOUT';
+      //     checkoutBtn.onclick = null;
+      //   } else {
+      //     checkoutBtn.setAttribute('href', '/auth/login');
+      //     checkoutBtn.classList.remove('disabled');
+      //     checkoutBtn.textContent = 'Login to Checkout';
+      //     checkoutBtn.onclick = function(e) {
+      //     };
+      //   }
+      // }
 
       async function fetchCart() {
         if (user) {
@@ -1090,7 +1088,7 @@
         document.getElementById('cart-total').textContent = formatPrice(cart.total || 0);
 
         // Set checkout button link and state
-        setCheckoutBtnHref();
+        // setCheckoutBtnHref();
       }
 
       async function removeCartItem(itemId, isUser) {
@@ -1357,7 +1355,7 @@
       </div><!-- /.col-3 -->
     </div><!-- /.row -->
   </footer>
-
+ 
 
   <!-- Go To Top -->
   <div id="scrollTop" class="visually-hidden end-0"></div>

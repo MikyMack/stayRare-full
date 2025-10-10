@@ -490,6 +490,9 @@
                                     `;
                                 };
 
+                                // Add payment method display
+                                const paymentMethod = order.paymentInfo?.method || '-';
+
                                 // Populate modal content
                                 const modalContent = `
                                     <div class="order-details-section">
@@ -526,6 +529,10 @@
                                             <i class="fas fa-credit-card"></i>
                                             Payment Information
                                         </h3>
+                                        <div class="order-detail-item">
+                                            <span class="order-detail-label">Payment Method:</span>
+                                            <span class="order-detail-value">${paymentMethod}</span>
+                                        </div>
                                         <div class="order-detail-item">
                                             <span class="order-detail-label">Payment Status:</span>
                                             <span class="order-detail-value">${order.paymentInfo.status}</span>

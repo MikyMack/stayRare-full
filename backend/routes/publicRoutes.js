@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const crypto = require('crypto');
 const cron = require("node-cron");
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const shiprocketService = require('../services/shiprocketService');
 const { getOrdersWithTracking } = require('../services/orderService');
@@ -20,6 +21,7 @@ const Coupon = require('../models/Coupon');
 const Order = require('../models/Order');
 const Blog = require('../models/Blog');
 const User = require('../models/User');
+const nodemailer = require('nodemailer');
 const webPush = require("web-push");
 const Subscription = require('../models/Subscription');
 const Testimonial = require('../models/Testimonial');
@@ -33,7 +35,7 @@ const shuffleArray = (arr) => {
     if (!Array.isArray(arr)) return arr;
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+        [arr[i], arr[j]] = [arr[j], arr[i]]; 
     }
     return arr;
 };
@@ -772,308 +774,572 @@ router.get('/wishlist', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-
 router.get('/checkout', async (req, res) => {
-  try {
-    const categories = await Category.find({ isActive: true }).lean();
-    const addresses = req.user
-      ? await Address.find({ user: req.user._id }).sort({ isDefault: -1 }).lean()
-      : [];
-
-    let cart = req.user
-      ? await Cart.findOne({ user: req.user._id }).lean()
-      : await Cart.findOne({ sessionId: req.sessionID }).lean();
-
-    cart = cart ? await validateCartCoupon(cart) : createEmptyCart();
-
-    // 🔄 Fetch product pricing for each cart item
-    const productMap = {};
-    const productIds = cart.items.map(item => item.product);
-    const products = await Product.find({ _id: { $in: productIds } }).select('basePrice salePrice name').lean();
-    products.forEach(prod => productMap[prod._id] = prod);
-
-    // 💡 Attach product price info to each cart item
-    cart.items = cart.items.map(item => {
-      const prod = productMap[item.product];
-      const base = prod?.basePrice || item.price;
-      const sale = prod?.salePrice > 0 && prod?.salePrice < base ? prod.salePrice : base;
-      const discountAmount = base - sale;
-      const discountPercent = base > sale ? Math.round((discountAmount / base) * 100) : 0;
-
-      return {
-        ...item,
-        basePrice: base,
-        salePrice: sale,
-        discountAmount,
-        discountPercent
-      };
-    });
-
-    res.render('user/checkout', {
-      user: req.user || null,
-      categories,
-      addresses,
-      cart,
-      defaultAddress: addresses.find(addr => addr.isDefault) || null,
-      selectedBillingAddress: req.query.billingAddressId || null,
-      selectedShippingAddress: req.query.shippingAddressId || null
-    });
-
-  } catch (error) {
-    console.error('Checkout error:', error);
-    res.status(500).render('error', {
-      message: 'Error loading checkout page',
-      error: process.env.NODE_ENV === 'development' ? error : null
-    });
-  }
-});
-
-router.post('/apply-coupon', async (req, res) => {
     try {
-      const { couponCode } = req.body;
+    
+      const categories = await Category.find({ isActive: true }).lean();
   
-      // 1. Find the cart
-      let cart;
-      if (req.user) {
-        cart = await Cart.findOne({ user: req.user._id });
-      } else {
-        cart = await Cart.findOne({ sessionId: req.sessionID });
-      }
-  
-      if (!cart) {
-        return res.status(400).json({ success: false, message: 'Cart not found' });
-      }
-  
-      // 2. Check if coupon already applied
-      if (cart.couponInfo && cart.couponInfo.code === couponCode.toUpperCase()) {
-        return res.status(400).json({ success: false, message: 'Coupon already applied to the cart' });
-      }
-  
-      // 3. Validate coupon
-      const now = new Date();
-      const coupon = await Coupon.findOne({
-        code: couponCode.toUpperCase(),
-        isActive: true,
-        validFrom: { $lte: now },
-        validUntil: { $gte: now },
-        $or: [
-          { maxUses: null },
-          { $expr: { $lt: ["$usedCount", "$maxUses"] } }
-        ]
-      }).populate('applicableCategories');
-  
-      if (!coupon) {
-        return res.status(400).json({ success: false, message: 'Invalid or expired coupon' });
-      }
-  
-      // 4. Check if user already used the coupon
-      if (req.user && coupon.usedBy.includes(req.user._id)) {
-        return res.status(400).json({
-          success: false,
-          message: 'You have already used this coupon'
-        });
-      }
-  
-      // 5. Fetch products in cart
-      const cartProducts = await Product.find({
-        _id: { $in: cart.items.map(item => item.product) }
-      }).populate('category');
-  
-      // 6. Calculate subtotal and apply coupon if valid
-      let subtotal = 0;
-      let applicableSubtotal = 0;
-      let hasApplicableItems = false;
-  
-      for (const item of cart.items) {
-        const product = cartProducts.find(p => p._id.equals(item.product));
-        if (!product) continue;
-  
-        const itemTotal = item.price * item.quantity;
-        subtotal += itemTotal;
-  
-        let isApplicable = false;
-  
-        // Scope: all
-        if (coupon.scopeType === 'all') {
-          isApplicable = true;
+      let user = req.user;
+   
+      if (!user && req.session.user) {
+        user = await User.findById(req.session.user._id);
+        if (user) {
+          req.user = user; 
         }
+      }
   
-        // Scope: categories
-        else if (coupon.scopeType === 'categories' && coupon.applicableCategories.length > 0) {
-          isApplicable = coupon.applicableCategories.some(cat =>
-            cat._id.equals(product.category._id || product.category)
-          );
-        }
+      const addresses = user
+        ? await Address.find({ user: user._id }).sort({ isDefault: -1 }).lean()
+        : [];
   
-        // Scope: subcategories (embedded in Category model)
-        else if (coupon.scopeType === 'subcategories' && coupon.applicableSubcategories.length > 0) {
-          const parentCategory = await Category.findOne({
-            'subCategories._id': { $in: coupon.applicableSubcategories }
+      let cart = null;
+  
+      if (user) {
+        cart = await Cart.findOne({ user: user._id }).populate('items.product');
+        
+        if (!cart) {
+        
+          cart = new Cart({ 
+            user: user._id, 
+            items: [],
+            subtotal: 0,
+            total: 0
           });
-  
-          if (parentCategory && product.category.equals(parentCategory._id)) {
-            const matchedSub = parentCategory.subCategories.find(sub =>
-              coupon.applicableSubcategories.some(id => id.equals(sub._id))
-            );
-  
-            if (matchedSub) {
-              isApplicable = true;
-            }
-          }
+          await cart.save();
         }
-  
-        // Accumulate applicable subtotal
-        if (isApplicable) {
-          applicableSubtotal += itemTotal;
-          hasApplicableItems = true;
-        }
+      } else {
+        // Guest user - get by session
+        cart = await Cart.findOne({ sessionId: req.sessionID }).populate('items.product');
       }
   
-      // 7. Check min purchase
-      const minPurchaseCheckValue = coupon.scopeType === 'all' ? subtotal : applicableSubtotal;
-  
-      if (minPurchaseCheckValue < coupon.minPurchase) {
-        return res.status(400).json({
-          success: false,
-          message: `Minimum purchase of ₹${coupon.minPurchase} required` +
-            (coupon.scopeType !== 'all' ? ' for applicable items' : '')
+      // 5️⃣ Handle empty cart
+      if (!cart || !Array.isArray(cart.items) || cart.items.length === 0) {
+        return res.render('user/checkout', {
+          user: user || null,
+          categories,
+          addresses,
+          cart: { items: [], subtotal: 0, total: 0, couponInfo: null },
+          defaultAddress: addresses.find(a => a.isDefault) || null,
+          selectedBillingAddress: req.query.billingAddressId || null,
+          selectedShippingAddress: req.query.shippingAddressId || null,
+          message: 'Your cart is empty'
         });
       }
   
-      // 8. Ensure at least one matching product
-      if (coupon.scopeType !== 'all' && !hasApplicableItems) {
-        return res.status(400).json({
-          success: false,
-          message: 'Coupon is not applicable to any products in your cart'
-        });
+      // 6️⃣ Ensure all items have product info
+      cart.items = cart.items.map(item => {
+        const productData = item.product || {};
+        return {
+          product: item.product,
+          productName: item.productName || productData.name || 'Unnamed Product',
+          productImage: item.productImage || (productData.images && productData.images[0]) || '',
+          price: Number(item.price) || Number(productData.salePrice || productData.basePrice) || 0,
+          quantity: Number(item.quantity) || 1,
+          selectedColor: item.selectedColor || null,
+          selectedSize: item.selectedSize || null,
+          basePrice: Number(productData.basePrice) || Number(item.price) || 0,
+          salePrice: Number(productData.salePrice) || Number(item.price) || 0,
+          discountAmount: item.discountAmount || 0,
+          discountPercent: item.discountPercent || 0
+        };
+      });
+  
+      // 7️⃣ Recalculate totals
+      if (typeof cart.recalculateTotals === 'function') {
+        cart.recalculateTotals();
+        await cart.save();
+      } else {
+        // Manual recalculation as fallback
+        cart.subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        cart.total = cart.subtotal;
+        await cart.save();
       }
   
-      // 9. Calculate discount
-      let discountAmount = 0;
-      if (coupon.discountType === 'percentage') {
-        discountAmount = (coupon.scopeType === 'all' ? subtotal : applicableSubtotal) * (coupon.value / 100);
-      } else if (coupon.discountType === 'fixed') {
-        discountAmount = Math.min(
-          coupon.value,
-          coupon.scopeType === 'all' ? subtotal : applicableSubtotal
-        );
-      }
-  
-      // 10. Update cart
-      cart.couponInfo = {
-        code: coupon.code,
-        discountType: coupon.discountType,
-        discountValue: coupon.value,
-        discountAmount: discountAmount,
-        minPurchase: coupon.minPurchase,
-        validated: true,
-        scopeType: coupon.scopeType,
-        applicableCategories: coupon.applicableCategories,
-        applicableSubcategories: coupon.applicableSubcategories
-      };
-  
-      cart.subtotal = subtotal;
-      cart.total = subtotal - discountAmount;
-  
-      await cart.save();
-  
-      // 11. Update coupon usage
-      if (req.user) {
-        coupon.usedBy.push(req.user._id);
-        coupon.usedCount += 1;
-        await coupon.save();
-      }
-  
-      return res.json({
-        success: true,
-        cart: cart.toObject(),
-        message: 'Coupon applied successfully'
+      // 8️⃣ Render checkout page
+      res.render('user/checkout', {
+        user: user || null,
+        categories,
+        addresses,
+        cart,
+        defaultAddress: addresses.find(a => a.isDefault) || null,
+        selectedBillingAddress: req.query.billingAddressId || null,
+        selectedShippingAddress: req.query.shippingAddressId || null
       });
   
     } catch (error) {
-      console.error('Error applying coupon:', error);
-      return res.status(500).json({ success: false, message: 'Failed to apply coupon' });
+      console.error('Checkout error:', error);
+      res.status(500).render('error', {
+        message: 'Error loading checkout page',
+        error: process.env.NODE_ENV === 'development' ? error : null
+      });
     }
-  });
+});
+// Add this route to remove coupon
+router.post('/remove-coupon', async (req, res) => {
+    try {
+        console.log('=== REMOVE COUPON REQUEST ===');
+        
+        let user = req.user;
+        if (!user && req.session.user) {
+            user = await User.findById(req.session.user._id);
+            if (user) req.user = user;
+        }
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'User not found' });
+        }
+
+        // 🚨 FIX: Use findOneAndUpdate to avoid version conflicts
+        const cart = await Cart.findOneAndUpdate(
+            { user: user._id },
+            { 
+                $set: {
+                    couponInfo: {
+                        code: null,
+                        discountType: null,
+                        discountValue: 0,
+                        discountAmount: 0,
+                        validated: false,
+                        minPurchase: 0
+                    },
+                    discountAmount: 0
+                }
+            },
+            { new: true } // Return updated document
+        );
+
+        if (!cart) {
+            return res.status(400).json({ success: false, message: 'Cart not found' });
+        }
+
+        // 🚨 FIX: Recalculate totals without saving (to avoid version conflicts)
+        cart.subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        cart.total = cart.subtotal; // Total becomes same as subtotal
+        
+        // 🚨 FIX: Use findOneAndUpdate for the final save
+        await Cart.findOneAndUpdate(
+            { user: user._id },
+            { 
+                $set: {
+                    subtotal: cart.subtotal,
+                    total: cart.total
+                }
+            }
+        );
+
+        console.log('Coupon removed from cart successfully');
+
+        res.json({
+            success: true,
+            message: 'Coupon removed successfully'
+        });
+
+    } catch (error) {
+        console.error('Remove coupon error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to remove coupon',
+            error: error.message 
+        });
+    }
+});
+router.post('/apply-coupon', async (req, res) => {
+    try {
+        // Ensure we have the correct user (same as checkout route)
+        let user = req.user;
+        if (!user && req.session.user) {
+            user = await User.findById(req.session.user._id);
+            if (user) {
+                req.user = user;
+            }
+        }
+
+        if (!user) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'User not found. Please refresh the page.' 
+            });
+        }
+
+        // 1. Find the cart - ONLY by user ID for authenticated users
+        let cart;
+        if (user) {
+            cart = await Cart.findOne({ user: user._id });
+        } else {
+            cart = await Cart.findOne({ sessionId: req.sessionID });
+        }
+
+        if (!cart) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Cart not found',
+                debug: { user: user?._id, hasUser: !!user }
+            });
+        }
+
+        if (!cart.items || cart.items.length === 0) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Cart is empty' 
+            });
+        }
+
+        const { couponCode } = req.body;
+
+        // 2. Check if coupon already applied
+        if (cart.couponInfo && cart.couponInfo.code === couponCode.toUpperCase()) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Coupon already applied to the cart' 
+            });
+        }
+
+        // 3. Validate coupon
+        const now = new Date();
+        const coupon = await Coupon.findOne({
+            code: couponCode.toUpperCase(),
+            isActive: true,
+            validFrom: { $lte: now },
+            validUntil: { $gte: now },
+            $or: [
+                { maxUses: null },
+                { $expr: { $lt: ["$usedCount", "$maxUses"] } }
+            ]
+        }).populate('applicableCategories');
+
+        if (!coupon) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Invalid or expired coupon' 
+            });
+        }
+
+        // 4. Check if user already used the coupon
+        if (user && coupon.usedBy.includes(user._id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'You have already used this coupon'
+            });
+        }
+
+        // 5. Fetch products in cart
+        const cartProducts = await Product.find({
+            _id: { $in: cart.items.map(item => item.product) }
+        }).populate('category');
+
+        // 6. Calculate subtotal and apply coupon if valid
+        let subtotal = 0;
+        let applicableSubtotal = 0;
+        let hasApplicableItems = false;
+
+        for (const item of cart.items) {
+            const product = cartProducts.find(p => p._id.equals(item.product));
+            if (!product) continue;
+
+            const itemTotal = item.price * item.quantity;
+            subtotal += itemTotal;
+
+            let isApplicable = false;
+
+            // Scope: all
+            if (coupon.scopeType === 'all') {
+                isApplicable = true;
+            }
+
+            // Scope: categories
+            else if (coupon.scopeType === 'categories' && coupon.applicableCategories.length > 0) {
+                isApplicable = coupon.applicableCategories.some(cat =>
+                    cat._id.equals(product.category._id || product.category)
+                );
+            }
+
+            // Scope: subcategories (embedded in Category model)
+            else if (coupon.scopeType === 'subcategories' && coupon.applicableSubcategories.length > 0) {
+                const parentCategory = await Category.findOne({
+                    'subCategories._id': { $in: coupon.applicableSubcategories }
+                });
+
+                if (parentCategory && product.category.equals(parentCategory._id)) {
+                    const matchedSub = parentCategory.subCategories.find(sub =>
+                        coupon.applicableSubcategories.some(id => id.equals(sub._id))
+                    );
+
+                    if (matchedSub) {
+                        isApplicable = true;
+                    }
+                }
+            }
+
+            // Accumulate applicable subtotal
+            if (isApplicable) {
+                applicableSubtotal += itemTotal;
+                hasApplicableItems = true;
+            }
+        }
+
+        // 7. Check min purchase
+        const minPurchaseCheckValue = coupon.scopeType === 'all' ? subtotal : applicableSubtotal;
+
+        if (minPurchaseCheckValue < coupon.minPurchase) {
+            return res.status(400).json({
+                success: false,
+                message: `Minimum purchase of ₹${coupon.minPurchase} required` +
+                    (coupon.scopeType !== 'all' ? ' for applicable items' : '')
+            });
+        }
+
+        // 8. Ensure at least one matching product
+        if (coupon.scopeType !== 'all' && !hasApplicableItems) {
+            return res.status(400).json({
+                success: false,
+                message: 'Coupon is not applicable to any products in your cart'
+            });
+        }
+
+        // 9. Calculate discount
+        let discountAmount = 0;
+        if (coupon.discountType === 'percentage') {
+            discountAmount = (coupon.scopeType === 'all' ? subtotal : applicableSubtotal) * (coupon.value / 100);
+        } else if (coupon.discountType === 'fixed') {
+            discountAmount = Math.min(
+                coupon.value,
+                coupon.scopeType === 'all' ? subtotal : applicableSubtotal
+            );
+        }
+
+        // 10. Update cart
+        cart.couponInfo = {
+            code: coupon.code,
+            discountType: coupon.discountType,
+            discountValue: coupon.value,
+            discountAmount: discountAmount,
+            minPurchase: coupon.minPurchase,
+            validated: true,
+            scopeType: coupon.scopeType,
+            applicableCategories: coupon.applicableCategories,
+            applicableSubcategories: coupon.applicableSubcategories
+        };
+
+        cart.subtotal = subtotal;
+        cart.total = subtotal - discountAmount;
+
+        await cart.save();
+
+        return res.json({
+            success: true,
+            cart: cart.toObject(),
+            message: 'Coupon applied successfully'
+        });
+
+    } catch (error) {
+        console.error('Error applying coupon:', error);
+        return res.status(500).json({ 
+            success: false, 
+            message: 'Failed to apply coupon' 
+        });
+    }
+});
   
 
 router.post('/place-order', async (req, res) => {
     try {
+        const { billingAddressId, shippingAddressId, totalAmount, paymentMethod, notes } = req.body;
 
-        const { billingAddressId, shippingAddressId, totalAmount } = req.body;
+        // Ensure we have the correct user (same as checkout route)
+        let user = req.user;
+        if (!user && req.session.user) {
+            user = await User.findById(req.session.user._id);
+            if (user) {
+                req.user = user;
+            }
+        }
 
-        // Validate address IDs
+        if (!user) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'User not found. Please refresh the page.' 
+            });
+        }
+
+        // Validate input
         if (!billingAddressId || !shippingAddressId) {
-            return res.status(400).json({
-                success: false,
-                message: 'Missing billing or shipping address ID'
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Missing billing or shipping address ID' 
             });
         }
 
-        // Validate total amount
-        if (!totalAmount || typeof totalAmount !== 'number' || totalAmount <= 0) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid total amount'
+        // Get cart - ONLY by user ID for authenticated users
+        const cart = await Cart.findOne({ user: user._id });
+
+        if (!cart || !cart.items || cart.items.length === 0) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Cart is empty',
+                debug: {
+                    user: user._id,
+                    hasCart: !!cart,
+                    itemsCount: cart?.items?.length || 0
+                }
             });
         }
 
+        // Use cart total instead of passed totalAmount for consistency
+        const orderTotal = cart.total;
+
+        // Get addresses
+        const [billingAddr, shippingAddr] = await Promise.all([
+            Address.findById(billingAddressId).lean(),
+            Address.findById(shippingAddressId).lean()
+        ]);
+
+        if (!billingAddr || !shippingAddr) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Invalid address data' 
+            });
+        }
+
+        const userEmail = user.email;
+        const userName = user.name || 'there';
+
+        // COD order
+        if (paymentMethod === 'COD') {
+            // NO order creation OR cart clearing here – will be handled in /confirm-order
+
+            // Send confirmation/ack email (optional: only info, NOT an invoice)
+            if (userEmail) {
+                try {
+                    const transporter = nodemailer.createTransport({
+                        service: 'gmail',
+                        auth: { user: process.env.EMAIL_USERNAME, pass: process.env.EMAIL_PASSWORD }
+                    });
+
+                    const mailOptions = {
+                        from: process.env.EMAIL_USERNAME,
+                        to: userEmail,
+                        subject: `Your COD Order is being processed at StayRare!`,
+                        html: `
+                            <div style="font-family:Arial,sans-serif;font-size:16px;max-width:500px;margin:0 auto;background:#fff;padding:28px;border-radius:8px;color:#222;">
+                                <h2 style="color:#7c3aed;margin-bottom:0.5em;">Thank you for shopping with StayRare, ${userName}!</h2>
+                                <p>Your Cash on Delivery (COD) order is being processed.<br>
+                                Please complete confirmation to finalize your purchase.</p>
+                                <hr style="margin:1.5em 0;">
+                                <p>Want to shop more? <a href="https://stayrare.in/store" style="color:#7c3aed;text-decoration:underline;">Browse our best deals and new arrivals!</a></p>
+                                <p>Thanks for shopping with us!<br><b>Team StayRare</b></p>
+                            </div>
+                        `
+                    };
+
+                    transporter.sendMail(mailOptions, (err) => {
+                        if (err) console.error('Failed to send COD initiation email:', err);
+                    });
+                } catch (e) {
+                    console.error('COD order email error:', e);
+                }
+            }
+
+            // Only acknowledge, do not create order or clear cart
+            return res.json({ 
+                success: true, 
+                cod: true, 
+                message: 'COD order initiation successful. Please confirm to place order.'
+            });
+        }
+
+        // Online payment (Razorpay)
         const options = {
-            amount: Math.round(totalAmount * 100), // Razorpay needs amount in paise
+            amount: Math.round(cart.total * 100), // Use cart.total
             currency: "INR",
             receipt: `order_rcptid_${Date.now()}`
         };
 
-        // Ensure Razorpay is configured
         if (!razorpayInstance) {
-            console.error('Razorpay instance not initialized');
-            return res.status(500).json({
-                success: false,
-                message: 'Payment gateway not configured'
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Payment gateway not configured' 
             });
         }
 
-        // Create order
         const razorpayOrder = await razorpayInstance.orders.create(options);
+
+        // Store pending order in session
+        req.session.pendingOrder = {
+            cartItems: cart.items,
+            billingAddress: billingAddr,
+            shippingAddress: shippingAddr,
+            subtotal: cart.subtotal,
+            discountAmount: cart.discountAmount || 0,
+            totalAmount: cart.total,
+            notes: notes || '',
+            razorpayOrderId: razorpayOrder.id
+        };
+
+        // Send email to notify user about order started
+        if (userEmail) {
+            try {
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: { user: process.env.EMAIL_USERNAME, pass: process.env.EMAIL_PASSWORD }
+                });
+
+                const mailOptions = {
+                    from: process.env.EMAIL_USERNAME,
+                    to: userEmail,
+                    subject: `Your StayRare Order is in Process`,
+                    html: `
+                        <div style="font-family:Arial,sans-serif;font-size:16px;max-width:500px;margin:0 auto;background:#fff;padding:28px;border-radius:8px;color:#222;">
+                            <h2 style="color:#7c3aed;margin-bottom:0.5em;">Hi ${userName},</h2>
+                            <p>You've chosen online payment. After successful payment, your order will be confirmed and processed immediately.</p>
+                            <p>We'll notify you when your order is shipped — with tracking for smooth delivery!</p>
+                            <hr style="margin:1.5em 0;">
+                            <p>Excited for your new StayRare purchase? <a href="https://stayrare.in/store" style="color:#7c3aed;text-decoration:underline;">Check out more great styles!</a></p>
+                            <p>Thanks for trusting us!<br><b>Team StayRare</b></p>
+                        </div>
+                    `
+                };
+
+                transporter.sendMail(mailOptions, (err) => {
+                    if (err) console.error('Failed to send online order email:', err);
+                });
+            } catch (e) {
+                console.error('Online order email error:', e);
+            }
+        }
+
+        // Return Razorpay details to frontend
         res.json({
             success: true,
+            cod: false,
             razorpayOrderId: razorpayOrder.id,
             amount: options.amount,
             currency: options.currency,
-            key: process.env.RAZORPAY_KEY_ID || 'key_not_loaded'
+            key: process.env.RAZORPAY_KEY_ID
         });
 
     } catch (error) {
-        console.error('Error in /place-order:', error);
-
-        if (error.error) {
-            console.error('Razorpay error details:', error.error);
-        }
-
-        res.status(500).json({
-            success: false,
-            message: 'Failed to create order',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        console.error('Place order error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to place order', 
+            error: error.message 
         });
     }
 });
 
+
 router.post('/confirm-order', async (req, res) => {
-
     try {
-        // Validate payment
-        const { razorpay_payment_id, razorpay_order_id, razorpay_signature, billingAddressId, shippingAddressId } = req.body;
+        const {
+            paymentMethod,
+            razorpay_payment_id,
+            razorpay_order_id,
+            razorpay_signature,
+            billingAddressId,
+            shippingAddressId,
+            notes // Allow notes to be passed for COD, if any
+        } = req.body;
 
-        const expectedSignature = crypto
-            .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-            .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-            .digest('hex');
-
-        if (expectedSignature !== razorpay_signature) {
-            return res.status(400).json({ success: false, message: 'Invalid payment signature' });
-        }
-
-        // Get user and cart
         const userId = req.user?._id;
         const sessionId = req.sessionID;
         const cart = await Cart.findOne(userId ? { user: userId } : { sessionId });
@@ -1082,7 +1348,6 @@ router.post('/confirm-order', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Cart is empty' });
         }
 
-        // Get addresses
         const [billingAddress, shippingAddress] = await Promise.all([
             Address.findById(billingAddressId).lean(),
             Address.findById(shippingAddressId).lean()
@@ -1092,7 +1357,26 @@ router.post('/confirm-order', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid addresses' });
         }
 
-        // Create order document
+        let paymentStatus = 'Pending';
+        let paymentMethodToSave = paymentMethod; 
+        if (paymentMethod !== 'COD') {
+            const expectedSignature = crypto
+                .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+                .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+                .digest('hex');
+
+            if (expectedSignature !== razorpay_signature) {
+                return res.status(400).json({ success: false, message: 'Invalid payment signature' });
+            }
+
+            paymentStatus = 'Paid';
+            paymentMethodToSave = 'Razorpay';
+        } else {
+            // Explicitly set paymentMethod as 'COD' for the order document
+            paymentMethodToSave = 'COD';
+        }
+
+        // ✅ Create order
         const newOrder = new Order({
             user: userId,
             items: cart.items.map(item => ({
@@ -1115,10 +1399,12 @@ router.post('/confirm-order', async (req, res) => {
             } : undefined,
             totalAmount: cart.total,
             paymentInfo: {
-                razorpayPaymentId: razorpay_payment_id,
-                razorpayOrderId: razorpay_order_id,
-                status: 'Paid'
+                method: paymentMethodToSave,
+                razorpayPaymentId: paymentMethodToSave === 'COD' ? null : razorpay_payment_id,
+                razorpayOrderId: paymentMethodToSave === 'COD' ? null : razorpay_order_id,
+                status: paymentStatus
             },
+            notes: notes || '', // Set notes if present
             deliveryInfo: {
                 status: 'Processing',
                 updatedAt: new Date()
@@ -1126,136 +1412,45 @@ router.post('/confirm-order', async (req, res) => {
             orderStatus: 'Confirmed'
         });
 
-        // Save initial order state
         await newOrder.save();
 
-        // Shiprocket integration
-        let shipmentResponse = {};
         try {
-            // 1. Create Shiprocket order
-            const srOrder = await shiprocketService.createOrder(newOrder, shippingAddress);
+            const srOrder = await shiprocketService.createOrder(newOrder, shippingAddress, paymentMethodToSave);
             newOrder.deliveryInfo.shipmentId = srOrder.shipment_id;
             newOrder.deliveryInfo.trackingId = srOrder.order_id;
             await newOrder.save();
-
-            // 2. Assign AWB
-            const safeShippingAddress = newOrder.shippingAddress || newOrder.billingAddress;
-            const awbRes = await shiprocketService.assignAWB(
-                srOrder.shipment_id,
-                safeShippingAddress,
-                newOrder.items
-            );
-
-            newOrder.deliveryInfo.awbCode = awbRes.awb_code;
-            newOrder.deliveryInfo.courier = awbRes.courier_name || 'Shiprocket';
-            await newOrder.save();
-
-            // 3. Generate Pickup
-            const pickupResult = await shiprocketService.generatePickup(srOrder.shipment_id);
-            newOrder.deliveryInfo.pickupStatus = pickupResult.message || 'Pickup generated';
-
-            // 4. Get label with retries - using only documented endpoint
-            try {
-                const labelRes = await shiprocketService.generateLabel(srOrder.shipment_id);
-                newOrder.deliveryInfo.labelUrl = labelRes.label_url;
-                newOrder.deliveryInfo.status = 'Processing';
-                newOrder.orderStatus = 'Processing';
-            } catch (labelError) {
-                console.error('Automatic label generation failed:', labelError.message);
-                newOrder.deliveryInfo.status = 'Processing';
-                newOrder.deliveryInfo.error = labelError.message;
-                newOrder.orderStatus = 'Processing';
-            }
-
-            await newOrder.save();
-
-            shipmentResponse = {
-                shipmentId: newOrder.deliveryInfo.shipmentId,
-                awbCode: newOrder.deliveryInfo.awbCode,
-                labelUrl: newOrder.deliveryInfo.labelUrl,
-                trackingId: newOrder.deliveryInfo.trackingId,
-                status: newOrder.deliveryInfo.status
-            };
-
-        } catch (shipmentError) {
-            newOrder.deliveryInfo = {
-                ...newOrder.deliveryInfo,
-                status: 'Failed',
-                error: shipmentError.message,
-                updatedAt: new Date()
-            };
-            newOrder.orderStatus = 'Processing';
-            console.error('Shipment processing failed:', {
-                orderId: newOrder._id,
-                error: shipmentError.message,
-                stack: shipmentError.stack
-            });
+        } catch (err) {
+            console.error('Shiprocket Error:', err.message);
         }
 
-        await newOrder.save();
-
-   // Send invoice email
-try {
-    let recipientEmail = null;
-
-    if (req.user?.email) {
-        recipientEmail = req.user.email;
-    } else if (shippingAddress?.email) {
-        recipientEmail = shippingAddress.email;
-    } else if (billingAddress?.email) {
-        recipientEmail = billingAddress.email;
-    } else if (userId) {
-        const user = await User.findById(userId).select("email");
-        recipientEmail = user?.email;
-    }
-
-    if (recipientEmail) {
-        await sendInvoiceEmail(newOrder.toObject(), recipientEmail);
-    } else {
-        console.warn("No recipient email found for order:", newOrder._id);
-    }
-} catch (emailError) {
-    console.error("Failed to send invoice:", emailError.message);
-}
-
-        // Update coupon usage
-        if (userId && cart.couponInfo?.validated && cart.couponInfo?.code) {
-            try {
-                await Coupon.findOneAndUpdate(
-                    { code: cart.couponInfo.code },
-                    { $inc: { usedCount: 1 }, $addToSet: { usedBy: userId } }
-                );
-            } catch (couponError) {
-                console.error('Coupon update failed:', couponError.message);
-            }
+        try {
+            let recipientEmail = req.user?.email || billingAddress?.email || shippingAddress?.email;
+            if (recipientEmail) await sendInvoiceEmail(newOrder.toObject(), recipientEmail);
+        } catch (emailError) {
+            console.error("Invoice mail failed:", emailError.message);
         }
 
-        // Clear cart
+        // ✅ Clear cart (only after order is created)
         cart.items = [];
         cart.subtotal = 0;
         cart.total = 0;
         cart.couponInfo = {};
+        cart.discountAmount = 0;
         await cart.save();
 
         res.json({
             success: true,
             orderId: newOrder._id,
-            ...(Object.keys(shipmentResponse).length > 0 && { shiprocket: shipmentResponse })
+            paymentMethod: paymentMethodToSave,
+            message: paymentMethodToSave === 'COD' ? 'Order placed successfully (COD)' : 'Order confirmed'
         });
 
     } catch (error) {
-        console.error('Order confirmation failed:', {
-            message: error.message,
-            stack: error.stack,
-            userId: req.user?._id
-        });
-        res.status(500).json({
-            success: false,
-            message: 'Order processing failed',
-            error: error.message
-        });
+        console.error('Order confirmation failed:', error.message);
+        res.status(500).json({ success: false, message: 'Order processing failed', error: error.message });
     }
 });
+
 async function reduceCategoryStock(orderId) {
     const session = await mongoose.startSession();
     session.startTransaction();

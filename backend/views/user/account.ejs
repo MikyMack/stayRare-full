@@ -718,6 +718,10 @@
                                                     <input type="text" id="nameField" class="form-control" required />
                                                 </div>
                                                 <div class="mb-3">
+                                                    <label class="form-label">Email</label>
+                                                    <input type="email" id="emailField" class="form-control" placeholder="name@example.com" />
+                                                </div>
+                                                <div class="mb-3">
                                                     <label class="form-label">Phone</label>
                                                     <input type="tel" id="phoneField" class="form-control" required />
                                                 </div>
@@ -947,6 +951,7 @@
                   <h5 class="card-title mb-2">${address.addressType}${address.isDefault ? " <span class='badge bg-success'>Default</span>" : ""}</h5>
                   <address class="mb-2">
                     <strong>${address.name}</strong><br/>
+                    ${address.email ? `<span class="text-muted">${address.email}</span><br/>` : ""}
                     ${address.addressLine1}<br/>
                     ${address.addressLine2 ? address.addressLine2 + "<br/>" : ""}
                     ${address.landmark ? address.landmark + "<br/>" : ""}
@@ -1006,6 +1011,7 @@
 
                 const data = {
                     name: document.getElementById("nameField").value,
+                    email: document.getElementById("emailField") ? document.getElementById("emailField").value : "",
                     phone: document.getElementById("phoneField").value,
                     pincode: document.getElementById("pincodeField").value,
                     state: document.getElementById("stateField").value,

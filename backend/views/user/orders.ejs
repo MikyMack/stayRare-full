@@ -1018,9 +1018,31 @@
                 `;
                 document.getElementById('shippingAddress').innerHTML = shippingAddress;
                 
-                // Payment Method
-                document.getElementById('paymentMethod').textContent = 
-                    `${order.paymentInfo.status} (${order.paymentInfo.razorpayPaymentId ? 'Razorpay' : 'Unknown'})`;
+                // Payment Method (show payment method clearly)
+                let paymentMethodText = '';
+                if (order.paymentInfo) {
+                    let method = order.paymentInfo.method
+                        ? order.paymentInfo.method
+                        : (order.paymentInfo.razorpayPaymentId ? "Razorpay" : (order.paymentInfo.method || "Unknown"));
+
+                    // Capitalize
+                    let methodDisplay = {
+                        'Razorpay': 'Razorpay',
+                        'COD': 'Cash on Delivery'
+                    }[method] || method;
+
+                    // Combine method and status details
+                    paymentMethodText = `${methodDisplay}`;
+                    if (order.paymentInfo.status) {
+                        paymentMethodText += ` — Status: ${order.paymentInfo.status}`;
+                    }
+                    if (order.paymentInfo.razorpayPaymentId) {
+                        paymentMethodText += `<br><span style="font-size:90%;">Payment ID: ${order.paymentInfo.razorpayPaymentId}</span>`;
+                    }
+                } else {
+                    paymentMethodText = 'Unknown';
+                }
+                document.getElementById('paymentMethod').innerHTML = paymentMethodText;
                 
                 // Order Summary
                 let orderSummaryHTML = '';
