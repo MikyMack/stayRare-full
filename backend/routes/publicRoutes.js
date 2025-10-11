@@ -28,8 +28,8 @@ const Testimonial = require('../models/Testimonial');
 const { createEmptyCart, validateCartCoupon } = require('../utils/cartUtils');
 const isUser = require('../middleware/isUser');
 const razorpayInstance = require('../utils/razorpay');
-const sendInvoiceEmail = require("../utils/sendInvoice");
 const { sendNotificationToUser,sendNotificationToAllUsers } = require("../services/notificationService");
+const sendInvoiceEmail = require('../utils/sendInvoice');
 
 const shuffleArray = (arr) => {
     if (!Array.isArray(arr)) return arr;
@@ -1216,9 +1216,7 @@ router.post('/place-order', async (req, res) => {
 
         // COD order
         if (paymentMethod === 'COD') {
-            // NO order creation OR cart clearing here – will be handled in /confirm-order
 
-            // Send confirmation/ack email (optional: only info, NOT an invoice)
             if (userEmail) {
                 try {
                     const transporter = nodemailer.createTransport({
@@ -1567,6 +1565,19 @@ async function reduceCategoryStock(orderId) {
           `/orders/${order._id}`
         );
       }
+
+      // ADD INVOICE EMAIL HERE - After order is confirmed
+      try {
+        const userEmail = order.user?.email || order.shippingAddress?.email;
+        if (userEmail) {
+          await sendInvoiceEmail(order, userEmail);
+          console.log(`Invoice email sent successfully for order ${orderId}`);
+        } else {
+          console.warn(`No email found for order ${orderId}`);
+        }
+      } catch (emailErr) {
+        console.error("Failed to send invoice email:", emailErr);
+      }
   
       const categories = await Category.find({ isActive: true })
         .select('name imageUrl isActive subCategories')
@@ -1581,7 +1592,7 @@ async function reduceCategoryStock(orderId) {
       console.error("Error loading order confirmation:", err);
       res.status(500).render('error', { message: 'Failed to load order confirmation' });
     }
-  });
+});
   
 
   router.post("/subscribe", async (req, res) => {
