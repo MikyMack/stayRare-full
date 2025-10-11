@@ -826,9 +826,18 @@ router.get('/checkout', async (req, res) => {
         });
       }
   
-      // 6️⃣ Ensure all items have product info
       cart.items = cart.items.map(item => {
         const productData = item.product || {};
+        
+        // Calculate item-level discount
+        let discountAmount = 0;
+        let discountPercent = 0;
+        
+        if (productData.basePrice && productData.salePrice && productData.basePrice > productData.salePrice) {
+          discountAmount = (productData.basePrice - productData.salePrice) * item.quantity;
+          discountPercent = ((productData.basePrice - productData.salePrice) / productData.basePrice) * 100;
+        }
+        
         return {
           product: item.product,
           productName: item.productName || productData.name || 'Unnamed Product',
@@ -839,10 +848,16 @@ router.get('/checkout', async (req, res) => {
           selectedSize: item.selectedSize || null,
           basePrice: Number(productData.basePrice) || Number(item.price) || 0,
           salePrice: Number(productData.salePrice) || Number(item.price) || 0,
-          discountAmount: item.discountAmount || 0,
-          discountPercent: item.discountPercent || 0
+          discountAmount: discountAmount,
+          discountPercent: discountPercent
         };
       });
+
+      if (cart.couponInfo && cart.couponInfo.validated) {
+        cart.discountAmount = cart.couponInfo.discountAmount || 0;
+      } else {
+        cart.discountAmount = 0;
+      }
   
       // 7️⃣ Recalculate totals
       if (typeof cart.recalculateTotals === 'function') {
@@ -854,6 +869,8 @@ router.get('/checkout', async (req, res) => {
         cart.total = cart.subtotal;
         await cart.save();
       }
+
+ 
   
       // 8️⃣ Render checkout page
       res.render('user/checkout', {

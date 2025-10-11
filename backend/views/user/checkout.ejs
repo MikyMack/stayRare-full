@@ -975,7 +975,7 @@
                                                 <b>Coupon "<%= cart.couponInfo.code %>" has been successfully applied!</b><br>
                                                 <span style="font-size:1.24em;font-weight:700;color:#e53935;">
                                                     <svg width="18" height="18" fill="none" stroke="#e53935" stroke-width="2" style="vertical-align:-3px;"><path d="M3 9l6 6L21 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                    You saved ₹<%= (typeof cart.discountAmount === 'number' ? cart.discountAmount.toFixed(2) : '0.00') %>
+                                                    You saved ₹<%= (cart.couponInfo && cart.couponInfo.discountAmount) ? cart.couponInfo.discountAmount.toFixed(2) : '0.00' %>
                                                 </span>
                                                 <span style="margin-left:8px;color:#388e3c;font-size:1em;font-weight:600;">
                                                     🎉 Enjoy your discount!
@@ -1022,8 +1022,7 @@
                                             Woohoo! Coupon Applied 🎉
                                         </h2>
                                         <div class="catchy-discount" id="popup-discount-amount" style="font-size:2.2em;font-weight:900;color:#e53935;margin:10px 0;">
-                                            <!-- Will be set by JS on coupon apply -->
-                                            ₹<%= (cart.couponInfo && cart.couponInfo.validated && typeof cart.discountAmount === 'number') ? cart.discountAmount.toFixed(2) : '' %>
+                                            ₹<%= (cart.couponInfo && cart.couponInfo.validated && cart.couponInfo.discountAmount) ? cart.couponInfo.discountAmount.toFixed(2) : '' %>
                                         </div>
                                         <div class="catchy-message" style="font-size:1.1em;color:#333;">
                                             You just saved big on your order!<br>
@@ -1111,9 +1110,9 @@
                                                 <td id="cart-subtotal">₹<%= cart.subtotal.toFixed(2) %></td>
                                             </tr>
                                           
-                                            <tr id="discount-row" style="display: <%= (cart.couponInfo && cart.couponInfo.validated && typeof cart.discountAmount === 'number' && cart.discountAmount > 0) ? '' : 'none' %>;">
+                                            <tr id="discount-row" style="display: <%= (cart.couponInfo && cart.couponInfo.validated && cart.couponInfo.discountAmount > 0) ? '' : 'none' %>;">
                                                 <th>Discount<% if (cart.couponInfo && cart.couponInfo.code) { %> (<%= cart.couponInfo.code %>)<% } %></th>
-                                                <td id="discount-amount">-₹<%= (cart.discountAmount && typeof cart.discountAmount === 'number') ? cart.discountAmount.toFixed(2) : '0.00' %></td>
+                                                <td id="discount-amount">-₹<%= (cart.couponInfo && cart.couponInfo.discountAmount) ? cart.couponInfo.discountAmount.toFixed(2) : '0.00' %></td>
                                             </tr>
                                             <tr>
                                                 <th>Shipping</th>
@@ -1173,20 +1172,19 @@
                                         Place Order
                                     </button>
                                     <script>
-                                        // Payment selection logic (Unchanged)
+                                       
                                         document.addEventListener('DOMContentLoaded', function () {
                                           const paymentHeaders = document.querySelectorAll('.payment-header');
                                           const hiddenInput = document.getElementById('selectedPaymentMethod');
                                         
                                           paymentHeaders.forEach(header => {
                                             header.addEventListener('click', function () {
-                                              // Remove active class from all
+                                           
                                               paymentHeaders.forEach(h => h.classList.remove('active'));
                                               this.classList.add('active');
-                                        
-                                              // Get selected type
+                                      
                                               const target = this.getAttribute('data-target');
-                                              let methodName = "Razorpay"; // Default
+                                              let methodName = "Razorpay"; 
                                         
                                               if (target === 'cod') methodName = "COD";
                                               else if (target === 'credit-card' || target === 'upi') methodName = "Razorpay";
@@ -1197,9 +1195,9 @@
                                           });
                                         });
 
-                                        // GUEST ORDER SUMMARY LOGIC
+                            
                                         document.addEventListener('DOMContentLoaded', function () {
-                                            // If user is guest (i.e., !<%= user ? 'true' : 'false' %> in ejs), use localStorage cart
+                                     
                                             var isGuest = <%= user ? 'false' : 'true' %>;
                                             if (isGuest) {
                                                 let guestCartArr;
@@ -1311,35 +1309,35 @@
                                                         } else {
                                                             const result = await response.json();
                                                             if (result.success && result.cart) {
-                                                                couponMessage.innerHTML = '<div class="alert alert-success">Coupon applied successfully!</div>';
-
-                                                                // Immediately update subtotal, discount, total in the DOM
-                                                                if (result.cart.subtotal && document.getElementById('cart-subtotal')) {
-                                                                    document.getElementById('cart-subtotal').textContent = "₹" + Number(result.cart.subtotal).toFixed(2);
-                                                                }
-                                                                if (document.getElementById('cart-total')) {
-                                                                    document.getElementById('cart-total').textContent = "₹" + Number(result.cart.total).toFixed(2);
-                                                                }
-                                                                if (document.getElementById('discount-row')) {
-                                                                    // Show and fill
-                                                                    var row = document.getElementById('discount-row');
-                                                                    row.style.display = "";
-                                                                    var th = row.querySelector('th');
-                                                                    if (th && result.cart.couponInfo && result.cart.couponInfo.code) {
-                                                                        th.textContent = `Discount (${result.cart.couponInfo.code})`;
-                                                                    }
-                                                                    var tdd = row.querySelector('td#discount-amount');
-                                                                    if (tdd && result.cart.discountAmount !== undefined && typeof result.cart.discountAmount === "number" && result.cart.discountAmount > 0) {
-                                                                        tdd.textContent = "-₹" + Number(result.cart.discountAmount).toFixed(2);
-                                                                    } else if (tdd) {
-                                                                        tdd.textContent = "-₹0.00";
-                                                                    }
-                                                                }
-                                                                showCouponSuccessPopup(result.cart.discountAmount, couponCode);
-
-                                                                // Delay and reload so remove button appears and ejs renders the coupon box properly
-                                                                setTimeout(() => window.location.reload(), 900);
-                                                            } else {
+    couponMessage.innerHTML = '<div class="alert alert-success">Coupon applied successfully!</div>';
+    
+    // Update all amounts
+    if (result.cart.subtotal && document.getElementById('cart-subtotal')) {
+        document.getElementById('cart-subtotal').textContent = "₹" + Number(result.cart.subtotal).toFixed(2);
+    }
+    if (document.getElementById('cart-total')) {
+        document.getElementById('cart-total').textContent = "₹" + Number(result.cart.total).toFixed(2);
+    }
+    const discountRow = document.getElementById('discount-row');
+    if (discountRow && result.cart.couponInfo && result.cart.couponInfo.validated) {
+        const discountAmount = result.cart.couponInfo.discountAmount || 0;
+        if (discountAmount > 0) {
+            discountRow.style.display = "";
+            const th = discountRow.querySelector('th');
+            if (th && result.cart.couponInfo.code) {
+                th.textContent = `Discount (${result.cart.couponInfo.code})`;
+            }
+            const tdd = discountRow.querySelector('td#discount-amount');
+            if (tdd) {
+                tdd.textContent = "-₹" + Number(discountAmount).toFixed(2);
+            }
+        }
+    }
+    
+    showCouponSuccessPopup(result.cart.couponInfo?.discountAmount, couponCode);
+    setTimeout(() => window.location.reload(), 900);
+}
+                                                             else {
                                                                 couponMessage.innerHTML = `<div class="alert alert-error">${result.message || 'Failed to apply coupon'}</div>`;
                                                             }
                                                         }
@@ -1371,30 +1369,31 @@
 
                                         // updateCartTotals left untouched but ensure that discount row works for immediate DOM update
                                         function updateCartTotals(cart) {
-                                            const subtotalElement = document.getElementById('cart-subtotal');
-                                            if (subtotalElement && cart && typeof cart.subtotal === "number") {
-                                                subtotalElement.textContent = `₹${cart.subtotal.toFixed(2)}`;
-                                            }
-                                            const discountRow = document.getElementById('discount-row');
-                                            if (discountRow) {
-                                                const discountAmount = cart.couponInfo?.discountAmount;
-                                                const isValidated = cart.couponInfo?.validated;
-                                                const hasDiscountAmount = typeof discountAmount === "number";
-                                                const isDiscountPositive = discountAmount > 0;
+    const subtotalElement = document.getElementById('cart-subtotal');
+    if (subtotalElement && cart && typeof cart.subtotal === "number") {
+        subtotalElement.textContent = `₹${cart.subtotal.toFixed(2)}`;
+    }
+    
+    const discountRow = document.getElementById('discount-row');
+    if (discountRow) {
+        const discountAmount = cart.couponInfo?.discountAmount || 0;
+        const isValidated = cart.couponInfo?.validated;
+        
+        if (isValidated && discountAmount > 0) {
+            discountRow.style.display = '';
+            discountRow.querySelector('th').textContent = `Discount (${cart.couponInfo.code})`;
+            discountRow.querySelector('td').textContent = `-₹${discountAmount.toFixed(2)}`;
+        } else {
+            discountRow.style.display = 'none';
+        }
+    }
+    
+    const totalElement = document.getElementById('cart-total');
+    if (totalElement && cart && typeof cart.total === "number") {
+        totalElement.textContent = `₹${cart.total.toFixed(2)}`;
+    }
+}
 
-                                                if (isValidated && hasDiscountAmount && isDiscountPositive) {
-                                                    discountRow.style.display = '';
-                                                    discountRow.querySelector('th').textContent = `Discount (${cart.couponInfo.code})`;
-                                                    discountRow.querySelector('td').textContent = `-₹${discountAmount.toFixed(2)}`;
-                                                } else {
-                                                    discountRow.style.display = 'none';
-                                                }
-                                            }
-                                            const totalElement = document.getElementById('cart-total');
-                                            if (totalElement && cart && typeof cart.total === "number") {
-                                                totalElement.textContent = `₹${cart.total.toFixed(2)}`;
-                                            }
-                                        }
 
                                         // ====== PLACE ORDER LOGIC ======
                                         const placeOrderBtn = document.getElementById('place-order-btn');
