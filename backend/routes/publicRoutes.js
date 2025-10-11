@@ -877,8 +877,6 @@ router.get('/checkout', async (req, res) => {
 // Add this route to remove coupon
 router.post('/remove-coupon', async (req, res) => {
     try {
-        console.log('=== REMOVE COUPON REQUEST ===');
-        
         let user = req.user;
         if (!user && req.session.user) {
             user = await User.findById(req.session.user._id);
@@ -927,15 +925,12 @@ router.post('/remove-coupon', async (req, res) => {
             }
         );
 
-        console.log('Coupon removed from cart successfully');
-
         res.json({
             success: true,
             message: 'Coupon removed successfully'
         });
 
     } catch (error) {
-        console.error('Remove coupon error:', error);
         res.status(500).json({ 
             success: false, 
             message: 'Failed to remove coupon',
@@ -945,7 +940,6 @@ router.post('/remove-coupon', async (req, res) => {
 });
 router.post('/apply-coupon', async (req, res) => {
     try {
-        // Ensure we have the correct user (same as checkout route)
         let user = req.user;
         if (!user && req.session.user) {
             user = await User.findById(req.session.user._id);
